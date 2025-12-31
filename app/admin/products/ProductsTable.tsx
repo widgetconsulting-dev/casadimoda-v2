@@ -200,11 +200,10 @@ export default function ProductsTable({
                     <td className="py-6">
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-2 h-2 rounded-full ${
-                            product.countInStock > 0
+                          className={`w-2 h-2 rounded-full ${product.countInStock > 0
                               ? "bg-green-500"
                               : "bg-red-500"
-                          }`}
+                            }`}
                         />
                         <span className="text-xs font-black text-primary">
                           {product.countInStock} Units
@@ -214,11 +213,10 @@ export default function ProductsTable({
                     <td className="py-6">
                       <div className="flex flex-col">
                         <span
-                          className={`text-lg font-black ${
-                            product.discountPrice > 0
+                          className={`text-lg font-black ${product.discountPrice > 0
                               ? "text-red-500"
                               : "text-primary"
-                          }`}
+                            }`}
                         >
                           $
                           {(
@@ -312,14 +310,25 @@ export default function ProductsTable({
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                        Brand
+                        SubCategory
                       </label>
                       <input
-                        {...register("brand", { required: true })}
+                        {...register("subCategory")}
                         className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
-                        placeholder="e.g. Dior"
+                        placeholder="e.g. Leather"
                       />
                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
+                      Brand
+                    </label>
+                    <input
+                      {...register("brand", { required: true })}
+                      className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                      placeholder="e.g. Dior"
+                    />
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">

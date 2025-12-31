@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,6 +13,8 @@ import {
   Settings,
   ChevronRight,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -33,12 +35,45 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#FDFCFB]">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[#FDFCFB] relative overflow-hidden">
+      {/* Mobile Top Header */}
+      <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-primary text-white sticky top-0 z-40 shadow-md">
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 hover:bg-white/10 rounded-lg transition-colors order-first"
+        >
+          <Menu size={24} className="text-accent" />
+        </button>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+            <span className="text-white font-black italic text-sm">C</span>
+          </div>
+          <span className="font-bold tracking-tight uppercase text-sm">
+            Casa Admin
+          </span>
+        </Link>
+        <div className="w-10" /> {/* Spacer to keep logo semi-centered */}
+      </header>
+
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-primary/40 backdrop-blur-sm z-[60] transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-72 bg-primary text-white flex flex-col fixed h-screen shadow-2xl z-50">
-        <div className="p-8 border-b border-white/5">
+      <aside
+        className={`
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          w-72 bg-primary text-white flex flex-col fixed lg:relative h-screen lg:h-auto shadow-2xl z-[70] transition-transform duration-300 ease-in-out shrink-0
+        `}
+      >
+        <div className="p-8 border-b border-white/5 sticky top-0 bg-primary z-10 hidden lg:block">
           <Link href="/" className="group flex items-center gap-3">
             <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform">
               <span className="text-white font-black text-xl italic font-playfair">
@@ -51,7 +86,20 @@ export default function AdminLayout({
           </Link>
         </div>
 
-        <nav className="flex-grow p-6 space-y-2 mt-4 overflow-y-auto">
+        {/* Mobile Sidebar Brand (Visible only when sidebar is open on mobile) */}
+        <div className="lg:hidden p-8 border-b border-white/5 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+              <span className="text-white font-black text-lg italic">C</span>
+            </div>
+            <span className="font-bold tracking-tight uppercase">Admin Panel</span>
+          </Link>
+          <button onClick={() => setIsSidebarOpen(false)}>
+            <X size={24} className="text-accent" />
+          </button>
+        </div>
+
+        <nav className="flex-grow p-6 space-y-2 mt-4 overflow-y-auto no-scrollbar">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-4 ml-4">
             Management
           </p>
@@ -62,18 +110,17 @@ export default function AdminLayout({
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center justify-between px-4 py-4 rounded-2xl transition-all group ${
-                  isActive
-                    ? "bg-accent text-primary shadow-lg shadow-accent/20"
-                    : "hover:bg-white/5 text-white/60 hover:text-white"
-                }`}
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center justify-between px-4 py-4 rounded-2xl transition-all group ${isActive
+                  ? "bg-accent text-primary shadow-lg shadow-accent/20"
+                  : "hover:bg-white/5 text-white/60 hover:text-white"
+                  }`}
               >
                 <div className="flex items-center gap-4">
                   <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                   <span
-                    className={`text-sm tracking-wide ${
-                      isActive ? "font-black" : "font-medium"
-                    }`}
+                    className={`text-sm tracking-wide ${isActive ? "font-black" : "font-medium"
+                      }`}
                   >
                     {link.name}
                   </span>
@@ -86,7 +133,7 @@ export default function AdminLayout({
           })}
         </nav>
 
-        <div className="p-6 border-t border-white/5">
+        <div className="p-6 border-t border-white/5 sticky bottom-0 bg-primary mt-auto">
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
             className="w-full flex items-center gap-4 px-4 py-4 text-white/40 hover:text-red-400 hover:bg-red-400/10 rounded-2xl transition-all font-bold text-sm cursor-pointer"
@@ -98,7 +145,9 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow ml-72 p-10">{children}</main>
+      <main className="flex-grow p-6 lg:p-10 overflow-y-auto w-full">
+        {children}
+      </main>
     </div>
   );
 }

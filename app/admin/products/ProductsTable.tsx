@@ -57,7 +57,7 @@ export default function ProductsTable({
         discountPrice: 0,
         countInStock: 0,
         description: "",
-        image: "/images/placeholder.png",
+        image: "/images/placeholder.jpg",
       });
     }
     setShowModal(true);
@@ -369,7 +369,7 @@ export default function ProductsTable({
                       <input
                         {...register("image", { required: true })}
                         className="w-full bg-secondary border-none rounded-2xl p-4 pl-12 outline-none font-bold text-primary"
-                        placeholder="/images/product.png"
+                        placeholder="/images/product.jpg"
                       />
                       <Upload
                         className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dark/30"

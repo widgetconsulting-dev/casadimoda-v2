@@ -38,7 +38,7 @@ export async function GET() {
           {
             name: "Boutique Item",
             quantity: 1,
-            image: "/images/item.png",
+            image: "/images/item.jpg",
             price: 1000 * (i + 1),
           },
         ],

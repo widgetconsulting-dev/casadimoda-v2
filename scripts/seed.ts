@@ -53,7 +53,7 @@ async function seed() {
             {
               name: "Aviator Leather",
               quantity: 1,
-              image: "/images/leather_jacket.png",
+              image: "/images/leather_jacket.jpg",
               price: 250,
             },
           ],
@@ -78,7 +78,7 @@ async function seed() {
             {
               name: "Omega Seamaster",
               quantity: 1,
-              image: "/images/watch.png",
+              image: "/images/watch.jpg",
               price: 4500,
             },
           ],

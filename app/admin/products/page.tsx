@@ -1,7 +1,6 @@
-import db, { MongoDocument } from "@/utils/db";
-import ProductModel from "@/models/Product";
 import ProductsTable from "./ProductsTable";
-import { Product } from "@/types";
+import { Product, SubCategory, Category } from "@/types";
+import { getBaseUrl } from "@/utils";
 
 export default async function AdminProductsPage({
   searchParams,
@@ -10,25 +9,26 @@ export default async function AdminProductsPage({
 }) {
   const params = await searchParams;
   const page = Number(params.page) || 1;
-  const pageSize = 10;
-  const skip = (page - 1) * pageSize;
 
-  await db.connect();
-  const totalProducts = await ProductModel.countDocuments();
-  const products = await ProductModel.find({})
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(pageSize)
-    .lean();
+  // Fetch from API instead of direct DB access
+  const baseUrl = getBaseUrl();
 
-  const serializedProducts: Product[] = products.map((doc: MongoDocument) => {
-    return db.convertDocToObj(doc) as unknown as Product;
-  });
+  const [productsRes, subCategoriesRes, categoriesRes] = await Promise.all([
+    fetch(`${baseUrl}/api/admin/products?page=${page}`, { cache: 'no-store' }),
+    fetch(`${baseUrl}/api/admin/subcategories`, { cache: 'no-store' }),
+    fetch(`${baseUrl}/api/admin/categories`, { cache: 'no-store' })
+  ]);
+
+  const productsData = await productsRes.json();
+  const subCategories: SubCategory[] = await subCategoriesRes.json();
+  const categories: Category[] = await categoriesRes.json();
 
   return (
     <ProductsTable
-      initialProducts={serializedProducts}
-      totalPages={Math.ceil(totalProducts / pageSize)}
+      initialProducts={productsData.products}
+      totalPages={productsData.totalPages}
+      subCategories={subCategories}
+      categories={categories}
     />
   );
 }

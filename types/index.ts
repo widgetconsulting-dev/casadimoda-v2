@@ -12,6 +12,14 @@ export interface Category {
   description: string;
 }
 
+export interface SubCategory {
+  _id: string;
+  name: string;
+  slug: string;
+  parentCategory: string;
+  description: string;
+}
+
 export interface Coupon {
   _id: string;
   code: string;
@@ -48,7 +56,7 @@ export interface Product {
   countInStock: number;
   image: string;
   description: string;
-  subCategory?: string;
+  subCategory: string;
   rating: number;
   numReviews: number;
   deliveryTime?: string;
@@ -61,6 +69,12 @@ export interface Product {
 
 export type CategoryFormData = {
   name: string;
+  description: string;
+};
+
+export type SubCategoryFormData = {
+  name: string;
+  parentCategory: string;
   description: string;
 };
 

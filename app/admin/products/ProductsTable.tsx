@@ -15,21 +15,26 @@ import {
 import { useForm } from "react-hook-form";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
-import { Product } from "@/types";
+import { Product, SubCategory, Category } from "@/types";
 import Pagination from "@/components/Pagination";
 
 export default function ProductsTable({
   initialProducts,
   totalPages,
+  subCategories,
+  categories,
 }: {
   initialProducts: Product[];
   totalPages: number;
+  subCategories: SubCategory[];
+  categories: Category[];
 }) {
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { register, handleSubmit, reset, setValue, watch } = useForm<Product>();
   const productImage = watch("image");
+  const selectedCategory = watch("category");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -216,7 +221,7 @@ export default function ProductsTable({
                   </td>
                   <td className="py-6">
                     <span className="text-[10px] font-bold text-text-dark/40 bg-secondary px-3 py-1 rounded-lg uppercase tracking-widest">
-                      {product.subCategory || "None"}
+                      {product.subCategory}
                     </span>
                   </td>
                   <td className="py-6">
@@ -332,21 +337,31 @@ export default function ProductsTable({
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
                           Category
                         </label>
-                        <input
+                        <select
                           {...register("category", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
-                          placeholder="e.g. Jackets"
-                        />
+                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                        >
+                          <option value="">Select category...</option>
+                          {categories.map(cat => (
+                            <option key={cat._id} value={cat.name}>{cat.name}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
                           SubCategory
                         </label>
-                        <input
-                          {...register("subCategory")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
-                          placeholder="e.g. Leather"
-                        />
+                        <select
+                          {...register("subCategory", { required: true })}
+                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                        >
+                          <option value="">Select subcategory...</option>
+                          {subCategories
+                            .filter(sub => !selectedCategory || sub.parentCategory === selectedCategory)
+                            .map(sub => (
+                              <option key={sub._id} value={sub.name}>{sub.name}</option>
+                            ))}
+                        </select>
                       </div>
                     </div>
 

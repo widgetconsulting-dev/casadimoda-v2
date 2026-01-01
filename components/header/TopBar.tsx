@@ -76,7 +76,7 @@ export default function TopBar() {
   };
 
   return (
-    <div className="bg-primary px-4 py-2 flex items-center gap-4 relative z-50">
+    <div className="bg-primary px-4 py-2 flex items-center gap-4 relative z-50 flex-wrap">
       {/* Logo */}
       <Link
         href="/"

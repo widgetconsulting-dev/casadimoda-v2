@@ -1,11 +1,14 @@
 import CategoriesList from "./CategoriesList";
 import { Category } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import CategoryModel from "@/models/Category";
 
 export default async function AdminCategoriesPage() {
-  const baseUrl = getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/admin/categories`, { cache: 'no-store' });
-  const categories: Category[] = await res.json();
+  await db.connect();
+  const docs = await CategoryModel.find({}).lean();
+  await db.disconnect();
+
+  const categories = docs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Category);
 
   return <CategoriesList initialCategories={categories} />;
 }

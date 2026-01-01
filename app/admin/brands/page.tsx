@@ -1,11 +1,14 @@
 import BrandsList from "./BrandsList";
 import { Brand } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import BrandModel from "@/models/Brand";
 
 export default async function AdminBrandsPage() {
-  const baseUrl = getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/admin/brands`, { cache: 'no-store' });
-  const brands: Brand[] = await res.json();
+  await db.connect();
+  const docs = await BrandModel.find({}).lean();
+  await db.disconnect();
+
+  const brands = docs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Brand);
 
   return <BrandsList initialBrands={brands} />;
 }

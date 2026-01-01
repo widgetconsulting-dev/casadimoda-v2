@@ -1,11 +1,14 @@
 import CouponsList from "./CouponsList";
 import { Coupon } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import CouponModel from "@/models/Coupon";
 
 export default async function AdminCouponsPage() {
-  const baseUrl = getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/admin/coupons`, { cache: 'no-store' });
-  const coupons: Coupon[] = await res.json();
+  await db.connect();
+  const docs = await CouponModel.find({}).lean();
+  await db.disconnect();
+
+  const coupons = docs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Coupon);
 
   return <CouponsList initialCoupons={coupons} />;
 }

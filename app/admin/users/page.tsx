@@ -1,11 +1,14 @@
 import UsersList from "./UsersList";
 import { User } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import UserModel from "@/models/User";
 
 export default async function AdminUsersPage() {
-    const baseUrl = getBaseUrl();
-    const res = await fetch(`${baseUrl}/api/admin/users`, { cache: 'no-store' });
-    const users: User[] = await res.json();
+    await db.connect();
+    const docs = await UserModel.find({}).sort({ createdAt: -1 }).lean();
+    await db.disconnect();
+
+    const users = docs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as User);
 
     return <UsersList initialUsers={users} />;
 }

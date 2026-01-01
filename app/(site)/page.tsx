@@ -2,8 +2,9 @@
 import ProductItem from "@/components/ProductItem";
 import { Product } from "@/types";
 import Pagination from "@/components/Pagination";
-
-import { getBaseUrl } from "@/utils";
+import db from "@/utils/db";
+import ProductModel from "@/models/Product";
+import { MongoDocument } from "@/utils/db";
 
 export default async function Home({
     searchParams,
@@ -13,11 +14,19 @@ export default async function Home({
     const params = await searchParams;
     const page = Number(params.page) || 1;
     const pageSize = 12;
+    const skip = (page - 1) * pageSize;
 
-    const baseUrl = getBaseUrl();
-    const res = await fetch(`${baseUrl}/api/products?page=${page}&pageSize=${pageSize}`, { cache: 'no-store' });
-    const data: { products: Product[]; totalPages: number; totalProducts: number } = await res.json();
-    const { products, totalPages, totalProducts } = data;
+    await db.connect();
+    const totalProducts = await ProductModel.countDocuments();
+    const docs = await ProductModel.find({})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .lean();
+    await db.disconnect();
+
+    const products = docs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Product);
+    const totalPages = Math.ceil(totalProducts / pageSize);
     return (
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">

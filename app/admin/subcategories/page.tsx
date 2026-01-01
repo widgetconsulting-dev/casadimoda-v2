@@ -1,17 +1,21 @@
 import SubCategoriesList from "./SubCategoriesList";
 import { SubCategory, Category } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import SubCategoryModel from "@/models/SubCategory";
+import CategoryModel from "@/models/Category";
 
 export default async function AdminSubcategoriesPage() {
-    const baseUrl = getBaseUrl();
+    await db.connect();
 
-    const [subCategoriesRes, categoriesRes] = await Promise.all([
-        fetch(`${baseUrl}/api/admin/subcategories`, { cache: 'no-store' }),
-        fetch(`${baseUrl}/api/admin/categories`, { cache: 'no-store' })
+    const [subCategoriesDocs, categoriesDocs] = await Promise.all([
+        SubCategoryModel.find({}).lean(),
+        CategoryModel.find({}).lean()
     ]);
 
-    const subCategories: SubCategory[] = await subCategoriesRes.json();
-    const categories: Category[] = await categoriesRes.json();
+    await db.disconnect();
+
+    const subCategories = subCategoriesDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as SubCategory);
+    const categories = categoriesDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Category);
 
     return (
         <SubCategoriesList

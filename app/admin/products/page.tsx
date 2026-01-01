@@ -1,6 +1,10 @@
 import ProductsTable from "./ProductsTable";
 import { Product, SubCategory, Category, Brand } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import ProductModel from "@/models/Product";
+import SubCategoryModel from "@/models/SubCategory";
+import CategoryModel from "@/models/Category";
+import BrandModel from "@/models/Brand";
 
 export default async function AdminProductsPage({
   searchParams,
@@ -9,26 +13,32 @@ export default async function AdminProductsPage({
 }) {
   const params = await searchParams;
   const page = Number(params.page) || 1;
+  const pageSize = 12; // Or matches whatever pagination logic is there, API used 12
+  const skip = (page - 1) * pageSize;
 
-  // Fetch from API instead of direct DB access
-  const baseUrl = getBaseUrl();
+  await db.connect();
 
-  const [productsRes, subCategoriesRes, categoriesRes, brandsRes] = await Promise.all([
-    fetch(`${baseUrl}/api/admin/products?page=${page}`, { cache: 'no-store' }),
-    fetch(`${baseUrl}/api/admin/subcategories`, { cache: 'no-store' }),
-    fetch(`${baseUrl}/api/admin/categories`, { cache: 'no-store' }),
-    fetch(`${baseUrl}/api/admin/brands`, { cache: 'no-store' })
+  const [productsDocs, totalProducts, subCategoriesDocs, categoriesDocs, brandsDocs] = await Promise.all([
+    ProductModel.find({}).sort({ createdAt: -1 }).skip(skip).limit(pageSize).lean(),
+    ProductModel.countDocuments(),
+    SubCategoryModel.find({}).lean(),
+    CategoryModel.find({}).lean(),
+    BrandModel.find({}).lean()
   ]);
 
-  const productsData = await productsRes.json();
-  const subCategories: SubCategory[] = await subCategoriesRes.json();
-  const categories: Category[] = await categoriesRes.json();
-  const brands: Brand[] = await brandsRes.json();
+  await db.disconnect();
+
+  const products = productsDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Product);
+  const subCategories = subCategoriesDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as SubCategory);
+  const categories = categoriesDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Category);
+  const brands = brandsDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Brand);
+
+  const totalPages = Math.ceil(totalProducts / pageSize);
 
   return (
     <ProductsTable
-      initialProducts={productsData.products}
-      totalPages={productsData.totalPages}
+      initialProducts={products}
+      totalPages={totalPages}
       subCategories={subCategories}
       categories={categories}
       brands={brands}

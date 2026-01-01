@@ -1,11 +1,14 @@
 import GiftCardsList from "./GiftCardsList";
 import { GiftCard } from "@/types";
-import { getBaseUrl } from "@/utils";
+import db, { MongoDocument } from "@/utils/db";
+import GiftCardModel from "@/models/GiftCard";
 
 export default async function AdminGiftCardsPage() {
-  const baseUrl = getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/admin/giftcards`, { cache: 'no-store' });
-  const giftCards: GiftCard[] = await res.json();
+  await db.connect();
+  const docs = await GiftCardModel.find({}).lean();
+  await db.disconnect();
+
+  const giftCards = docs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as GiftCard);
 
   return <GiftCardsList initialGiftCards={giftCards} />;
 }

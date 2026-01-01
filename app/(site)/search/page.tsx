@@ -1,14 +1,16 @@
 import ProductItem from "@/components/ProductItem";
 import { Product } from "@/types";
-import { getBaseUrl } from "@/utils";
-import SearchSidebar from "./SearchSidebar"; // We'll create this next
+import SearchSidebar from "./SearchSidebar";
 import Link from "next/link";
 import { X } from "lucide-react";
+import db, { MongoDocument } from "@/utils/db";
+import ProductModel from "@/models/Product";
 
 interface SearchPageProps {
     searchParams: Promise<{
         q?: string;
         category?: string;
+        subCategory?: string;
         brand?: string;
         price?: string;
         rating?: string;
@@ -22,6 +24,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     const {
         q = "all",
         category = "all",
+        subCategory = "all",
         brand = "all",
         price = "all",
         rating = "all",
@@ -29,28 +32,98 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         page = "1",
     } = params;
 
-    const baseUrl = getBaseUrl();
-    const queryParams = new URLSearchParams({
-        q,
-        category,
-        brand,
-        price,
-        rating,
-        sort,
-        page,
-    });
+    const pageNumber = Number(page) || 1;
+    const pageSize = 12;
 
-    const res = await fetch(`${baseUrl}/api/search?${queryParams.toString()}`, {
-        cache: "no-store",
-    });
+    await db.connect();
 
-    const data = await res.json();
-    const { products, countProducts, pages, categories, brands } = data;
+    const queryFilter =
+        q && q !== "all"
+            ? {
+                name: {
+                    $regex: q,
+                    $options: "i",
+                },
+            }
+            : {};
+
+    const categoryFilter = category && category !== "all" ? { category } : {};
+    const subCategoryFilter = subCategory && subCategory !== "all" ? { subCategory } : {};
+    const brandFilter = brand && brand !== "all" ? { brand } : {};
+    const ratingFilter =
+        rating && rating !== "all"
+            ? {
+                rating: {
+                    $gte: Number(rating),
+                },
+            }
+            : {};
+
+    // Price filter handling: "min-max"
+    const priceFilter =
+        price && price !== "all"
+            ? {
+                price: {
+                    $gte: Number(price.split("-")[0]),
+                    $lte: Number(price.split("-")[1]),
+                },
+            }
+            : {};
+
+    const order =
+        sort === "featured"
+            ? { isFeatured: -1 }
+            : sort === "lowest"
+                ? { price: 1 }
+                : sort === "highest"
+                    ? { price: -1 }
+                    : sort === "toprated"
+                        ? { rating: -1 }
+                        : sort === "newest"
+                            ? { createdAt: -1 }
+                            : { _id: -1 };
+
+    const filter = {
+        ...queryFilter,
+        ...categoryFilter,
+        ...subCategoryFilter,
+        ...brandFilter,
+        ...priceFilter,
+        ...ratingFilter,
+    };
+
+    const [productDocs, countProducts, categoriesList, brandsList] = await Promise.all([
+        ProductModel.find(filter)
+            .sort(order as any)
+            .skip(pageSize * (pageNumber - 1))
+            .limit(pageSize)
+            .lean(),
+        ProductModel.countDocuments(filter),
+        ProductModel.find().distinct("category"),
+        ProductModel.find().distinct("brand")
+    ]);
+
+    await db.disconnect();
+
+    const products = productDocs.map(doc => db.convertDocToObj(doc as MongoDocument) as unknown as Product);
+    const pages = Math.ceil(countProducts / pageSize);
+    const categories: string[] = categoriesList;
+    const brands: string[] = brandsList;
 
     const getFilterUrl = (key: string, value: string) => {
-        const newParams = new URLSearchParams(queryParams);
+        const newParams = new URLSearchParams();
+        if (q && q !== "all") newParams.set("q", q);
+        if (category && category !== "all") newParams.set("category", category);
+        if (subCategory && subCategory !== "all") newParams.set("subCategory", subCategory);
+        if (brand && brand !== "all") newParams.set("brand", brand);
+        if (price && price !== "all") newParams.set("price", price);
+        if (rating && rating !== "all") newParams.set("rating", rating);
+        if (sort && sort !== "newest") newParams.set("sort", sort);
+        if (page && page !== "1") newParams.set("page", page);
+
         newParams.set(key, value);
-        newParams.set("page", "1");
+        if (key !== "page") newParams.set("page", "1");
+
         return `/search?${newParams.toString()}`;
     };
 

@@ -27,9 +27,16 @@ export default function CartScreen() {
   };
 
   const subtotal = cartItems.reduce(
+    (a, c) => a + (c.quantity || 0) * (c.discountPrice || c.price || 0),
+    0
+  );
+
+  const originalTotal = cartItems.reduce(
     (a, c) => a + (c.quantity || 0) * (c.price || 0),
     0
   );
+
+  const totalDiscount = originalTotal - subtotal;
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -174,11 +181,24 @@ export default function CartScreen() {
                   {/* Price */}
                   <div className="text-right">
                     <p className="text-[10px] font-bold text-text-dark/30 uppercase tracking-widest">
-                      Price per unit
+                      {item.discountPrice && item.discountPrice < item.price
+                        ? "Discounted Price"
+                        : "Price per unit"}
                     </p>
-                    <p className="text-2xl font-black text-primary">
-                      ${item.price}
-                    </p>
+                    {item.discountPrice && item.discountPrice < item.price ? (
+                      <>
+                        <p className="text-2xl font-black text-accent">
+                          ${item.discountPrice}
+                        </p>
+                        <p className="text-sm font-bold text-text-dark/30 line-through">
+                          ${item.price}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-2xl font-black text-primary">
+                        ${item.price}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -193,13 +213,67 @@ export default function CartScreen() {
               Order Summary
             </h2>
 
-            <div className="space-y-4 mb-8">
+            {/* Cart Items List */}
+            <div className="space-y-3 mb-6 max-h-64 overflow-y-auto pr-2">
+              {cartItems.map((item) => (
+                <div
+                  key={item.slug}
+                  className="flex justify-between items-start gap-2 pb-3 border-b border-white/10"
+                >
+                  <div className="flex-grow">
+                    <p className="text-xs font-bold text-white/90 line-clamp-2">
+                      {item.name}
+                    </p>
+                    <p className="text-[10px] text-white/50 mt-1">
+                      Qty: {item.quantity}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p
+                      className={`text-xs font-black ${
+                        item.discountPrice && item.discountPrice < item.price
+                          ? "text-accent"
+                          : "text-white"
+                      }`}
+                    >
+                      $
+                      {(
+                        (item.discountPrice || item.price) * item.quantity
+                      ).toLocaleString()}
+                    </p>
+                    <p
+                      className={`text-[9px] ${
+                        item.discountPrice && item.discountPrice < item.price
+                          ? "text-accent/70"
+                          : "text-white/40"
+                      }`}
+                    >
+                      Save: $
+                      {(
+                        (item.price - (item.discountPrice || item.price)) *
+                        item.quantity
+                      ).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-4 mb-8 border-t border-white/10 pt-6">
               <div className="flex justify-between text-sm font-medium">
                 <span className="text-white/60">
                   Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
                   items)
                 </span>
-                <span>${subtotal.toLocaleString()}</span>
+                <span>${originalTotal.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm font-medium">
+                <span className={totalDiscount > 0 ? "text-accent" : "text-white/60"}>
+                  Total Savings
+                </span>
+                <span className={totalDiscount > 0 ? "text-accent" : "text-white/60"}>
+                  {totalDiscount > 0 ? "-" : ""}${totalDiscount.toLocaleString()}
+                </span>
               </div>
               <div className="flex justify-between text-sm font-medium">
                 <span className="text-white/60">Express Shipping</span>
@@ -236,13 +310,6 @@ export default function CartScreen() {
               Pay. All transactions are encrypted and secured.
             </p>
           </div>
-
-          <Link
-            href="/"
-            className="flex items-center justify-center gap-2 mt-8 text-[11px] font-black uppercase tracking-widest text-text-dark/40 hover:text-accent transition-colors"
-          >
-            <Plus size={14} /> Add more items
-          </Link>
         </div>
       </div>
     </div>

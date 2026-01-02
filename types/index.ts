@@ -41,6 +41,7 @@ export interface CartItem {
   slug: string;
   image: string;
   price: number;
+  discountPrice?: number;
   quantity: number;
   countInStock: number;
 }

@@ -28,18 +28,25 @@ export default function TopBar() {
 
   useEffect(() => {
     if (cartQuantity === 0) return;
-    setBump(true);
+    const bumper = setTimeout(() => {
+      setBump(true);
+    }, 0);
     const timer = setTimeout(() => {
       setBump(false);
     }, 300);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(bumper);
+      clearTimeout(timer);
+    };
   }, [cartQuantity]);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.trim().length > 1) {
         try {
-          const res = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&pageSize=5`);
+          const res = await fetch(
+            `/api/search?q=${encodeURIComponent(searchQuery)}&pageSize=5`
+          );
           const data = await res.json();
           setSearchResults(data.products || []);
           setShowDropdown(true);
@@ -58,7 +65,10 @@ export default function TopBar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     }
@@ -97,16 +107,16 @@ export default function TopBar() {
       {/* Search Bar */}
       <div ref={dropdownRef} className="flex-grow relative group z-50">
         <div className="flex h-10 rounded-md overflow-hidden bg-white focus-within:ring-2 focus-within:ring-accent">
-          <div className="bg-secondary text-text-dark px-3 flex items-center gap-1 text-xs border-r border-gray-200 cursor-pointer hover:bg-gray-200 font-medium whitespace-nowrap">
-            All <ChevronDown className="w-3 h-3" />
-          </div>
           <input
             type="text"
             className="flex-grow px-3 text-primary text-sm outline-none placeholder:text-gray-400"
             placeholder="Search our exclusive collection..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => { if (searchQuery.length > 1 && searchResults.length > 0) setShowDropdown(true); }}
+            onFocus={() => {
+              if (searchQuery.length > 1 && searchResults.length > 0)
+                setShowDropdown(true);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleSearchSubmit();
@@ -150,7 +160,10 @@ export default function TopBar() {
                       </p>
                     </div>
                     <div className="text-xs font-black text-accent whitespace-nowrap group-hover/item:scale-105 transition-transform">
-                      ${(product.discountPrice || product.price).toLocaleString()}
+                      $
+                      {(
+                        product.discountPrice || product.price
+                      ).toLocaleString()}
                     </div>
                   </Link>
                 </li>
@@ -158,7 +171,7 @@ export default function TopBar() {
             </ul>
             <button
               onClick={handleSearchSubmit}
-              className="w-full p-2 bg-secondary text-[10px] font-black uppercase tracking-widest text-primary hover:bg-accent hover:text-white transition-colors"
+              className="w-full p-2 bg-secondary cursor-pointer text-[10px] font-black uppercase tracking-widest text-primary hover:bg-accent hover:text-white transition-colors"
             >
               View All Results
             </button>
@@ -261,8 +274,9 @@ export default function TopBar() {
             strokeWidth={1.5}
           />
           <span
-            className={`absolute top-[-2px] right-[5px] text-primary text-[10px] font-black px-0.5 rounded-full leading-none min-w-[18px] min-h-[18px] flex items-center justify-center transition-transform duration-300 ${bump ? "scale-150 bg-yellow-400" : "scale-100 bg-accent"
-              }`}
+            className={`absolute top-[-2px] right-[5px] text-primary text-[10px] font-black px-0.5 rounded-full leading-none min-w-[18px] min-h-[18px] flex items-center justify-center transition-transform duration-300 ${
+              bump ? "scale-150 bg-yellow-400" : "scale-100 bg-accent"
+            }`}
           >
             {cartQuantity}
           </span>

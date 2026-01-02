@@ -35,9 +35,7 @@ export default async function SiteLayout({
         brands={brands}
         categoryMap={categoryMap}
       />
-      <main className="flex-grow sm:p-2 md:p-3 lg:p-5">
-        {children}
-      </main>
+      <main className="flex-grow ">{children}</main>
       <Footer />
     </>
   );

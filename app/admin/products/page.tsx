@@ -9,18 +9,32 @@ import BrandModel from "@/models/Brand";
 export default async function AdminProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string }>;
 }) {
   const params = await searchParams;
   const page = Number(params.page) || 1;
-  const pageSize = 12; // Or matches whatever pagination logic is there, API used 12
+  const searchQuery = params.q || "";
+  const pageSize = 12;
   const skip = (page - 1) * pageSize;
 
   await db.connect();
 
+  // Build search filter
+  const searchFilter = searchQuery
+    ? {
+        $or: [
+          { name: { $regex: searchQuery, $options: "i" } },
+          { brand: { $regex: searchQuery, $options: "i" } },
+          { category: { $regex: searchQuery, $options: "i" } },
+          { subCategory: { $regex: searchQuery, $options: "i" } },
+          { description: { $regex: searchQuery, $options: "i" } },
+        ],
+      }
+    : {};
+
   const [productsDocs, totalProducts, subCategoriesDocs, categoriesDocs, brandsDocs] = await Promise.all([
-    ProductModel.find({}).sort({ createdAt: -1 }).skip(skip).limit(pageSize).lean(),
-    ProductModel.countDocuments(),
+    ProductModel.find(searchFilter).sort({ createdAt: -1 }).skip(skip).limit(pageSize).lean(),
+    ProductModel.countDocuments(searchFilter),
     SubCategoryModel.find({}).lean(),
     CategoryModel.find({}).lean(),
     BrandModel.find({}).lean()

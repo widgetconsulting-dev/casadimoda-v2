@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AnnouncementBar from "./header/AnnouncementBar";
 import TopBar from "./header/TopBar";
 import Navbar from "./header/Navbar";
 import Sidebar from "./header/Sidebar";
@@ -27,6 +28,7 @@ export default function Header({
         brands={brands}
         categoryMap={categoryMap}
       />
+      <AnnouncementBar />
       <TopBar />
       <Navbar onOpenSidebar={() => setIsSidebarOpen(true)} />
     </header>

@@ -28,12 +28,12 @@ export default function CartScreen() {
 
   const subtotal = cartItems.reduce(
     (a, c) => a + (c.quantity || 0) * (c.discountPrice || c.price || 0),
-    0
+    0,
   );
 
   const originalTotal = cartItems.reduce(
     (a, c) => a + (c.quantity || 0) * (c.price || 0),
-    0
+    0,
   );
 
   const totalDiscount = originalTotal - subtotal;
@@ -58,7 +58,7 @@ export default function CartScreen() {
       }, 500);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   const stopAdjusting = useCallback(() => {
@@ -76,7 +76,7 @@ export default function CartScreen() {
         <div className="w-24 h-24 bg-secondary rounded-full flex items-center justify-center mb-6">
           <ShoppingBag className="w-10 h-10 text-accent/40" />
         </div>
-        <h1 className="text-4xl font-black text-primary mb-4 tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-black text-primary mb-4 tracking-tight">
           Your basket is empty.
         </h1>
         <p className="text-text-dark/50 mb-8 max-w-sm">
@@ -96,7 +96,7 @@ export default function CartScreen() {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
       <div className="flex items-center gap-4 mb-10">
-        <h1 className="text-4xl font-black text-primary tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
           Shopping Basket{" "}
           <span className="text-accent text-2xl ml-2">
             ({cartItems.length})
@@ -268,11 +268,20 @@ export default function CartScreen() {
                 <span>${originalTotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm font-medium">
-                <span className={totalDiscount > 0 ? "text-accent" : "text-white/60"}>
+                <span
+                  className={
+                    totalDiscount > 0 ? "text-accent" : "text-white/60"
+                  }
+                >
                   Total Savings
                 </span>
-                <span className={totalDiscount > 0 ? "text-accent" : "text-white/60"}>
-                  {totalDiscount > 0 ? "-" : ""}${totalDiscount.toLocaleString()}
+                <span
+                  className={
+                    totalDiscount > 0 ? "text-accent" : "text-white/60"
+                  }
+                >
+                  {totalDiscount > 0 ? "-" : ""}$
+                  {totalDiscount.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between text-sm font-medium">
@@ -290,7 +299,7 @@ export default function CartScreen() {
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-accent">
                   Grand Total
                 </span>
-                <span className="text-4xl font-black">
+                <span className="text-3xl md:text-4xl font-black">
                   ${subtotal.toLocaleString()}
                 </span>
               </div>

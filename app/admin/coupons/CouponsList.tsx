@@ -38,7 +38,7 @@ export default function CouponsList({
     <div className="space-y-10">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-black text-primary tracking-tighter lowercase">
+          <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter lowercase">
             Campaigns & Deals<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">

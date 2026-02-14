@@ -20,10 +20,12 @@ export default function TopBar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [bump, setBump] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
 
   const cartQuantity = cart.cartItems.reduce(
     (a: number, c: { quantity: number }) => a + c.quantity,
-    0
+    0,
   );
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function TopBar() {
       if (searchQuery.trim().length > 1) {
         try {
           const res = await fetch(
-            `/api/search?q=${encodeURIComponent(searchQuery)}&pageSize=5`
+            `/api/search?q=${encodeURIComponent(searchQuery)}&pageSize=5`,
           );
           const data = await res.json();
           setSearchResults(data.products || []);
@@ -62,7 +64,7 @@ export default function TopBar() {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -70,6 +72,12 @@ export default function TopBar() {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
+      }
+      if (
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowAccountMenu(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -86,11 +94,11 @@ export default function TopBar() {
   };
 
   return (
-    <div className="bg-primary px-4 py-2 flex items-center gap-4 relative z-50 flex-wrap">
+    <div className="bg-primary px-4 py-2 flex items-center gap-2 md:gap-4  relative z-50 flex-wrap">
       {/* Logo */}
       <Link
         href="/"
-        className="flex items-center p-2 border border-transparent hover:border-accent rounded-sm group transition-all"
+        className="hidden lg:flex items-center p-2 border border-transparent hover:border-accent rounded-sm group transition-all"
       >
         <Logo />
       </Link>
@@ -185,7 +193,11 @@ export default function TopBar() {
       </div>
 
       {/* Accounts & Lists */}
-      <div className="relative group p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer leading-tight">
+      <div
+        ref={accountMenuRef}
+        className="relative p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer leading-tight"
+        onClick={() => setShowAccountMenu(!showAccountMenu)}
+      >
         {session?.user ? (
           <>
             <span className="text-xs text-secondary opacity-70 font-normal">
@@ -193,11 +205,15 @@ export default function TopBar() {
             </span>
             <div className="flex items-center gap-1 font-bold text-sm text-secondary whitespace-nowrap">
               Account & Lists{" "}
-              <ChevronDown className="w-2.5 h-2.5 mt-0.5 opacity-60" />
+              <ChevronDown
+                className={`w-2.5 h-2.5 mt-0.5 opacity-60 transition-transform ${showAccountMenu ? "rotate-180" : ""}`}
+              />
             </div>
 
             {/* Dropdown Menu */}
-            <div className="absolute top-full right-0 w-56 mt-0 bg-white shadow-2xl rounded-b-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] border border-gray-100 cursor-default">
+            <div
+              className={`absolute top-full left-0 w-56 mt-0 bg-white shadow-2xl rounded-b-xl overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
+            >
               <div className="p-4 border-b border-gray-50 bg-secondary/20">
                 <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 mb-1">
                   Authenticated As
@@ -212,6 +228,7 @@ export default function TopBar() {
                 {session.user.isAdmin && (
                   <Link
                     href="/admin"
+                    onClick={() => setShowAccountMenu(false)}
                     className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors flex items-center justify-between"
                   >
                     Admin Dashboard
@@ -222,12 +239,14 @@ export default function TopBar() {
                 )}
                 <Link
                   href="/profile"
+                  onClick={() => setShowAccountMenu(false)}
                   className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
                 >
                   Member Profile
                 </Link>
                 <Link
                   href="/orders"
+                  onClick={() => setShowAccountMenu(false)}
                   className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
                 >
                   Order History
@@ -243,20 +262,70 @@ export default function TopBar() {
             </div>
           </>
         ) : (
-          <Link href="/login">
+          <>
             <span className="text-xs text-secondary opacity-70 font-normal">
               Hello, sign in
             </span>
             <div className="flex items-center gap-1 font-bold text-sm text-secondary whitespace-nowrap">
               Account & Lists{" "}
-              <ChevronDown className="w-2.5 h-2.5 mt-0.5 opacity-60" />
+              <ChevronDown
+                className={`w-2.5 h-2.5 mt-0.5 opacity-60 transition-transform ${showAccountMenu ? "rotate-180" : ""}`}
+              />
             </div>
-          </Link>
+
+            {/* Dropdown Menu for non-authenticated users */}
+            <div
+              className={`absolute top-full left-0 w-56 mt-0 bg-white shadow-2xl rounded-b-xl overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
+            >
+              <div className="p-4 border-b border-gray-50">
+                <Link
+                  href="/login"
+                  onClick={() => setShowAccountMenu(false)}
+                  className="block w-full py-2.5 bg-accent text-primary text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm text-center"
+                >
+                  Sign In
+                </Link>
+                <p className="text-[10px] text-text-dark/50 mt-2 text-center">
+                  New customer?{" "}
+                  <Link
+                    href="/register"
+                    onClick={() => setShowAccountMenu(false)}
+                    className="text-accent font-bold hover:underline"
+                  >
+                    Start here
+                  </Link>
+                </p>
+              </div>
+              <div className="flex flex-col py-2">
+                <Link
+                  href="/profile"
+                  onClick={() => setShowAccountMenu(false)}
+                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
+                >
+                  My Account
+                </Link>
+                <Link
+                  href="/orders"
+                  onClick={() => setShowAccountMenu(false)}
+                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
+                >
+                  Orders
+                </Link>
+                <Link
+                  href="/become-supplier"
+                  onClick={() => setShowAccountMenu(false)}
+                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
+                >
+                  Become a Supplier
+                </Link>
+              </div>
+            </div>
+          </>
         )}
       </div>
 
       {/* Returns & Orders */}
-      <div className="hidden sm:flex flex-col items-start p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer leading-tight">
+      <div className="flex flex-col items-start p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer leading-tight">
         <span className="text-xs text-secondary opacity-70 font-normal">
           Returns
         </span>

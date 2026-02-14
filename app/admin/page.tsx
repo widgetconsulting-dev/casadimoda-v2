@@ -100,7 +100,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-black text-primary tracking-tighter lowercase">
+          <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter lowercase">
             Business Summary<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
@@ -131,10 +131,11 @@ export default function AdminDashboard() {
                 <stat.icon size={24} />
               </div>
               <div
-                className={`flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full ${stat.isUp
-                  ? "bg-green-50 text-green-600"
-                  : "bg-red-50 text-red-600"
-                  }`}
+                className={`flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full ${
+                  stat.isUp
+                    ? "bg-green-50 text-green-600"
+                    : "bg-red-50 text-red-600"
+                }`}
               >
                 {stat.isUp ? (
                   <ArrowUpRight size={12} />

@@ -5,15 +5,17 @@ import Image from "next/image";
 import {
   Plus,
   Search,
-  Filter,
   Edit,
   Trash2,
   Package,
   X,
   Upload,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useSearchParams, useRouter } from "next/navigation";
 import {
   CldUploadWidget,
   CloudinaryUploadWidgetResults,
@@ -21,64 +23,103 @@ import {
 import { Product, SubCategory, Category, Brand } from "@/types";
 import Pagination from "@/components/Pagination";
 
-export default function ProductsTable({
-  initialProducts,
-  totalPages,
+interface ProductsResponse {
+  products: Product[];
+  totalPages: number;
+  totalProducts: number;
+  currentPage: number;
+}
+
+export default function SupplierProductsTable({
   subCategories,
   categories,
   brands,
 }: {
-  initialProducts: Product[];
-  totalPages: number;
   subCategories: SubCategory[];
   categories: Category[];
   brands: Brand[];
 }) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [supplierStatus, setSupplierStatus] = useState<string | null>(null);
+
   const { register, handleSubmit, reset, setValue, watch } = useForm<Product>();
   const productImage = watch("image");
   const selectedCategory = watch("category");
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
-  const currentPage = Number(searchParams.get("page")) || 1;
-
-  // Initialize search query from URL
+  // Fetch supplier status
   useEffect(() => {
-    const query = searchParams.get("q") || "";
-    setSearchQuery(query);
-  }, [searchParams]);
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch("/api/supplier/profile");
+        if (res.ok) {
+          const data = await res.json();
+          setSupplierStatus(data.status);
+        }
+      } catch (error) {
+        console.error("Error fetching supplier status:", error);
+      }
+    };
+    fetchStatus();
+  }, []);
+
+  // Fetch products
+  const fetchProducts = async (page = 1, search = "", status = "all") => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        ...(search && { search }),
+        ...(status !== "all" && { status }),
+      });
+      const res = await fetch(`/api/supplier/products?${params}`);
+      if (res.ok) {
+        const data: ProductsResponse = await res.json();
+        setProducts(data.products);
+        setTotalPages(data.totalPages);
+        setCurrentPage(data.currentPage);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts(1, searchQuery, statusFilter);
+  }, [statusFilter]);
 
   // Handle search with debounce
   useEffect(() => {
-    // Skip if the search query matches what's already in the URL
-    const currentQuery = searchParams.get("q") || "";
-    if (currentQuery === searchQuery) return;
-
     const timeoutId = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (searchQuery) {
-        params.set("q", searchQuery);
-        params.delete("page"); // Reset to page 1 when searching
-      } else {
-        params.delete("q");
-      }
-      const queryString = params.toString();
-      router.push(`/admin/products${queryString ? `?${queryString}` : ""}`);
-    }, 500); // 500ms debounce
+      fetchProducts(1, searchQuery, statusFilter);
+    }, 500);
 
     return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
+  const handlePageChange = (page: number) => {
+    fetchProducts(page, searchQuery, statusFilter);
+  };
+
   const openModal = (product: Product | null = null) => {
+    if (supplierStatus !== "approved") {
+      alert("Your account must be approved before you can add products.");
+      return;
+    }
+
     if (product) {
       setEditingProduct(product);
       Object.keys(product).forEach((key) => {
@@ -90,6 +131,7 @@ export default function ProductsTable({
         name: "",
         slug: "",
         category: "",
+        subCategory: "",
         brand: "",
         price: 0,
         discountPrice: 0,
@@ -100,19 +142,11 @@ export default function ProductsTable({
         weight: "",
         cbm: 0,
         hsCode: "",
-        isFeatured: false,
+        image: "",
       });
     }
     setShowModal(true);
   };
-
-  useEffect(() => {
-    if (searchParams.get("action") === "create") {
-      openModal();
-      // Remove the query param so it doesn't open again on refresh
-      router.replace("/admin/products");
-    }
-  }, [searchParams, router]);
 
   useEffect(() => {
     if (showModal) {
@@ -126,9 +160,9 @@ export default function ProductsTable({
   }, [showModal]);
 
   const onSubmit = async (data: Product) => {
-    const url = "/api/admin/products";
+    const url = "/api/supplier/products";
     const method = editingProduct ? "PUT" : "POST";
-    const body = editingProduct ? { ...data, id: editingProduct._id } : data;
+    const body = editingProduct ? { ...data, _id: editingProduct._id } : data;
 
     // Auto-generate slug if empty
     if (!data.slug) {
@@ -139,46 +173,111 @@ export default function ProductsTable({
     }
 
     setSaving(true);
-    const res = await fetch(url, {
-      method,
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    setSaving(false);
-    if (res.ok) {
-      setShowModal(false);
-      router.refresh();
-    } else {
-      const err = await res.json();
-      alert(err.message || "Failed to save product");
+      if (res.ok) {
+        setShowModal(false);
+        fetchProducts(currentPage, searchQuery, statusFilter);
+      } else {
+        const err = await res.json();
+        alert(err.message || "Failed to save product");
+      }
+    } catch (error) {
+      console.error("Error saving product:", error);
+      alert("An error occurred while saving the product");
+    } finally {
+      setSaving(false);
     }
   };
 
   const deleteProduct = async (id: string) => {
-    if (!confirm("Remove this item from the boutique registry?")) return;
-    await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
-    router.refresh();
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    try {
+      const res = await fetch(`/api/supplier/products?id=${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        fetchProducts(currentPage, searchQuery, statusFilter);
+      } else {
+        const err = await res.json();
+        alert(err.message || "Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
   };
+
+  const getStatusBadge = (status: string | undefined) => {
+    switch (status) {
+      case "approved":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-2 py-1 rounded-lg uppercase tracking-widest">
+            <CheckCircle size={12} />
+            Approved
+          </span>
+        );
+      case "pending":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-2 py-1 rounded-lg uppercase tracking-widest">
+            <Clock size={12} />
+            Pending
+          </span>
+        );
+      case "rejected":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-2 py-1 rounded-lg uppercase tracking-widest">
+            <XCircle size={12} />
+            Rejected
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const isApproved = supplierStatus === "approved";
 
   return (
     <div className="space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter lowercase">
-            Inventory Registry<span className="text-accent text-5xl">.</span>
+            My Products<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Control your luxury high-end stock
+            Manage your product listings
           </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="bg-primary hover:bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+          disabled={!isApproved}
+          className={`px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 ${
+            isApproved
+              ? "bg-primary hover:bg-black text-white cursor-pointer"
+              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+          }`}
         >
-          <Plus size={16} /> Enlist New Item
+          <Plus size={16} /> Add New Product
         </button>
       </div>
+
+      {/* Account Status Warning */}
+      {!isApproved && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4">
+          <div className="flex items-center gap-3">
+            <AlertCircle size={20} className="text-yellow-600" />
+            <p className="text-sm text-yellow-800">
+              Your account is pending approval. You can view existing products
+              but cannot add new ones until approved.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
         {/* Filters */}
@@ -190,163 +289,215 @@ export default function ProductsTable({
             />
             <input
               className="w-full bg-secondary border-none rounded-2xl py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
-              placeholder="Search registry..."
+              placeholder="Search products..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
-          <button className="bg-secondary px-6 py-4 rounded-2xl flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
-            <Filter size={16} /> Filters
-          </button>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-secondary border-none rounded-2xl px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
+          >
+            <option value="all">All Status</option>
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+          </select>
         </div>
 
-        {/* Catalog Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left min-w-[800px]">
-            <thead>
-              <tr className="border-b border-gray-50">
-                <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Product Details
-                </th>
-                <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Category
-                </th>
-                <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Subcategory
-                </th>
-                <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Inventory
-                </th>
-                <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Retail Value
-                </th>
-                <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary text-right">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {initialProducts.map((product) => (
-                <tr
-                  key={product._id}
-                  className="group hover:bg-secondary/10 transition-colors"
-                >
-                  <td className="py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
-                        <Image
-                          src={product.image || "/images/placeholder.jpg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                          unoptimized={true}
-                        />
-                      </div>
-                      <div>
-                        <p className="font-black text-primary text-sm leading-tight mb-1">
-                          {product.name}
-                        </p>
-                        <p className="text-[10px] font-bold text-text-dark/30 uppercase tracking-widest">
-                          {product.brand}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-6">
-                    <span className="text-[10px] font-black text-accent bg-accent/5 px-3 py-1 rounded-lg uppercase tracking-widest">
-                      {product.category}
-                    </span>
-                  </td>
-                  <td className="py-6">
-                    <span className="text-[10px] font-bold text-text-dark/40 bg-secondary px-3 py-1 rounded-lg uppercase tracking-widest">
-                      {product.subCategory}
-                    </span>
-                  </td>
-                  <td className="py-6">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-2 h-2 rounded-full ${
-                          product.countInStock > 0
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        }`}
-                      />
-                      <span className="text-xs font-black text-primary">
-                        {product.countInStock} Units
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-6">
-                    <div className="flex flex-col">
-                      <span
-                        suppressHydrationWarning
-                        className={`text-lg font-black ${
-                          product.discountPrice > 0
-                            ? "text-red-500"
-                            : "text-primary"
-                        }`}
-                      >
-                        $
-                        {(
-                          product.discountPrice || product.price
-                        ).toLocaleString("en-US")}
-                      </span>
-                      {product.discountPrice > 0 && (
-                        <span
-                          suppressHydrationWarning
-                          className="text-[10px] font-bold text-text-dark/30 line-through"
-                        >
-                          ${product.price.toLocaleString("en-US")}
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <>
+            {/* Products Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left min-w-[800px]">
+                <thead>
+                  <tr className="border-b border-gray-50">
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Product Details
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Category
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Status
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Inventory
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Price
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {products.map((product) => (
+                    <tr
+                      key={product._id}
+                      className="group hover:bg-secondary/10 transition-colors"
+                    >
+                      <td className="py-6">
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
+                            <Image
+                              src={product.image || "/images/placeholder.jpg"}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                              unoptimized={true}
+                            />
+                          </div>
+                          <div>
+                            <p className="font-black text-primary text-sm leading-tight mb-1">
+                              {product.name}
+                            </p>
+                            <p className="text-[10px] font-bold text-text-dark/30 uppercase tracking-widest">
+                              {product.brand}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-6">
+                        <span className="text-[10px] font-black text-accent bg-accent/5 px-3 py-1 rounded-lg uppercase tracking-widest">
+                          {product.category}
                         </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-6 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => openModal(product)}
-                        className="p-3 bg-secondary text-primary rounded-xl hover:bg-white hover:text-accent shadow-sm transition-all cursor-pointer"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => deleteProduct(product._id)}
-                        className="p-3 bg-secondary text-primary rounded-xl hover:bg-red-50 hover:text-red-500 shadow-sm transition-all cursor-pointer"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {initialProducts.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="py-20 text-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <Package size={48} className="text-gray-100" />
-                      <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
-                        Boutique inventory is currently empty.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                      </td>
+                      <td className="py-6">
+                        {getStatusBadge(product.approvalStatus)}
+                        {product.approvalNote && (
+                          <p className="text-[10px] text-red-500 mt-1">
+                            {product.approvalNote}
+                          </p>
+                        )}
+                      </td>
+                      <td className="py-6">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              product.countInStock > 0
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            }`}
+                          />
+                          <span className="text-xs font-black text-primary">
+                            {product.countInStock} Units
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-6">
+                        <div className="flex flex-col">
+                          <span
+                            className={`text-lg font-black ${
+                              product.discountPrice > 0
+                                ? "text-red-500"
+                                : "text-primary"
+                            }`}
+                          >
+                            $
+                            {(
+                              product.discountPrice || product.price
+                            ).toLocaleString("en-US")}
+                          </span>
+                          {product.discountPrice > 0 && (
+                            <span className="text-[10px] font-bold text-text-dark/30 line-through">
+                              ${product.price.toLocaleString("en-US")}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-6 text-right">
+                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => openModal(product)}
+                            disabled={!isApproved}
+                            className={`p-3 rounded-xl shadow-sm transition-all ${
+                              isApproved
+                                ? "bg-secondary text-primary hover:bg-white hover:text-accent cursor-pointer"
+                                : "bg-gray-100 text-gray-300 cursor-not-allowed"
+                            }`}
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product._id)}
+                            disabled={!isApproved}
+                            className={`p-3 rounded-xl shadow-sm transition-all ${
+                              isApproved
+                                ? "bg-secondary text-primary hover:bg-red-50 hover:text-red-500 cursor-pointer"
+                                : "bg-gray-100 text-gray-300 cursor-not-allowed"
+                            }`}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {products.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-20 text-center">
+                        <div className="flex flex-col items-center gap-4">
+                          <Package size={48} className="text-gray-100" />
+                          <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
+                            No products found
+                          </p>
+                          {isApproved && (
+                            <button
+                              onClick={() => openModal()}
+                              className="text-accent font-bold text-sm hover:underline"
+                            >
+                              Add your first product
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-        <div className="pb-8">
-          <Pagination totalPages={totalPages} />
-        </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                          currentPage === page
+                            ? "bg-accent text-white"
+                            : "bg-secondary text-primary hover:bg-gray-200"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
-      {/* Premium Product Modal */}
+      {/* Product Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="p-10 pb-4 flex justify-between items-center bg-white z-10">
               <h2 className="text-3xl font-black text-primary tracking-tight">
-                {editingProduct ? "Refine Masterpiece" : "Enlist New Creation"}
+                {editingProduct ? "Edit Product" : "Add New Product"}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -354,6 +505,14 @@ export default function ProductsTable({
               >
                 <X size={24} />
               </button>
+            </div>
+
+            {/* Info Banner */}
+            <div className="mx-10 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+              <p className="text-sm text-blue-800">
+                <strong>Note:</strong> New products and significant edits
+                require admin approval before they appear on the store.
+              </p>
             </div>
 
             <form
@@ -366,7 +525,7 @@ export default function ProductsTable({
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Creation Name
+                        Product Name *
                       </label>
                       <input
                         {...register("name", { required: true })}
@@ -378,7 +537,7 @@ export default function ProductsTable({
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Category
+                          Category *
                         </label>
                         <select
                           {...register("category", { required: true })}
@@ -394,7 +553,7 @@ export default function ProductsTable({
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          SubCategory
+                          SubCategory *
                         </label>
                         <select
                           {...register("subCategory", { required: true })}
@@ -418,7 +577,7 @@ export default function ProductsTable({
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Brand
+                        Brand *
                       </label>
                       <select
                         {...register("brand", { required: true })}
@@ -436,7 +595,7 @@ export default function ProductsTable({
                     <div className="grid grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Original Price
+                          Price *
                         </label>
                         <input
                           type="number"
@@ -458,7 +617,7 @@ export default function ProductsTable({
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          In Stock
+                          In Stock *
                         </label>
                         <input
                           type="number"
@@ -474,7 +633,7 @@ export default function ProductsTable({
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Primary Asset (URL)
+                        Product Image *
                       </label>
                       <div className="flex flex-col gap-4">
                         {productImage && (
@@ -487,8 +646,7 @@ export default function ProductsTable({
                               unoptimized={true}
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
-                                target.src =
-                                  "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1020&auto=format&fit=crop";
+                                target.src = "/images/placeholder.jpg";
                               }}
                             />
                           </div>
@@ -497,7 +655,7 @@ export default function ProductsTable({
                           <input
                             {...register("image", { required: true })}
                             className="w-full bg-secondary border-none rounded-2xl p-4 pl-12 outline-none font-bold text-primary"
-                            placeholder="Select or enter URL"
+                            placeholder="Enter image URL or upload"
                           />
                           <Upload
                             className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dark/30"
@@ -510,9 +668,7 @@ export default function ProductsTable({
                             result: CloudinaryUploadWidgetResults,
                           ) => {
                             if (result.event !== "success") return;
-
                             const info = result.info;
-
                             if (
                               info &&
                               typeof info === "object" &&
@@ -528,7 +684,7 @@ export default function ProductsTable({
                               onClick={() => open()}
                               className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4 rounded-2xl hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
                             >
-                              <Upload size={14} /> Upload to Cloudinary
+                              <Upload size={14} /> Upload Image
                             </button>
                           )}
                         </CldUploadWidget>
@@ -537,12 +693,12 @@ export default function ProductsTable({
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Narrative Description
+                        Description *
                       </label>
                       <textarea
                         {...register("description", { required: true })}
                         className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary min-h-[120px]"
-                        placeholder="Tell the story of this masterpiece..."
+                        placeholder="Describe your product..."
                       />
                     </div>
 
@@ -568,32 +724,6 @@ export default function ProductsTable({
                         />
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-3 p-4 bg-secondary rounded-2xl">
-                      <input
-                        type="checkbox"
-                        {...register("isFeatured")}
-                        className="w-5 h-5 accent-accent"
-                        id="isFeatured"
-                      />
-                      <label
-                        htmlFor="isFeatured"
-                        className="text-[11px] font-black uppercase tracking-widest text-primary cursor-pointer"
-                      >
-                        Featured Creation
-                      </label>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Registry Slug (Optional)
-                      </label>
-                      <input
-                        {...register("slug")}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-mono text-xs text-text-dark/50"
-                        placeholder="silk-evening-gown"
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
@@ -604,14 +734,18 @@ export default function ProductsTable({
                   onClick={() => setShowModal(false)}
                   className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-6 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
                 >
-                  Abort Mission
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-6 rounded-2xl shadow-xl hover:bg-black transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {saving ? "Committing..." : "Commit to Registry"}
+                  {saving
+                    ? "Saving..."
+                    : editingProduct
+                      ? "Update Product"
+                      : "Submit for Approval"}
                 </button>
               </div>
             </form>

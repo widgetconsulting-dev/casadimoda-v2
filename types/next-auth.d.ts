@@ -8,11 +8,15 @@ declare module "next-auth" {
     user: {
       isAdmin?: boolean;
       _id?: string;
+      role?: "customer" | "supplier" | "admin";
+      supplierId?: string;
     } & DefaultSession["user"];
   }
 
   interface User {
     isAdmin?: boolean;
     _id?: string;
+    role?: "customer" | "supplier" | "admin";
+    supplierId?: string;
   }
 }

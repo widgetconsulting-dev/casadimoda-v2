@@ -20,10 +20,28 @@ const productSchema = new mongoose.Schema(
     hsCode: { type: String },
     discountPrice: { type: Number, default: 0 },
     isFeatured: { type: Boolean, default: false },
+    // Supplier/Vendor Reference
+    supplier: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Supplier",
+    },
+    // Product Approval Status (for vendor-added products)
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "approved",
+    },
+    approvalNote: { type: String },
+    // Track if product was added by admin or supplier
+    addedBy: {
+      type: String,
+      enum: ["admin", "supplier"],
+      default: "admin",
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Product =

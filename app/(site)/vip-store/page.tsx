@@ -15,10 +15,14 @@ export default function VipStorePage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     setFormData({
       ...formData,
@@ -62,7 +66,7 @@ export default function VipStorePage() {
             <h2 className="text-white/80 font-bold uppercase tracking-[0.3em] text-xs mb-3">
               Exclusive Experience
             </h2>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-6">
+            <h1 className="text-3xl md:text-4xl md:text-5xl font-black tracking-tight mb-6">
               VIP Store
             </h1>
             <p className="text-white/90 max-w-2xl text-sm leading-relaxed mb-6">
@@ -323,7 +327,10 @@ export default function VipStorePage() {
                 className="flex items-center gap-3 p-4 bg-white rounded-xl hover:bg-accent hover:text-white transition-all group"
               >
                 <div className="w-10 h-10 bg-accent group-hover:bg-white rounded-lg flex items-center justify-center">
-                  <Mail size={20} className="text-white group-hover:text-accent" />
+                  <Mail
+                    size={20}
+                    className="text-white group-hover:text-accent"
+                  />
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-text-dark/50 group-hover:text-white/70">
@@ -338,7 +345,10 @@ export default function VipStorePage() {
                 className="flex items-center gap-3 p-4 bg-white rounded-xl hover:bg-accent hover:text-white transition-all group"
               >
                 <div className="w-10 h-10 bg-accent group-hover:bg-white rounded-lg flex items-center justify-center">
-                  <Phone size={20} className="text-white group-hover:text-accent" />
+                  <Phone
+                    size={20}
+                    className="text-white group-hover:text-accent"
+                  />
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-widest text-text-dark/50 group-hover:text-white/70">
@@ -358,15 +368,21 @@ export default function VipStorePage() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-text-dark/60">Monday - Friday</span>
-                <span className="font-black text-primary">9:00 AM - 8:00 PM</span>
+                <span className="font-black text-primary">
+                  9:00 AM - 8:00 PM
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-text-dark/60">Saturday</span>
-                <span className="font-black text-primary">10:00 AM - 6:00 PM</span>
+                <span className="font-black text-primary">
+                  10:00 AM - 6:00 PM
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-text-dark/60">Sunday</span>
-                <span className="font-black text-primary">12:00 PM - 5:00 PM</span>
+                <span className="font-black text-primary">
+                  12:00 PM - 5:00 PM
+                </span>
               </div>
               <div className="pt-3 border-t border-gray-100">
                 <p className="text-xs text-text-dark/50">

@@ -66,6 +66,10 @@ export interface Product {
   cbm?: number;
   hsCode?: string;
   isFeatured?: boolean;
+  supplier?: string | Supplier;
+  approvalStatus?: "pending" | "approved" | "rejected";
+  approvalNote?: string;
+  addedBy?: "admin" | "supplier";
 }
 
 export type CategoryFormData = {
@@ -92,5 +96,40 @@ export interface User {
   name: string;
   email: string;
   isAdmin: boolean;
+  role: "customer" | "supplier" | "admin";
+  supplierId?: string;
   createdAt: string;
+}
+
+export interface SupplierAddress {
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface Supplier {
+  _id: string;
+  user: string | User;
+  businessName: string;
+  businessSlug: string;
+  businessDescription?: string;
+  businessLogo?: string;
+  businessBanner?: string;
+  contactPhone: string;
+  contactEmail: string;
+  address: SupplierAddress;
+  taxId?: string;
+  businessLicense?: string;
+  status: "pending" | "approved" | "rejected" | "suspended";
+  approvedAt?: string;
+  approvedBy?: string;
+  rejectionReason?: string;
+  commissionRate: number;
+  totalSales: number;
+  totalProducts: number;
+  rating: number;
+  numReviews: number;
+  createdAt: string;
+  updatedAt: string;
 }

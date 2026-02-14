@@ -9,11 +9,15 @@ import { Session, User as NextAuthUser } from "next-auth";
 interface CustomUser extends NextAuthUser {
   _id?: string;
   isAdmin?: boolean;
+  role?: "customer" | "supplier" | "admin";
+  supplierId?: string;
 }
 
 interface CustomToken extends JWT {
   _id?: string;
   isAdmin?: boolean;
+  role?: "customer" | "supplier" | "admin";
+  supplierId?: string;
 }
 
 const handler = NextAuth({
@@ -25,6 +29,8 @@ const handler = NextAuth({
       if (user) {
         token._id = (user as CustomUser)._id;
         token.isAdmin = (user as CustomUser).isAdmin;
+        token.role = (user as CustomUser).role;
+        token.supplierId = (user as CustomUser).supplierId;
       }
       return token;
     },
@@ -40,6 +46,8 @@ const handler = NextAuth({
         const user = session.user as CustomUser;
         user._id = token._id;
         user.isAdmin = token.isAdmin;
+        user.role = token.role;
+        user.supplierId = token.supplierId;
       }
       return session;
     },
@@ -66,6 +74,8 @@ const handler = NextAuth({
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            role: user.role || "customer",
+            supplierId: user.supplierId?.toString(),
           };
         }
         return null;

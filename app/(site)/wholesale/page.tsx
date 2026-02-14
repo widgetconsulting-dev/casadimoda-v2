@@ -25,7 +25,7 @@ export default async function WholesalePage({
     .lean();
 
   const products = docs.map(
-    (doc) => db.convertDocToObj(doc as MongoDocument) as unknown as Product
+    (doc) => db.convertDocToObj(doc as MongoDocument) as unknown as Product,
   );
   const totalPages = Math.ceil(totalProducts / pageSize);
 
@@ -41,7 +41,7 @@ export default async function WholesalePage({
             <h2 className="text-accent font-bold uppercase tracking-[0.3em] text-xs mb-3">
               Wholesale & Bulk Orders
             </h2>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-6">
+            <h1 className="text-3xl md:text-4xl md:text-5xl font-black tracking-tight mb-6">
               Professional Partnership
             </h1>
             <p className="text-white/80 max-w-2xl text-sm leading-relaxed mb-6">
@@ -79,7 +79,7 @@ export default async function WholesalePage({
           <h2 className="text-accent font-bold uppercase tracking-[0.3em] text-xs mb-3">
             Wholesale Catalog
           </h2>
-          <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
+          <h1 className="text-3xl md:text-4xl md:text-5xl font-black text-primary tracking-tight">
             Available Products
           </h1>
         </div>

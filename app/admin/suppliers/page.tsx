@@ -1,0 +1,519 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Search,
+  Store,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Ban,
+  Eye,
+  MoreVertical,
+} from "lucide-react";
+import { Supplier } from "@/types";
+
+interface SuppliersResponse {
+  suppliers: (Supplier & { user?: { name: string; email: string } })[];
+  totalPages: number;
+  totalSuppliers: number;
+  currentPage: number;
+}
+
+export default function AdminSuppliersPage() {
+  const [suppliers, setSuppliers] = useState<SuppliersResponse["suppliers"]>(
+    [],
+  );
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [actionModal, setActionModal] = useState<{
+    supplier: SuppliersResponse["suppliers"][0];
+    action: string;
+  } | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [processing, setProcessing] = useState(false);
+
+  const fetchSuppliers = async (page = 1, search = "", status = "all") => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        ...(search && { search }),
+        ...(status !== "all" && { status }),
+      });
+      const res = await fetch(`/api/admin/suppliers?${params}`);
+      if (res.ok) {
+        const data: SuppliersResponse = await res.json();
+        setSuppliers(data.suppliers);
+        setTotalPages(data.totalPages);
+        setCurrentPage(data.currentPage);
+      }
+    } catch (error) {
+      console.error("Error fetching suppliers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuppliers(1, searchQuery, statusFilter);
+  }, [statusFilter]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchSuppliers(1, searchQuery, statusFilter);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  const handleAction = async (action: string) => {
+    if (!actionModal) return;
+    setProcessing(true);
+
+    try {
+      const body: { id: string; status: string; rejectionReason?: string } = {
+        id: actionModal.supplier._id,
+        status: action,
+      };
+
+      if (action === "rejected" && rejectionReason) {
+        body.rejectionReason = rejectionReason;
+      }
+
+      const res = await fetch("/api/admin/suppliers", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        fetchSuppliers(currentPage, searchQuery, statusFilter);
+        setActionModal(null);
+        setRejectionReason("");
+      } else {
+        const err = await res.json();
+        alert(err.message || "Failed to update supplier");
+      }
+    } catch (error) {
+      console.error("Error updating supplier:", error);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "approved":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+            <CheckCircle size={12} />
+            Approved
+          </span>
+        );
+      case "pending":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+            <Clock size={12} />
+            Pending
+          </span>
+        );
+      case "rejected":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+            <XCircle size={12} />
+            Rejected
+          </span>
+        );
+      case "suspended":
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-gray-700 bg-gray-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+            <Ban size={12} />
+            Suspended
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="space-y-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter lowercase">
+            Suppliers<span className="text-accent text-5xl">.</span>
+          </h1>
+          <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
+            Manage supplier accounts and approvals
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+        {/* Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-grow">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dark/20"
+              size={18}
+            />
+            <input
+              className="w-full bg-secondary border-none rounded-2xl py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
+              placeholder="Search suppliers..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-secondary border-none rounded-2xl px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
+          >
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+
+        {/* Loading */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : (
+          <>
+            {/* Suppliers Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left min-w-[800px]">
+                <thead>
+                  <tr className="border-b border-gray-50">
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Business
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Contact
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Status
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Products
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
+                      Commission
+                    </th>
+                    <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary text-right">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {suppliers.map((supplier) => (
+                    <tr
+                      key={supplier._id}
+                      className="group hover:bg-secondary/10 transition-colors"
+                    >
+                      <td className="py-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                            {supplier.businessLogo ? (
+                              <img
+                                src={supplier.businessLogo}
+                                alt={supplier.businessName}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                            ) : (
+                              <Store size={20} className="text-accent" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-black text-primary text-sm">
+                              {supplier.businessName}
+                            </p>
+                            <p className="text-[10px] font-bold text-text-dark/30 uppercase tracking-widest">
+                              {supplier.user?.name || "Unknown"}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-6">
+                        <p className="text-sm font-bold text-primary">
+                          {supplier.contactEmail}
+                        </p>
+                        <p className="text-xs text-text-dark/50">
+                          {supplier.contactPhone}
+                        </p>
+                      </td>
+                      <td className="py-6">
+                        {getStatusBadge(supplier.status)}
+                      </td>
+                      <td className="py-6">
+                        <span className="text-lg font-black text-primary">
+                          {supplier.totalProducts}
+                        </span>
+                      </td>
+                      <td className="py-6">
+                        <span className="text-sm font-bold text-primary">
+                          {supplier.commissionRate}%
+                        </span>
+                      </td>
+                      <td className="py-6 text-right">
+                        <div className="flex justify-end gap-2">
+                          {supplier.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  setActionModal({
+                                    supplier,
+                                    action: "approve",
+                                  })
+                                }
+                                className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all"
+                                title="Approve"
+                              >
+                                <CheckCircle size={16} />
+                              </button>
+                              <button
+                                onClick={() =>
+                                  setActionModal({ supplier, action: "reject" })
+                                }
+                                className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all"
+                                title="Reject"
+                              >
+                                <XCircle size={16} />
+                              </button>
+                            </>
+                          )}
+                          {supplier.status === "approved" && (
+                            <button
+                              onClick={() =>
+                                setActionModal({ supplier, action: "suspend" })
+                              }
+                              className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"
+                              title="Suspend"
+                            >
+                              <Ban size={16} />
+                            </button>
+                          )}
+                          {supplier.status === "suspended" && (
+                            <button
+                              onClick={() =>
+                                setActionModal({
+                                  supplier,
+                                  action: "reactivate",
+                                })
+                              }
+                              className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all"
+                              title="Reactivate"
+                            >
+                              <CheckCircle size={16} />
+                            </button>
+                          )}
+                          <button
+                            onClick={() =>
+                              setActionModal({ supplier, action: "view" })
+                            }
+                            className="p-2 bg-secondary text-primary rounded-lg hover:bg-gray-200 transition-all"
+                            title="View Details"
+                          >
+                            <Eye size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {suppliers.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-20 text-center">
+                        <Store
+                          size={48}
+                          className="text-gray-100 mx-auto mb-4"
+                        />
+                        <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
+                          No suppliers found
+                        </p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center gap-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() =>
+                        fetchSuppliers(page, searchQuery, statusFilter)
+                      }
+                      className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                        currentPage === page
+                          ? "bg-accent text-white"
+                          : "bg-secondary text-primary hover:bg-gray-200"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ),
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Action Modal */}
+      {actionModal && (
+        <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl p-8">
+            {actionModal.action === "view" ? (
+              <>
+                <h3 className="text-2xl font-black text-primary mb-6">
+                  Supplier Details
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
+                      Business Name
+                    </p>
+                    <p className="font-bold text-primary">
+                      {actionModal.supplier.businessName}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
+                      Contact Email
+                    </p>
+                    <p className="font-bold text-primary">
+                      {actionModal.supplier.contactEmail}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
+                      Phone
+                    </p>
+                    <p className="font-bold text-primary">
+                      {actionModal.supplier.contactPhone}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
+                      Address
+                    </p>
+                    <p className="font-bold text-primary">
+                      {actionModal.supplier.address.street},{" "}
+                      {actionModal.supplier.address.city},{" "}
+                      {actionModal.supplier.address.postalCode},{" "}
+                      {actionModal.supplier.address.country}
+                    </p>
+                  </div>
+                  {actionModal.supplier.taxId && (
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
+                        Tax ID
+                      </p>
+                      <p className="font-bold text-primary">
+                        {actionModal.supplier.taxId}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => setActionModal(null)}
+                  className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                >
+                  Close
+                </button>
+              </>
+            ) : actionModal.action === "reject" ? (
+              <>
+                <h3 className="text-2xl font-black text-primary mb-4">
+                  Reject Supplier
+                </h3>
+                <p className="text-text-dark/60 mb-4">
+                  Are you sure you want to reject{" "}
+                  <strong>{actionModal.supplier.businessName}</strong>?
+                </p>
+                <textarea
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="Reason for rejection (optional)"
+                  className="w-full bg-secondary rounded-xl p-4 outline-none font-bold text-primary mb-4"
+                  rows={3}
+                />
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      setActionModal(null);
+                      setRejectionReason("");
+                    }}
+                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleAction("rejected")}
+                    disabled={processing}
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50"
+                  >
+                    {processing ? "Processing..." : "Reject"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="text-2xl font-black text-primary mb-4">
+                  {actionModal.action === "approve" && "Approve Supplier"}
+                  {actionModal.action === "suspend" && "Suspend Supplier"}
+                  {actionModal.action === "reactivate" && "Reactivate Supplier"}
+                </h3>
+                <p className="text-text-dark/60 mb-6">
+                  {actionModal.action === "approve" &&
+                    `Are you sure you want to approve ${actionModal.supplier.businessName}? They will be able to add products to the marketplace.`}
+                  {actionModal.action === "suspend" &&
+                    `Are you sure you want to suspend ${actionModal.supplier.businessName}? Their products will be hidden from the marketplace.`}
+                  {actionModal.action === "reactivate" &&
+                    `Are you sure you want to reactivate ${actionModal.supplier.businessName}?`}
+                </p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setActionModal(null)}
+                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleAction(
+                        actionModal.action === "approve" ||
+                          actionModal.action === "reactivate"
+                          ? "approved"
+                          : "suspended",
+                      )
+                    }
+                    disabled={processing}
+                    className={`flex-1 font-bold py-3 rounded-xl transition-colors disabled:opacity-50 ${
+                      actionModal.action === "suspend"
+                        ? "bg-gray-600 hover:bg-gray-700 text-white"
+                        : "bg-green-500 hover:bg-green-600 text-white"
+                    }`}
+                  >
+                    {processing ? "Processing..." : "Confirm"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

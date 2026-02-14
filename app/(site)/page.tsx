@@ -1,4 +1,3 @@
-import ProductItem from "@/components/ProductItem";
 import { Product } from "@/types";
 import db from "@/utils/db";
 import ProductModel from "@/models/Product";
@@ -6,18 +5,18 @@ import { MongoDocument } from "@/utils/db";
 import Link from "next/link";
 import { Package, Crown, ShoppingBag, ArrowRight } from "lucide-react";
 import HeroCarousel from "@/components/HeroCarousel";
+import FeaturedProductsGrid from "@/components/FeaturedProductsGrid";
 
 export default async function Home() {
   await db.connect();
 
-  // Get only featured products for the home page
+  // Get all featured products for the home page
   const featuredDocs = await ProductModel.find({ isFeatured: true })
     .sort({ createdAt: -1 })
-    .limit(8)
     .lean();
 
   const featuredProducts = featuredDocs.map(
-    (doc) => db.convertDocToObj(doc as MongoDocument) as unknown as Product
+    (doc) => db.convertDocToObj(doc as MongoDocument) as unknown as Product,
   );
 
   // Hero carousel slides
@@ -82,9 +81,27 @@ export default async function Home() {
       <HeroCarousel slides={heroSlides} autoplayInterval={5000} />
 
       {/* Content Container */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 sm:p-2 md:p-3 lg:p-5">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 lg:py-12 sm:p-2 md:p-3 lg:p-5">
+        {/* Featured Products Section */}
+        {featuredProducts.length > 0 && (
+          <>
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-5 lg:mb-10 gap-2 lg:gap-4">
+              <div>
+                <h2 className="text-accent font-bold uppercase tracking-[0.3em] text-xs mb-2 lg:mb-3">
+                  Handpicked Selection
+                </h2>
+                <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tight">
+                  Featured Products
+                </h1>
+              </div>
+            </div>
+
+            <FeaturedProductsGrid products={featuredProducts} pageSize={10} />
+          </>
+        )}
+
         {/* Quick Access Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 md:my-12 lg:my-16">
           {/* Products Catalog Card */}
           <Link
             href="/products"
@@ -154,37 +171,8 @@ export default async function Home() {
           </Link>
         </div>
 
-        {/* Featured Products Section */}
-        {featuredProducts.length > 0 && (
-          <>
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-              <div>
-                <h2 className="text-accent font-bold uppercase tracking-[0.3em] text-xs mb-3">
-                  Handpicked Selection
-                </h2>
-                <h1 className="text-4xl md:text-5xl font-black text-primary tracking-tight">
-                  Featured Products
-                </h1>
-              </div>
-              <Link
-                href="/products"
-                className="text-sm font-bold text-primary hover:text-accent transition-colors flex items-center gap-2"
-              >
-                View All Products
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-12">
-              {featuredProducts.map((product) => (
-                <ProductItem key={product.slug} product={product} />
-              ))}
-            </div>
-          </>
-        )}
-
         {/* Bottom CTA Section */}
-        <div className="bg-gradient-to-br from-primary to-primary/90 rounded-3xl p-12 text-white text-center mt-16">
+        <div className="bg-gradient-to-br from-primary to-primary/90 rounded-3xl p-8 md:p-10 lg:p-12 text-white text-center mt-8 lg:mt-16">
           <h3 className="text-3xl font-black mb-4">
             Ready to Experience Luxury?
           </h3>

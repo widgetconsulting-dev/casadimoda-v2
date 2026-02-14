@@ -16,12 +16,16 @@ import {
   LogOut,
   Menu,
   X,
+  Store,
+  Clock,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Products", href: "/admin/products", icon: Package },
+  { name: "Suppliers", href: "/admin/suppliers", icon: Store },
+  { name: "Approvals", href: "/admin/approvals", icon: Clock },
   { name: "Brands", href: "/admin/brands", icon: Tag },
   { name: "Categories", href: "/admin/categories", icon: Tag },
   { name: "Subcategories", href: "/admin/subcategories", icon: Layers },

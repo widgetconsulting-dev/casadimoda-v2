@@ -21,14 +21,14 @@ export default async function ProductsPage({
     sort === "featured"
       ? { isFeatured: -1 }
       : sort === "lowest"
-      ? { price: 1 }
-      : sort === "highest"
-      ? { price: -1 }
-      : sort === "toprated"
-      ? { rating: -1 }
-      : sort === "newest"
-      ? { createdAt: -1 }
-      : { _id: -1 };
+        ? { price: 1 }
+        : sort === "highest"
+          ? { price: -1 }
+          : sort === "toprated"
+            ? { rating: -1 }
+            : sort === "newest"
+              ? { createdAt: -1 }
+              : { _id: -1 };
 
   await db.connect();
   const totalProducts = await ProductModel.countDocuments();
@@ -39,57 +39,12 @@ export default async function ProductsPage({
     .lean();
 
   const products = docs.map(
-    (doc) => db.convertDocToObj(doc as MongoDocument) as unknown as Product
+    (doc) => db.convertDocToObj(doc as MongoDocument) as unknown as Product,
   );
   const totalPages = Math.ceil(totalProducts / pageSize);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary via-primary/95 to-accent rounded-3xl p-8 md:p-12 mb-12 text-white">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex-1">
-            <h2 className="text-white/80 font-bold uppercase tracking-[0.3em] text-xs mb-4">
-              Complete Catalog
-            </h2>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-              All Products
-            </h1>
-            <p className="text-white/90 text-lg leading-relaxed mb-6">
-              Browse our complete collection of luxury fashion, high-end
-              accessories, and exclusive items. Every piece is carefully curated
-              for discerning customers.
-            </p>
-            <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-accent rounded-full"></div>
-                <span className="font-bold">Premium Quality</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-accent rounded-full"></div>
-                <span className="font-bold">Curated Selection</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-accent rounded-full"></div>
-                <span className="font-bold">Express Shipping</span>
-              </div>
-            </div>
-          </div>
-          <div className="text-center md:text-right">
-            <p className="text-[10px] font-black uppercase text-white/70 tracking-[0.2em] mb-2">
-              Premium Items Available
-            </p>
-            <p className="text-6xl font-black text-accent mb-2">
-              {totalProducts}
-            </p>
-            <p className="text-xs text-white/70">
-              Showing {(page - 1) * pageSize + 1}-
-              {Math.min(page * pageSize, totalProducts)}
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Sort and Filter Section */}
       <div className="mb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -133,9 +88,52 @@ export default async function ProductsPage({
       )}
 
       <Pagination totalPages={totalPages} />
-
+      {/* Hero Section */}
+      <div className="mt-16 bg-gradient-to-br from-primary via-primary/95 to-accent rounded-3xl p-8 md:p-12 mb-12 text-white">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex-1">
+            <h2 className="text-white/80 font-bold uppercase tracking-[0.3em] text-xs mb-4">
+              Complete Catalog
+            </h2>
+            <h1 className="text-3xl md:text-4xl md:text-5xl font-black tracking-tight mb-4">
+              All Products
+            </h1>
+            <p className="text-white/90 text-lg leading-relaxed mb-6">
+              Browse our complete collection of luxury fashion, high-end
+              accessories, and exclusive items. Every piece is carefully curated
+              for discerning customers.
+            </p>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                <span className="font-bold">Premium Quality</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                <span className="font-bold">Curated Selection</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-accent rounded-full"></div>
+                <span className="font-bold">Express Shipping</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-center md:text-right">
+            <p className="text-[10px] font-black uppercase text-white/70 tracking-[0.2em] mb-2">
+              Premium Items Available
+            </p>
+            <p className="text-6xl font-black text-accent mb-2">
+              {totalProducts}
+            </p>
+            <p className="text-xs text-white/70">
+              Showing {(page - 1) * pageSize + 1}-
+              {Math.min(page * pageSize, totalProducts)}
+            </p>
+          </div>
+        </div>
+      </div>
       {/* Bottom CTA */}
-      <div className="mt-16 bg-gradient-to-br from-secondary to-gray-50 rounded-3xl p-8 md:p-12 text-center">
+      <div className="bg-gradient-to-br from-secondary to-gray-50 rounded-3xl p-8 md:p-12 text-center">
         <h3 className="text-2xl font-black text-primary mb-4">
           Looking for Something Specific?
         </h3>

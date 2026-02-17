@@ -20,6 +20,15 @@ export default async function Home() {
   const heroSlides = [
     {
       type: "image" as const,
+      src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070",
+      alt: "Haute Couture",
+      title: "L'Élégance en Mouvement",
+      subtitle: "Casa di Moda — Hiver 2026",
+      description:
+        "Plongez dans l'univers de la haute couture avec un savoir-faire exceptionnel et un design intemporel.",
+    },
+    {
+      type: "image" as const,
       src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070",
       alt: "Collection Printemps",
       title: "Le Hub de la Mode & du Luxe",
@@ -44,15 +53,6 @@ export default async function Home() {
       description:
         "Rejoignez notre programme VIP pour un accès exclusif aux éditions limitées et au stylisme personnalisé.",
     },
-    {
-      type: "video" as const,
-      src: "https://cdn.coverr.co/videos/coverr-elegant-woman-in-a-luxurious-outfit-4571/1080p.mp4",
-      alt: "Vidéo Mode Luxe",
-      title: "L'Élégance en Mouvement",
-      subtitle: "Casa di Moda — Hiver 2026",
-      description:
-        "Plongez dans l'univers de la haute couture avec un savoir-faire exceptionnel et un design intemporel.",
-    },
   ];
 
   return (
@@ -60,43 +60,93 @@ export default async function Home() {
       {/* Full-width Hero Carousel with category cards inside */}
       <HeroCarousel slides={heroSlides} autoplayInterval={5000} />
 
-      {/* Brand Statement Section - Dark with side-by-side fashion images */}
-      <div className="bg-[#2a2a2a]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20">
-          {/* Two fashion images side by side */}
-          <div className="grid grid-cols-2 gap-3 md:gap-5 mb-8 md:mb-12">
-            <div className="relative aspect-[3/4] overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200"
-                alt="Collection Femme"
-                className="w-full h-full object-cover"
-              />
+      {/* Découvrez Nos Univers - Dark Section */}
+      <div className="bg-dark relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%221%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]" />
+
+        <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20">
+          <div className="mb-8 md:mb-12">
+            <div className="flex items-center justify-center gap-4 md:gap-8">
+              <div className="h-px flex-1 bg-accent/50" />
+              <h2 className="font-serif text-2xl md:text-4xl text-white italic whitespace-nowrap">
+                Découvrez Nos Univers
+              </h2>
+              <div className="h-px flex-1 bg-accent/50" />
             </div>
-            <div className="relative aspect-[3/4] overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1200"
-                alt="Collection Homme"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <div className="h-px w-full bg-accent/30 mt-4" />
           </div>
 
-          {/* Brand text centered */}
-          <div className="text-center">
-            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-white tracking-wider mb-3 md:mb-4">
-              CASA DI MODA
-            </h2>
-            <p className="text-white/50 uppercase tracking-[0.4em] text-[10px] md:text-sm font-medium">
-              Curate. Create. Connect.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <Link
+              href="/products"
+              className="group block border border-accent/30 hover:border-accent/60 transition-all duration-500 overflow-hidden bg-primary/80"
+            >
+              <div className="relative h-48 md:h-56 overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
+                  alt="Boutique B2C"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              </div>
+              <div className="p-4 md:p-5 text-center border-t border-accent/20">
+                <h3 className="font-serif text-lg md:text-xl text-white mb-1 italic">
+                  Boutique B2C
+                </h3>
+                <p className="text-white/40 text-[10px] md:text-xs tracking-wider">
+                  Mode & Accessoires
+                </p>
+              </div>
+            </Link>
+
+            <Link
+              href="/wholesale"
+              className="group block border border-accent/30 hover:border-accent/60 transition-all duration-500 overflow-hidden bg-primary/80"
+            >
+              <div className="relative h-48 md:h-56 overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=1200"
+                  alt="Wholesale B2B"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              </div>
+              <div className="p-4 md:p-5 text-center border-t border-accent/20">
+                <h3 className="font-serif text-lg md:text-xl text-white mb-1 italic">
+                  Wholesale B2B
+                </h3>
+                <p className="text-white/40 text-[10px] md:text-xs tracking-wider">
+                  Vente en Gros
+                </p>
+              </div>
+            </Link>
+
+            <Link
+              href="/vip-store"
+              className="group block border border-accent/30 hover:border-accent/60 transition-all duration-500 overflow-hidden bg-primary/80"
+            >
+              <div className="relative h-48 md:h-56 overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200"
+                  alt="VIP Store"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              </div>
+              <div className="p-4 md:p-5 text-center border-t border-accent/20">
+                <h3 className="font-serif text-lg md:text-xl text-white mb-1 italic">
+                  VIP Store
+                </h3>
+                <p className="text-white/40 text-[10px] md:text-xs tracking-wider">
+                  Création Sur Commande
+                </p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
 
       {/* 2x2 Service Grid Section - Dark */}
-      <div className="bg-[#2a2a2a] pb-12 md:pb-20">
+      <div className="bg-[#2a2a2a] py-12 md:pb-20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
             {/* Shop B2C */}
             <Link
               href="/products"
@@ -123,7 +173,7 @@ export default async function Home() {
               className="group block relative aspect-[16/9] overflow-hidden"
             >
               <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=1200"
+                src="https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=1200"
                 alt="Wholesale B2B"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -180,86 +230,35 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Découvrez Nos Univers - Dark Section */}
-      <div className="bg-dark relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%221%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]" />
+      {/* Brand Statement Section - Dark with side-by-side fashion images */}
 
-        <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20">
-          <div className="mb-8 md:mb-12">
-            <div className="flex items-center justify-center gap-4 md:gap-8">
-              <div className="h-px flex-1 bg-accent/50" />
-              <h2 className="font-serif text-2xl md:text-4xl text-white italic whitespace-nowrap">
-                Découvrez Nos Univers
-              </h2>
-              <div className="h-px flex-1 bg-accent/50" />
-            </div>
-            <div className="h-px w-full bg-accent/30 mt-4" />
+      <div className="relative bg-[#2a2a2a] h-[calc(100dvh-var(--header-height,0px))]">
+        {/* Two fashion images side by side - fill the section */}
+        <div className="grid grid-cols-2 h-full">
+          <div className="relative overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200"
+              alt="Collection Femme"
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <Link
-              href="/products"
-              className="group block border border-accent/30 hover:border-accent/60 transition-all duration-500 overflow-hidden bg-primary/80"
-            >
-              <div className="relative h-48 md:h-56 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
-                  alt="Boutique B2C"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="p-4 md:p-5 text-center border-t border-accent/20">
-                <h3 className="font-serif text-lg md:text-xl text-white mb-1 italic">
-                  Boutique B2C
-                </h3>
-                <p className="text-white/40 text-[10px] md:text-xs tracking-wider">
-                  Mode & Accessoires
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="/wholesale"
-              className="group block border border-accent/30 hover:border-accent/60 transition-all duration-500 overflow-hidden bg-primary/80"
-            >
-              <div className="relative h-48 md:h-56 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=1200"
-                  alt="Wholesale B2B"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="p-4 md:p-5 text-center border-t border-accent/20">
-                <h3 className="font-serif text-lg md:text-xl text-white mb-1 italic">
-                  Wholesale B2B
-                </h3>
-                <p className="text-white/40 text-[10px] md:text-xs tracking-wider">
-                  Vente en Gros
-                </p>
-              </div>
-            </Link>
-
-            <Link
-              href="/vip-store"
-              className="group block border border-accent/30 hover:border-accent/60 transition-all duration-500 overflow-hidden bg-primary/80"
-            >
-              <div className="relative h-48 md:h-56 overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200"
-                  alt="VIP Store"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="p-4 md:p-5 text-center border-t border-accent/20">
-                <h3 className="font-serif text-lg md:text-xl text-white mb-1 italic">
-                  VIP Store
-                </h3>
-                <p className="text-white/40 text-[10px] md:text-xs tracking-wider">
-                  Création Sur Commande
-                </p>
-              </div>
-            </Link>
+          <div className="relative overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1200"
+              alt="Collection Homme"
+              className="w-full h-full object-cover"
+            />
           </div>
+        </div>
+
+        {/* Brand text absolute at the bottom */}
+        <div className="absolute bottom-0 left-0 right-0 text-center pb-8 md:pb-12 bg-gradient-to-t from-black/60 to-transparent pt-20">
+          <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-white tracking-wider mb-3 md:mb-4">
+            CASA DI MODA
+          </h2>
+          <p className="text-white/50 uppercase tracking-[0.4em] text-[10px] md:text-sm font-medium">
+            Curate. Create. Connect.
+          </p>
         </div>
       </div>
 

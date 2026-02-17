@@ -154,52 +154,51 @@ export default function HeroCarousel({
           <p className="text-white/60 text-xs md:text-sm leading-relaxed max-w-lg mx-auto">
             {currentSlideData.description}
           </p>
-        </div>
+          {/* Category Cards - Inside hero at bottom */}
+          <div className="w-full max-w-4xl mx-auto md:px-8 md:pb-16 mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-16">
+              {/* Shop Détail */}
+              <Link
+                href="/products"
+                className="group/card bg-black/30 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
+              >
+                <ShoppingBag className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
+                <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
+                  Shop Détail
+                </h3>
+                <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
+                  Marques & Accessoires
+                </p>
+              </Link>
 
-        {/* Category Cards - Inside hero at bottom */}
-        <div className="w-full max-w-4xl mx-auto px-4 md:px-8 pb-10 md:pb-16">
-          <div className="grid grid-cols-3 gap-2 md:gap-4">
-            {/* Shop Détail */}
-            <Link
-              href="/products"
-              className="group/card bg-black/60 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
-            >
-              <ShoppingBag className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
-              <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
-                Shop Détail
-              </h3>
-              <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
-                Marques & Accessoires
-              </p>
-            </Link>
+              {/* Espace Wholesale */}
+              <Link
+                href="/wholesale"
+                className="group/card bg-black/30 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
+              >
+                <Building2 className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
+                <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
+                  Espace Wholesale
+                </h3>
+                <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
+                  Vente en Gros
+                </p>
+              </Link>
 
-            {/* Espace Wholesale */}
-            <Link
-              href="/wholesale"
-              className="group/card bg-black/60 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
-            >
-              <Building2 className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
-              <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
-                Espace Wholesale
-              </h3>
-              <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
-                Vente en Gros
-              </p>
-            </Link>
-
-            {/* VIP Store */}
-            <Link
-              href="/vip-store"
-              className="group/card bg-black/60 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
-            >
-              <Crown className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
-              <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
-                VIP Store
-              </h3>
-              <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
-                Sur Mesure & Création
-              </p>
-            </Link>
+              {/* VIP Store */}
+              <Link
+                href="/vip-store"
+                className="group/card bg-black/30 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
+              >
+                <Crown className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
+                <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
+                  VIP Store
+                </h3>
+                <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
+                  Sur Mesure & Création
+                </p>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

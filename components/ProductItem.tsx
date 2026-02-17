@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useStore } from "@/utils/context/Store";
 import { Product, Supplier } from "@/types";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 
 interface ProductItemProps {
   product: Product;
@@ -14,9 +14,7 @@ export default function ProductItem({ product }: ProductItemProps) {
   const { state, dispatch } = useStore();
 
   const addToCartHandler = () => {
-    const existItem = state.cart.cartItems.find(
-      (x) => x.slug === product.slug,
-    );
+    const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
     const quantity = existItem ? existItem.quantity + 1 : 1;
 
     if (product.countInStock < quantity) {
@@ -46,12 +44,17 @@ export default function ProductItem({ product }: ProductItemProps) {
   return (
     <div className="group relative bg-[#1a1a1a]/90 border border-white/[0.08] overflow-hidden flex flex-col">
       {/* Top bar: logo + heart */}
-      <div className="flex items-center justify-between px-3 pt-3 pb-1 sm:px-4 sm:pt-4">
+      <div className="flex items-center justify-between px-3 py-2">
+        <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
+
         <span className="font-serif text-[9px] sm:text-[11px] text-accent/60 tracking-widest uppercase">
           Casa di Moda
         </span>
         <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
       </div>
+
+      {/* Gold accent line */}
+      <div className="h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent" />
 
       {/* Product Image */}
       <Link

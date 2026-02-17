@@ -79,7 +79,7 @@ export default function SupplierDashboard() {
     <div className="space-y-8">
       {/* Welcome Banner for New Registrations */}
       {justRegistered && (
-        <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
+        <div className="bg-green-50 border border-green-200  p-6">
           <div className="flex items-start gap-4">
             <CheckCircle size={24} className="text-green-500 mt-1" />
             <div>
@@ -97,7 +97,7 @@ export default function SupplierDashboard() {
 
       {/* Pending Status Banner */}
       {isPending && !justRegistered && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6">
+        <div className="bg-yellow-50 border border-yellow-200  p-6">
           <div className="flex items-start gap-4">
             <Clock size={24} className="text-yellow-600 mt-1" />
             <div>
@@ -127,7 +127,7 @@ export default function SupplierDashboard() {
         {isApproved && (
           <Link
             href="/supplier/products"
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-xl font-bold transition-colors"
+            className="inline-flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-6 py-3  font-bold transition-colors"
           >
             <Plus size={20} />
             Add New Product
@@ -138,7 +138,7 @@ export default function SupplierDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Products */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white  p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
@@ -148,7 +148,7 @@ export default function SupplierDashboard() {
                 {summary?.totalProducts || 0}
               </p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-xl">
+            <div className="p-3 bg-blue-100 ">
               <Package size={24} className="text-blue-600" />
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function SupplierDashboard() {
         </div>
 
         {/* Total Revenue */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white  p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
@@ -179,7 +179,7 @@ export default function SupplierDashboard() {
                 ${(summary?.totalRevenue || 0).toLocaleString()}
               </p>
             </div>
-            <div className="p-3 bg-green-100 rounded-xl">
+            <div className="p-3 bg-green-100 ">
               <DollarSign size={24} className="text-green-600" />
             </div>
           </div>
@@ -190,7 +190,7 @@ export default function SupplierDashboard() {
         </div>
 
         {/* Total Orders */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white  p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
@@ -200,7 +200,7 @@ export default function SupplierDashboard() {
                 {summary?.totalOrders || 0}
               </p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-xl">
+            <div className="p-3 bg-purple-100 ">
               <ShoppingCart size={24} className="text-purple-600" />
             </div>
           </div>
@@ -210,7 +210,7 @@ export default function SupplierDashboard() {
         </div>
 
         {/* Rating */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white  p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
@@ -220,7 +220,7 @@ export default function SupplierDashboard() {
                 {summary?.rating?.toFixed(1) || "0.0"}
               </p>
             </div>
-            <div className="p-3 bg-yellow-100 rounded-xl">
+            <div className="p-3 bg-yellow-100 ">
               <TrendingUp size={24} className="text-yellow-600" />
             </div>
           </div>
@@ -233,14 +233,14 @@ export default function SupplierDashboard() {
       {/* Quick Actions & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white  p-6 shadow-lg border border-gray-100">
           <h3 className="text-lg font-black text-primary mb-4">
             Quick Actions
           </h3>
           <div className="space-y-3">
             <Link
               href="/supplier/products"
-              className={`flex items-center justify-between p-4 rounded-xl transition-colors ${
+              className={`flex items-center justify-between p-4  transition-colors ${
                 isApproved
                   ? "bg-accent/10 hover:bg-accent/20 text-accent"
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -255,7 +255,7 @@ export default function SupplierDashboard() {
             </Link>
             <Link
               href="/supplier/orders"
-              className="flex items-center justify-between p-4 bg-secondary hover:bg-gray-200 rounded-xl transition-colors"
+              className="flex items-center justify-between p-4 bg-secondary hover:bg-gray-200  transition-colors"
             >
               <div className="flex items-center gap-3">
                 <ShoppingCart size={20} className="text-primary" />
@@ -265,7 +265,7 @@ export default function SupplierDashboard() {
             </Link>
             <Link
               href="/supplier/profile"
-              className="flex items-center justify-between p-4 bg-secondary hover:bg-gray-200 rounded-xl transition-colors"
+              className="flex items-center justify-between p-4 bg-secondary hover:bg-gray-200  transition-colors"
             >
               <div className="flex items-center gap-3">
                 <AlertCircle size={20} className="text-primary" />
@@ -277,7 +277,7 @@ export default function SupplierDashboard() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white  p-6 shadow-lg border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-black text-primary">Recent Orders</h3>
             <Link
@@ -292,7 +292,7 @@ export default function SupplierDashboard() {
               {summary.recentOrders.map((order) => (
                 <div
                   key={order._id}
-                  className="flex items-center justify-between p-3 bg-secondary rounded-xl"
+                  className="flex items-center justify-between p-3 bg-secondary "
                 >
                   <div>
                     <p className="font-bold text-primary text-sm">
@@ -336,7 +336,7 @@ export default function SupplierDashboard() {
       </div>
 
       {/* Commission Info */}
-      <div className="bg-gradient-to-r from-primary to-primary/90 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-primary to-primary/90  p-6 text-white">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h3 className="text-lg font-black">Commission Rate</h3>

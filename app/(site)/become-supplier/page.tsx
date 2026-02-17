@@ -101,7 +101,7 @@ export default function BecomeSupplierPage() {
           </p>
           <Link
             href="/register"
-            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-black transition-colors"
+            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3  font-bold hover:bg-black transition-colors"
           >
             Create Account
             <ArrowRight size={18} />
@@ -182,7 +182,7 @@ export default function BecomeSupplierPage() {
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-4 lg:mb-8">
-          <div className="hidden lg:inline-block bg-primary p-4 rounded-2xl mb-4 shadow-lg">
+          <div className="hidden lg:inline-block bg-primary p-4  mb-4 shadow-lg">
             <Logo />
           </div>
           <h1 className="text-2xl lg:text-3xl font-black text-primary tracking-tight mb-2">
@@ -235,7 +235,7 @@ export default function BecomeSupplierPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 ">
             <p className="text-red-600 text-sm font-medium text-center">
               {error}
             </p>
@@ -243,7 +243,7 @@ export default function BecomeSupplierPage() {
         )}
 
         {/* Form Card */}
-        <div className="bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100">
+        <div className="bg-white  shadow-2xl overflow-hidden border border-gray-100">
           <div className="p-8">
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Step 1: Business Info */}
@@ -271,7 +271,7 @@ export default function BecomeSupplierPage() {
                           errors.businessName
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                     </div>
                     {errors.businessName && (
@@ -289,7 +289,7 @@ export default function BecomeSupplierPage() {
                       {...register("businessDescription")}
                       placeholder="Tell us about your business..."
                       rows={4}
-                      className="w-full bg-secondary/50 border-2 border-transparent focus:border-accent rounded-2xl py-4 px-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all resize-none"
+                      className="w-full bg-secondary/50 border-2 border-transparent focus:border-accent  py-4 px-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all resize-none"
                     />
                   </div>
 
@@ -302,7 +302,7 @@ export default function BecomeSupplierPage() {
                         <Image
                           src={logoUrl}
                           alt="Logo preview"
-                          className="w-16 h-16 object-cover rounded-xl border-2 border-accent"
+                          className="w-16 h-16 object-cover  border-2 border-accent"
                           width={64}
                           height={64}
                         />
@@ -326,7 +326,7 @@ export default function BecomeSupplierPage() {
                           <button
                             type="button"
                             onClick={() => open()}
-                            className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-gray-200 rounded-xl text-sm font-bold text-primary transition-colors"
+                            className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-gray-200  text-sm font-bold text-primary transition-colors"
                           >
                             <Upload size={18} />
                             Upload Logo
@@ -363,7 +363,7 @@ export default function BecomeSupplierPage() {
                           errors.contactPhone
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                     </div>
                     {errors.contactPhone && (
@@ -395,7 +395,7 @@ export default function BecomeSupplierPage() {
                           errors.contactEmail
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                     </div>
                     {errors.contactEmail && (
@@ -432,7 +432,7 @@ export default function BecomeSupplierPage() {
                           errors.street
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                     </div>
                     {errors.street && (
@@ -455,7 +455,7 @@ export default function BecomeSupplierPage() {
                           errors.city
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 px-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 px-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                       {errors.city && (
                         <p className="text-[10px] font-bold text-red-500 mt-1 ml-1 uppercase">
@@ -478,7 +478,7 @@ export default function BecomeSupplierPage() {
                           errors.postalCode
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 px-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 px-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                       {errors.postalCode && (
                         <p className="text-[10px] font-bold text-red-500 mt-1 ml-1 uppercase">
@@ -506,7 +506,7 @@ export default function BecomeSupplierPage() {
                           errors.country
                             ? "border-red-500/50"
                             : "border-transparent focus:border-accent"
-                        } rounded-2xl py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                        }  py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                       />
                     </div>
                     {errors.country && (
@@ -540,7 +540,7 @@ export default function BecomeSupplierPage() {
                         {...register("taxId")}
                         type="text"
                         placeholder="XX-XXXXXXX"
-                        className="w-full bg-secondary/50 border-2 border-transparent focus:border-accent rounded-2xl py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all"
+                        className="w-full bg-secondary/50 border-2 border-transparent focus:border-accent  py-4 pl-12 pr-4 text-primary font-bold placeholder:text-gray-300 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -551,7 +551,7 @@ export default function BecomeSupplierPage() {
                     </label>
                     <div className="flex items-center gap-4">
                       {licenseUrl && (
-                        <div className="flex items-center gap-2 px-3 py-2 bg-green-50 rounded-xl">
+                        <div className="flex items-center gap-2 px-3 py-2 bg-green-50 ">
                           <CheckCircle size={16} className="text-green-500" />
                           <span className="text-xs font-bold text-green-700">
                             Uploaded
@@ -577,7 +577,7 @@ export default function BecomeSupplierPage() {
                           <button
                             type="button"
                             onClick={() => open()}
-                            className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-gray-200 rounded-xl text-sm font-bold text-primary transition-colors"
+                            className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-gray-200  text-sm font-bold text-primary transition-colors"
                           >
                             <Upload size={18} />
                             Upload License
@@ -597,7 +597,7 @@ export default function BecomeSupplierPage() {
                   </h2>
 
                   <div className="space-y-4">
-                    <div className="p-4 bg-secondary/50 rounded-2xl">
+                    <div className="p-4 bg-secondary/50 ">
                       <h3 className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 mb-2">
                         Business Information
                       </h3>
@@ -611,7 +611,7 @@ export default function BecomeSupplierPage() {
                       )}
                     </div>
 
-                    <div className="p-4 bg-secondary/50 rounded-2xl">
+                    <div className="p-4 bg-secondary/50 ">
                       <h3 className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 mb-2">
                         Contact Information
                       </h3>
@@ -623,7 +623,7 @@ export default function BecomeSupplierPage() {
                       </p>
                     </div>
 
-                    <div className="p-4 bg-secondary/50 rounded-2xl">
+                    <div className="p-4 bg-secondary/50 ">
                       <h3 className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 mb-2">
                         Business Address
                       </h3>
@@ -639,7 +639,7 @@ export default function BecomeSupplierPage() {
                     </div>
 
                     {(formData.taxId || licenseUrl) && (
-                      <div className="p-4 bg-secondary/50 rounded-2xl">
+                      <div className="p-4 bg-secondary/50 ">
                         <h3 className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 mb-2">
                           Documents
                         </h3>
@@ -657,7 +657,7 @@ export default function BecomeSupplierPage() {
                     )}
                   </div>
 
-                  <div className="p-4 bg-accent/10 rounded-2xl border border-accent/20">
+                  <div className="p-4 bg-accent/10  border border-accent/20">
                     <p className="text-sm text-primary">
                       By submitting this application, you agree to our{" "}
                       <Link href="#" className="text-accent font-bold">
@@ -679,7 +679,7 @@ export default function BecomeSupplierPage() {
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="flex items-center gap-2 px-6 py-3 bg-secondary hover:bg-gray-200 rounded-xl font-bold text-primary transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-secondary hover:bg-gray-200  font-bold text-primary transition-colors"
                   >
                     <ArrowLeft size={18} />
                     Back
@@ -693,7 +693,7 @@ export default function BecomeSupplierPage() {
                     type="button"
                     onClick={nextStep}
                     disabled={!validateStep(currentStep)}
-                    className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-black text-white rounded-xl font-bold transition-colors disabled:bg-gray-200 disabled:text-gray-400"
+                    className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-black text-white  font-bold transition-colors disabled:bg-gray-200 disabled:text-gray-400"
                   >
                     Next
                     <ArrowRight size={18} />
@@ -702,7 +702,7 @@ export default function BecomeSupplierPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 px-8 py-3 bg-accent hover:bg-accent/90 text-white rounded-xl font-bold transition-colors disabled:bg-gray-200 disabled:text-gray-400"
+                    className="flex items-center gap-2 px-8 py-3 bg-accent hover:bg-accent/90 text-white  font-bold transition-colors disabled:bg-gray-200 disabled:text-gray-400"
                   >
                     {isSubmitting ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

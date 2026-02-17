@@ -57,9 +57,9 @@ export default function VipStorePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-accent via-accent/90 to-primary rounded-3xl p-8 md:p-12 mb-12 text-white">
+      <div className="bg-gradient-to-br from-accent via-accent/90 to-primary  p-8 md:p-12 mb-12 text-white">
         <div className="flex items-start gap-6">
-          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center flex-shrink-0">
+          <div className="w-16 h-16 bg-white  flex items-center justify-center flex-shrink-0">
             <Crown size={32} className="text-accent" />
           </div>
           <div className="flex-grow">
@@ -76,19 +76,19 @@ export default function VipStorePage() {
               personalized attention.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm  p-4 border border-white/20">
                 <p className="text-white/80 font-black text-xs uppercase tracking-widest mb-2">
                   Personal Concierge
                 </p>
                 <p className="text-lg font-black">24/7 Support</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm  p-4 border border-white/20">
                 <p className="text-white/80 font-black text-xs uppercase tracking-widest mb-2">
                   Custom Orders
                 </p>
                 <p className="text-lg font-black">Tailored for You</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm  p-4 border border-white/20">
                 <p className="text-white/80 font-black text-xs uppercase tracking-widest mb-2">
                   Priority Service
                 </p>
@@ -101,13 +101,13 @@ export default function VipStorePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Contact Form */}
-        <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+        <div className="bg-white  p-8 shadow-xl border border-gray-100">
           <h2 className="text-2xl font-black text-primary mb-6">
             Contact Our VIP Team
           </h2>
 
           {submitStatus === "success" && (
-            <div className="mb-6 bg-green-50 border border-green-200 rounded-xl p-4">
+            <div className="mb-6 bg-green-50 border border-green-200  p-4">
               <p className="text-green-800 font-bold text-sm">
                 Thank you! Our VIP team will contact you within 24 hours.
               </p>
@@ -130,7 +130,7 @@ export default function VipStorePage() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="John Doe"
               />
             </div>
@@ -150,7 +150,7 @@ export default function VipStorePage() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="john@example.com"
               />
             </div>
@@ -169,7 +169,7 @@ export default function VipStorePage() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="+1 (555) 000-0000"
               />
             </div>
@@ -188,7 +188,7 @@ export default function VipStorePage() {
                 required
                 value={formData.orderType}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all cursor-pointer"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all cursor-pointer"
               >
                 <option value="existing">Existing Product</option>
                 <option value="custom">Custom Order</option>
@@ -211,7 +211,7 @@ export default function VipStorePage() {
                 name="productName"
                 value={formData.productName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="Product name or SKU"
               />
             </div>
@@ -231,7 +231,7 @@ export default function VipStorePage() {
                 value={formData.quantity}
                 onChange={handleChange}
                 min="1"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
                 placeholder="1"
               />
             </div>
@@ -251,7 +251,7 @@ export default function VipStorePage() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none"
+                className="w-full px-4 py-3  border border-gray-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none"
                 placeholder="Tell us about your requirements, preferences, or any special requests..."
               />
             </div>
@@ -260,7 +260,7 @@ export default function VipStorePage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-accent text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-primary transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-accent text-white px-8 py-4  font-black uppercase text-xs tracking-[0.2em] hover:bg-primary transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 "Sending..."
@@ -277,11 +277,11 @@ export default function VipStorePage() {
         {/* Contact Information */}
         <div className="space-y-6">
           {/* Why Choose VIP */}
-          <div className="bg-primary rounded-3xl p-8 text-white">
+          <div className="bg-primary  p-8 text-white">
             <h3 className="text-xl font-black mb-6">Why Choose VIP Service?</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="w-8 h-8 bg-accent  flex items-center justify-center flex-shrink-0 mt-1">
                   <Crown size={16} />
                 </div>
                 <div>
@@ -292,7 +292,7 @@ export default function VipStorePage() {
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="w-8 h-8 bg-accent  flex items-center justify-center flex-shrink-0 mt-1">
                   <MessageSquare size={16} />
                 </div>
                 <div>
@@ -303,7 +303,7 @@ export default function VipStorePage() {
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="w-8 h-8 bg-accent  flex items-center justify-center flex-shrink-0 mt-1">
                   <Send size={16} />
                 </div>
                 <div>
@@ -317,16 +317,16 @@ export default function VipStorePage() {
           </div>
 
           {/* Direct Contact */}
-          <div className="bg-secondary rounded-3xl p-8">
+          <div className="bg-secondary  p-8">
             <h3 className="text-xl font-black text-primary mb-6">
               Direct Contact
             </h3>
             <div className="space-y-4">
               <a
                 href="mailto:vip@casadimoda.com"
-                className="flex items-center gap-3 p-4 bg-white rounded-xl hover:bg-accent hover:text-white transition-all group"
+                className="flex items-center gap-3 p-4 bg-white  hover:bg-accent hover:text-white transition-all group"
               >
-                <div className="w-10 h-10 bg-accent group-hover:bg-white rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-accent group-hover:bg-white  flex items-center justify-center">
                   <Mail
                     size={20}
                     className="text-white group-hover:text-accent"
@@ -342,9 +342,9 @@ export default function VipStorePage() {
 
               <a
                 href="tel:+15550001234"
-                className="flex items-center gap-3 p-4 bg-white rounded-xl hover:bg-accent hover:text-white transition-all group"
+                className="flex items-center gap-3 p-4 bg-white  hover:bg-accent hover:text-white transition-all group"
               >
-                <div className="w-10 h-10 bg-accent group-hover:bg-white rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-accent group-hover:bg-white  flex items-center justify-center">
                   <Phone
                     size={20}
                     className="text-white group-hover:text-accent"
@@ -361,7 +361,7 @@ export default function VipStorePage() {
           </div>
 
           {/* Business Hours */}
-          <div className="bg-white rounded-3xl p-8 border border-gray-100">
+          <div className="bg-white  p-8 border border-gray-100">
             <h3 className="text-xl font-black text-primary mb-6">
               VIP Service Hours
             </h3>

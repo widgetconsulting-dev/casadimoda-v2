@@ -4,7 +4,7 @@ import Pagination from "@/components/Pagination";
 import db from "@/utils/db";
 import ProductModel from "@/models/Product";
 import { MongoDocument } from "@/utils/db";
-import { Package } from "lucide-react";
+import Link from "next/link";
 
 export default async function WholesalePage({
   searchParams,
@@ -30,102 +30,91 @@ export default async function WholesalePage({
   const totalPages = Math.ceil(totalProducts / pageSize);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+    <div className="bg-[#2a2a2a] min-h-screen">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary to-primary/90 rounded-3xl p-8 md:p-12 mb-12 text-white">
-        <div className="flex items-start gap-6">
-          <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center flex-shrink-0">
-            <Package size={32} className="text-primary" />
-          </div>
-          <div className="flex-grow">
-            <h2 className="text-accent font-bold uppercase tracking-[0.3em] text-xs mb-3">
-              Wholesale & Bulk Orders
-            </h2>
-            <h1 className="text-3xl md:text-4xl md:text-5xl font-black tracking-tight mb-6">
-              Professional Partnership
-            </h1>
-            <p className="text-white/80 max-w-2xl text-sm leading-relaxed mb-6">
-              Unlock exclusive wholesale pricing for bulk purchases. Perfect for
-              retailers, boutiques, and business partners. Minimum order
-              quantities apply.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <p className="text-accent font-black text-xs uppercase tracking-widest mb-2">
-                  Minimum Order
-                </p>
-                <p className="text-2xl font-black">50+ Units</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <p className="text-accent font-black text-xs uppercase tracking-widest mb-2">
-                  Bulk Discount
-                </p>
-                <p className="text-2xl font-black">Up to 40%</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <p className="text-accent font-black text-xs uppercase tracking-widest mb-2">
-                  Payment Terms
-                </p>
-                <p className="text-2xl font-black">Net 30</p>
-              </div>
+      <div className="bg-primary">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16 text-white">
+          <p className="text-accent font-medium uppercase tracking-[0.4em] text-[10px] md:text-xs mb-3">
+            Wholesale & Commandes en Gros
+          </p>
+          <h1 className="font-serif text-3xl md:text-5xl text-white italic mb-4">
+            Partenariat Professionnel
+          </h1>
+          <p className="text-white/50 max-w-2xl text-sm leading-relaxed mb-8">
+            Débloquez des tarifs wholesale exclusifs pour vos achats en gros.
+            Idéal pour les détaillants, boutiques et partenaires commerciaux.
+          </p>
+          <div className="grid grid-cols-3 gap-3 md:gap-4 max-w-xl">
+            <div className="bg-white/5 border border-white/10 p-3 md:p-4 text-center">
+              <p className="text-accent font-bold text-[8px] md:text-[10px] uppercase tracking-widest mb-1">
+                Commande Min.
+              </p>
+              <p className="text-lg md:text-xl font-bold">50+</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-3 md:p-4 text-center">
+              <p className="text-accent font-bold text-[8px] md:text-[10px] uppercase tracking-widest mb-1">
+                Remise
+              </p>
+              <p className="text-lg md:text-xl font-bold">-40%</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 p-3 md:p-4 text-center">
+              <p className="text-accent font-bold text-[8px] md:text-[10px] uppercase tracking-widest mb-1">
+                Paiement
+              </p>
+              <p className="text-lg md:text-xl font-bold">Net 30</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Products Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-        <div>
-          <h2 className="text-accent font-bold uppercase tracking-[0.3em] text-xs mb-3">
-            Wholesale Catalog
-          </h2>
-          <h1 className="text-3xl md:text-4xl md:text-5xl font-black text-primary tracking-tight">
-            Available Products
-          </h1>
-        </div>
-        <div className="text-right">
-          <p className="text-text-dark/60 max-w-md text-sm leading-relaxed mb-2">
-            Browse our full catalog and contact us for wholesale pricing and
-            terms.
-          </p>
-          <p className="text-[10px] font-black uppercase text-accent tracking-[0.2em]">
-            Showing {(page - 1) * pageSize + 1}-
-            {Math.min(page * pageSize, totalProducts)} of {totalProducts}{" "}
-            Products
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-3">
+          <div>
+            <p className="text-accent font-medium uppercase tracking-[0.4em] text-[10px] md:text-xs mb-2">
+              Catalogue Wholesale
+            </p>
+            <h2 className="font-serif text-2xl md:text-3xl text-white italic">
+              Produits Disponibles
+            </h2>
+          </div>
+          <p className="text-white/30 text-xs">
+            {(page - 1) * pageSize + 1}-
+            {Math.min(page * pageSize, totalProducts)} sur {totalProducts}
           </p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        {products.map((product) => (
-          <ProductItem key={product.slug} product={product} />
-        ))}
-      </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
+          {products.map((product) => (
+            <ProductItem key={product.slug} product={product} />
+          ))}
+        </div>
 
-      <Pagination totalPages={totalPages} />
+        <Pagination totalPages={totalPages} />
 
-      {/* Contact CTA */}
-      <div className="mt-16 bg-secondary rounded-3xl p-8 md:p-12 text-center">
-        <h3 className="text-2xl font-black text-primary mb-4">
-          Ready to Start Your Wholesale Partnership?
-        </h3>
-        <p className="text-text-dark/60 mb-8 max-w-2xl mx-auto">
-          Contact our wholesale team to discuss pricing, minimum orders, and
-          exclusive partnership opportunities.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="mailto:wholesale@casadimoda.com"
-            className="bg-primary text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-accent hover:text-primary transition-all shadow-lg"
-          >
-            Email Wholesale Team
-          </a>
-          <a
-            href="/vip-store"
-            className="bg-white text-primary px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-accent hover:text-white transition-all shadow-lg border-2 border-primary"
-          >
-            VIP Store
-          </a>
+        {/* Contact CTA */}
+        <div className="mt-12 bg-primary border border-white/[0.08] p-8 md:p-12 text-center">
+          <h3 className="font-serif text-xl md:text-2xl text-white italic mb-3">
+            Prêt à devenir partenaire ?
+          </h3>
+          <p className="text-white/40 mb-6 max-w-xl mx-auto text-sm">
+            Contactez notre équipe wholesale pour discuter des tarifs, commandes
+            minimum et opportunités de partenariat.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="mailto:wholesale@casadimoda.com"
+              className="bg-accent text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-primary transition-all"
+            >
+              Contacter l&apos;Équipe
+            </Link>
+            <Link
+              href="/vip-store"
+              className="border border-white/20 text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-primary transition-all"
+            >
+              VIP Store
+            </Link>
+          </div>
         </div>
       </div>
     </div>

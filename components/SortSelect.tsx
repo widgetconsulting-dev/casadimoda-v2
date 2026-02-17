@@ -71,7 +71,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-secondary px-4 py-2 rounded-xl text-xs font-bold text-primary border-none outline-none cursor-pointer hover:bg-gray-200 transition-colors flex items-center gap-2 min-w-[180px] justify-between"
+          className="bg-secondary px-4 py-2  text-xs font-bold text-primary border-none outline-none cursor-pointer hover:bg-gray-200 transition-colors flex items-center gap-2 min-w-[180px] justify-between"
         >
           {currentOption.label}
           <ChevronDown
@@ -83,7 +83,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
         </button>
 
         {isOpen && (
-          <div className="absolute top-full right-0 w-full mt-1 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[100]">
+          <div className="absolute top-full right-0 w-full mt-1 bg-white  shadow-2xl border border-gray-100 overflow-hidden z-[100]">
             <ul className="divide-y divide-gray-50">
               {sortOptions.map((option) => (
                 <li key={option.value}>

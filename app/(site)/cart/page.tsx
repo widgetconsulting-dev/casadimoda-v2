@@ -85,7 +85,7 @@ export default function CartScreen() {
         </p>
         <Link
           href="/"
-          className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-accent hover:text-primary transition-all active:scale-95"
+          className="bg-primary text-white px-10 py-4  font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-accent hover:text-primary transition-all active:scale-95"
         >
           Explore Collection
         </Link>
@@ -111,12 +111,12 @@ export default function CartScreen() {
           {cartItems.map((item) => (
             <div
               key={item.slug}
-              className="group bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-6 transition-all hover:shadow-xl hover:border-accent/20"
+              className="group bg-white  p-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-6 transition-all hover:shadow-xl hover:border-accent/20"
             >
               {/* Product Image */}
               <Link
                 href={`/product/${item.slug}`}
-                className="relative w-full sm:w-32 aspect-[3/4] rounded-2xl overflow-hidden bg-secondary"
+                className="relative w-full sm:w-32 aspect-[3/4]  overflow-hidden bg-secondary"
               >
                 <Image
                   src={item.image}
@@ -150,7 +150,7 @@ export default function CartScreen() {
 
                 <div className="flex flex-wrap items-end justify-between gap-4 mt-6">
                   {/* Quantity Control */}
-                  <div className="flex items-center bg-secondary rounded-xl p-1 gap-1">
+                  <div className="flex items-center bg-secondary  p-1 gap-1">
                     <button
                       onMouseDown={() => startAdjusting(item, "down")}
                       onMouseUp={stopAdjusting}
@@ -208,7 +208,7 @@ export default function CartScreen() {
 
         {/* Order Summary */}
         <div className="lg:col-span-4">
-          <div className="sticky top-8 bg-primary rounded-3xl p-8 text-white shadow-2xl">
+          <div className="sticky top-8 bg-primary  p-8 text-white shadow-2xl">
             <h2 className="text-xl font-black mb-8 border-b border-white/10 pb-4 tracking-tight">
               Order Summary
             </h2>
@@ -306,7 +306,7 @@ export default function CartScreen() {
             </div>
 
             <button
-              className="w-full bg-accent hover:bg-white text-primary font-black py-5 rounded-2xl transition-all shadow-lg active:scale-95 text-xs uppercase tracking-[0.3em] mb-4 cursor-pointer"
+              className="w-full bg-accent hover:bg-white text-primary font-black py-5  transition-all shadow-lg active:scale-95 text-xs uppercase tracking-[0.3em] mb-4 cursor-pointer"
               onClick={() =>
                 alert("Proceeding to luxury checkout secure gateway...")
               }

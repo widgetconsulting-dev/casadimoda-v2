@@ -87,7 +87,7 @@ export default function SubCategoriesList({
         </div>
         <button
           onClick={() => openModal()}
-          className="bg-primary hover:bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+          className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
           <Plus size={16} /> Establish New Line
         </button>
@@ -95,7 +95,7 @@ export default function SubCategoriesList({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {subcategories.length === 0 ? (
-          <div className="col-span-full bg-white p-20 rounded-[2.5rem] border border-gray-100 flex flex-col items-center gap-4">
+          <div className="col-span-full bg-white p-20  border border-gray-100 flex flex-col items-center gap-4">
             <Layers size={48} className="text-gray-100" />
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-dark/30">
               No subcategories registered.
@@ -105,11 +105,11 @@ export default function SubCategoriesList({
           subcategories.map((sub) => (
             <div
               key={sub._id}
-              className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
+              className="bg-white p-8  border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
             >
               <div className="absolute top-0 left-0 w-2 h-full bg-accent opacity-20 group-hover:opacity-100 transition-opacity" />
               <div className="flex justify-between items-start mb-6">
-                <div className="bg-secondary p-4 rounded-2xl text-accent group-hover:bg-accent/10 transition-colors">
+                <div className="bg-secondary p-4  text-accent group-hover:bg-accent/10 transition-colors">
                   <Layers size={24} />
                 </div>
                 <div className="flex gap-2">
@@ -152,7 +152,7 @@ export default function SubCategoriesList({
       {/* Luxury Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300 relative">
+          <div className="bg-white w-full max-w-lg  shadow-2xl animate-in zoom-in duration-300 relative">
             <button
               onClick={() => setShowModal(false)}
               className="absolute top-6 right-6 p-2 hover:bg-secondary rounded-full transition-colors"
@@ -172,7 +172,7 @@ export default function SubCategoriesList({
                   </label>
                   <input
                     {...register("name", { required: true })}
-                    className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                    className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                     placeholder="e.g. Vintage Watches"
                   />
                 </div>
@@ -183,7 +183,7 @@ export default function SubCategoriesList({
                   </label>
                   <select
                     {...register("parentCategory", { required: true })}
-                    className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                    className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                   >
                     <option value="" disabled>
                       Select parent collection...
@@ -202,7 +202,7 @@ export default function SubCategoriesList({
                   </label>
                   <textarea
                     {...register("description")}
-                    className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary min-h-[100px]"
+                    className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[100px]"
                     placeholder="Briefly describe this specific line..."
                   />
                 </div>
@@ -211,14 +211,14 @@ export default function SubCategoriesList({
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
+                    className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                   >
                     Abort
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl shadow-lg hover:bg-black transition-all cursor-pointer disabled:opacity-50"
+                    className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-5  shadow-lg hover:bg-black transition-all cursor-pointer disabled:opacity-50"
                   >
                     {saving ? "Signing..." : "Establish Line"}
                   </button>

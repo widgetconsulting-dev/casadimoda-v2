@@ -20,18 +20,18 @@ export default function FeaturedProductsGrid({
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4 mb-8">
         {visibleProducts.map((product) => (
           <ProductItem key={product.slug} product={product} />
         ))}
       </div>
       {hasMore && (
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-4">
           <button
             onClick={() => setVisible((prev) => prev + pageSize)}
-            className="bg-primary hover:bg-accent text-white hover:text-primary px-10 py-3 rounded-full transition-all duration-300 text-[10px] font-black uppercase tracking-[0.2em] shadow-md hover:shadow-accent/40 active:scale-95 cursor-pointer"
+            className="border border-white/20 hover:border-accent text-white/60 hover:text-accent px-10 py-3 transition-all duration-300 text-[9px] font-bold uppercase tracking-[0.25em] cursor-pointer"
           >
-            Show More
+            Voir Plus
           </button>
         </div>
       )}

@@ -108,28 +108,28 @@ export default function AdminSuppliersPage() {
     switch (status) {
       case "approved":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-3 py-1  uppercase tracking-widest">
             <CheckCircle size={12} />
             Approved
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-3 py-1  uppercase tracking-widest">
             <Clock size={12} />
             Pending
           </span>
         );
       case "rejected":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-3 py-1  uppercase tracking-widest">
             <XCircle size={12} />
             Rejected
           </span>
         );
       case "suspended":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-gray-700 bg-gray-100 px-3 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-gray-700 bg-gray-100 px-3 py-1  uppercase tracking-widest">
             <Ban size={12} />
             Suspended
           </span>
@@ -152,7 +152,7 @@ export default function AdminSuppliersPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
@@ -161,7 +161,7 @@ export default function AdminSuppliersPage() {
               size={18}
             />
             <input
-              className="w-full bg-secondary border-none rounded-2xl py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
+              className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
               placeholder="Search suppliers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -170,7 +170,7 @@ export default function AdminSuppliersPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-secondary border-none rounded-2xl px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
+            className="bg-secondary border-none  px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -220,12 +220,12 @@ export default function AdminSuppliersPage() {
                     >
                       <td className="py-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 bg-accent/10  flex items-center justify-center">
                             {supplier.businessLogo ? (
                               <img
                                 src={supplier.businessLogo}
                                 alt={supplier.businessName}
-                                className="w-full h-full object-cover rounded-xl"
+                                className="w-full h-full object-cover "
                               />
                             ) : (
                               <Store size={20} className="text-accent" />
@@ -273,7 +273,7 @@ export default function AdminSuppliersPage() {
                                     action: "approve",
                                   })
                                 }
-                                className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all"
+                                className="p-2 bg-green-100 text-green-700  hover:bg-green-200 transition-all"
                                 title="Approve"
                               >
                                 <CheckCircle size={16} />
@@ -282,7 +282,7 @@ export default function AdminSuppliersPage() {
                                 onClick={() =>
                                   setActionModal({ supplier, action: "reject" })
                                 }
-                                className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all"
+                                className="p-2 bg-red-100 text-red-700  hover:bg-red-200 transition-all"
                                 title="Reject"
                               >
                                 <XCircle size={16} />
@@ -294,7 +294,7 @@ export default function AdminSuppliersPage() {
                               onClick={() =>
                                 setActionModal({ supplier, action: "suspend" })
                               }
-                              className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"
+                              className="p-2 bg-gray-100 text-gray-700  hover:bg-gray-200 transition-all"
                               title="Suspend"
                             >
                               <Ban size={16} />
@@ -308,7 +308,7 @@ export default function AdminSuppliersPage() {
                                   action: "reactivate",
                                 })
                               }
-                              className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all"
+                              className="p-2 bg-green-100 text-green-700  hover:bg-green-200 transition-all"
                               title="Reactivate"
                             >
                               <CheckCircle size={16} />
@@ -318,7 +318,7 @@ export default function AdminSuppliersPage() {
                             onClick={() =>
                               setActionModal({ supplier, action: "view" })
                             }
-                            className="p-2 bg-secondary text-primary rounded-lg hover:bg-gray-200 transition-all"
+                            className="p-2 bg-secondary text-primary  hover:bg-gray-200 transition-all"
                             title="View Details"
                           >
                             <Eye size={16} />
@@ -354,7 +354,7 @@ export default function AdminSuppliersPage() {
                       onClick={() =>
                         fetchSuppliers(page, searchQuery, statusFilter)
                       }
-                      className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                      className={`px-4 py-2  font-bold text-sm transition-all ${
                         currentPage === page
                           ? "bg-accent text-white"
                           : "bg-secondary text-primary hover:bg-gray-200"
@@ -373,7 +373,7 @@ export default function AdminSuppliersPage() {
       {/* Action Modal */}
       {actionModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl p-8">
+          <div className="bg-white w-full max-w-lg  shadow-2xl p-8">
             {actionModal.action === "view" ? (
               <>
                 <h3 className="text-2xl font-black text-primary mb-6">
@@ -428,7 +428,7 @@ export default function AdminSuppliersPage() {
                 </div>
                 <button
                   onClick={() => setActionModal(null)}
-                  className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                  className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                 >
                   Close
                 </button>
@@ -446,7 +446,7 @@ export default function AdminSuppliersPage() {
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   placeholder="Reason for rejection (optional)"
-                  className="w-full bg-secondary rounded-xl p-4 outline-none font-bold text-primary mb-4"
+                  className="w-full bg-secondary  p-4 outline-none font-bold text-primary mb-4"
                   rows={3}
                 />
                 <div className="flex gap-4">
@@ -455,14 +455,14 @@ export default function AdminSuppliersPage() {
                       setActionModal(null);
                       setRejectionReason("");
                     }}
-                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => handleAction("rejected")}
                     disabled={processing}
-                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50"
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3  transition-colors disabled:opacity-50"
                   >
                     {processing ? "Processing..." : "Reject"}
                   </button>
@@ -486,7 +486,7 @@ export default function AdminSuppliersPage() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setActionModal(null)}
-                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
                     Cancel
                   </button>
@@ -500,7 +500,7 @@ export default function AdminSuppliersPage() {
                       )
                     }
                     disabled={processing}
-                    className={`flex-1 font-bold py-3 rounded-xl transition-colors disabled:opacity-50 ${
+                    className={`flex-1 font-bold py-3  transition-colors disabled:opacity-50 ${
                       actionModal.action === "suspend"
                         ? "bg-gray-600 hover:bg-gray-700 text-white"
                         : "bg-green-500 hover:bg-green-600 text-white"

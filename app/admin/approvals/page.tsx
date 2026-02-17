@@ -158,7 +158,7 @@ export default function AdminApprovalsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
           onClick={() => setActiveTab("products")}
-          className={`bg-white rounded-2xl p-6 shadow-lg border-2 cursor-pointer transition-all ${
+          className={`bg-white  p-6 shadow-lg border-2 cursor-pointer transition-all ${
             activeTab === "products"
               ? "border-accent"
               : "border-transparent hover:border-gray-200"
@@ -173,7 +173,7 @@ export default function AdminApprovalsPage() {
                 {pendingProducts.length}
               </p>
             </div>
-            <div className="p-4 bg-yellow-100 rounded-xl">
+            <div className="p-4 bg-yellow-100 ">
               <Package size={28} className="text-yellow-600" />
             </div>
           </div>
@@ -181,7 +181,7 @@ export default function AdminApprovalsPage() {
 
         <div
           onClick={() => setActiveTab("suppliers")}
-          className={`bg-white rounded-2xl p-6 shadow-lg border-2 cursor-pointer transition-all ${
+          className={`bg-white  p-6 shadow-lg border-2 cursor-pointer transition-all ${
             activeTab === "suppliers"
               ? "border-accent"
               : "border-transparent hover:border-gray-200"
@@ -196,7 +196,7 @@ export default function AdminApprovalsPage() {
                 {pendingSuppliers.length}
               </p>
             </div>
-            <div className="p-4 bg-blue-100 rounded-xl">
+            <div className="p-4 bg-blue-100 ">
               <Store size={28} className="text-blue-600" />
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function AdminApprovalsPage() {
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
@@ -229,10 +229,10 @@ export default function AdminApprovalsPage() {
                 {pendingProducts.map((product) => (
                   <div
                     key={product._id}
-                    className="flex items-center justify-between p-4 bg-secondary/50 rounded-2xl"
+                    className="flex items-center justify-between p-4 bg-secondary/50 "
                   >
                     <div className="flex items-center gap-4">
-                      <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-white">
+                      <div className="relative w-16 h-20  overflow-hidden bg-white">
                         <Image
                           src={product.image || "/images/placeholder.jpg"}
                           alt={product.name}
@@ -265,7 +265,7 @@ export default function AdminApprovalsPage() {
                             action: "view",
                           })
                         }
-                        className="p-2 bg-white text-primary rounded-lg hover:bg-gray-100 transition-all"
+                        className="p-2 bg-white text-primary  hover:bg-gray-100 transition-all"
                         title="View"
                       >
                         <Eye size={18} />
@@ -278,7 +278,7 @@ export default function AdminApprovalsPage() {
                             action: "approve",
                           })
                         }
-                        className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all"
+                        className="p-2 bg-green-100 text-green-700  hover:bg-green-200 transition-all"
                         title="Approve"
                       >
                         <CheckCircle size={18} />
@@ -291,7 +291,7 @@ export default function AdminApprovalsPage() {
                             action: "reject",
                           })
                         }
-                        className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all"
+                        className="p-2 bg-red-100 text-red-700  hover:bg-red-200 transition-all"
                         title="Reject"
                       >
                         <XCircle size={18} />
@@ -322,15 +322,15 @@ export default function AdminApprovalsPage() {
                 {pendingSuppliers.map((supplier) => (
                   <div
                     key={supplier._id}
-                    className="flex items-center justify-between p-4 bg-secondary/50 rounded-2xl"
+                    className="flex items-center justify-between p-4 bg-secondary/50 "
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-accent/10  flex items-center justify-center">
                         {supplier.businessLogo ? (
                           <img
                             src={supplier.businessLogo}
                             alt={supplier.businessName}
-                            className="w-full h-full object-cover rounded-xl"
+                            className="w-full h-full object-cover "
                           />
                         ) : (
                           <Store size={20} className="text-accent" />
@@ -357,7 +357,7 @@ export default function AdminApprovalsPage() {
                             action: "view",
                           })
                         }
-                        className="p-2 bg-white text-primary rounded-lg hover:bg-gray-100 transition-all"
+                        className="p-2 bg-white text-primary  hover:bg-gray-100 transition-all"
                         title="View"
                       >
                         <Eye size={18} />
@@ -370,7 +370,7 @@ export default function AdminApprovalsPage() {
                             action: "approve",
                           })
                         }
-                        className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all"
+                        className="p-2 bg-green-100 text-green-700  hover:bg-green-200 transition-all"
                         title="Approve"
                       >
                         <CheckCircle size={18} />
@@ -383,7 +383,7 @@ export default function AdminApprovalsPage() {
                             action: "reject",
                           })
                         }
-                        className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all"
+                        className="p-2 bg-red-100 text-red-700  hover:bg-red-200 transition-all"
                         title="Reject"
                       >
                         <XCircle size={18} />
@@ -400,7 +400,7 @@ export default function AdminApprovalsPage() {
       {/* Action Modal */}
       {actionModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl p-8">
+          <div className="bg-white w-full max-w-lg  shadow-2xl p-8">
             {actionModal.action === "view" ? (
               <>
                 <h3 className="text-2xl font-black text-primary mb-6">
@@ -410,7 +410,7 @@ export default function AdminApprovalsPage() {
                 </h3>
                 {actionModal.type === "product" ? (
                   <div className="space-y-4">
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-secondary">
+                    <div className="relative w-full aspect-video  overflow-hidden bg-secondary">
                       <Image
                         src={
                           (actionModal.item as PendingProduct).image ||
@@ -517,7 +517,7 @@ export default function AdminApprovalsPage() {
                 )}
                 <button
                   onClick={() => setActionModal(null)}
-                  className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                  className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                 >
                   Close
                 </button>
@@ -535,7 +535,7 @@ export default function AdminApprovalsPage() {
                   value={rejectionNote}
                   onChange={(e) => setRejectionNote(e.target.value)}
                   placeholder="Reason for rejection"
-                  className="w-full bg-secondary rounded-xl p-4 outline-none font-bold text-primary mb-4"
+                  className="w-full bg-secondary  p-4 outline-none font-bold text-primary mb-4"
                   rows={3}
                 />
                 <div className="flex gap-4">
@@ -544,7 +544,7 @@ export default function AdminApprovalsPage() {
                       setActionModal(null);
                       setRejectionNote("");
                     }}
-                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
                     Cancel
                   </button>
@@ -555,7 +555,7 @@ export default function AdminApprovalsPage() {
                         : handleSupplierAction("rejected")
                     }
                     disabled={processing}
-                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50"
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3  transition-colors disabled:opacity-50"
                   >
                     {processing ? "Processing..." : "Reject"}
                   </button>
@@ -577,7 +577,7 @@ export default function AdminApprovalsPage() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setActionModal(null)}
-                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3 rounded-xl transition-colors"
+                    className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
                     Cancel
                   </button>
@@ -588,7 +588,7 @@ export default function AdminApprovalsPage() {
                         : handleSupplierAction("approved")
                     }
                     disabled={processing}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50"
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3  transition-colors disabled:opacity-50"
                   >
                     {processing ? "Processing..." : "Approve"}
                   </button>

@@ -216,21 +216,21 @@ export default function SupplierProductsTable({
     switch (status) {
       case "approved":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-2 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-2 py-1  uppercase tracking-widest">
             <CheckCircle size={12} />
             Approved
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-2 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-2 py-1  uppercase tracking-widest">
             <Clock size={12} />
             Pending
           </span>
         );
       case "rejected":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-2 py-1 rounded-lg uppercase tracking-widest">
+          <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-2 py-1  uppercase tracking-widest">
             <XCircle size={12} />
             Rejected
           </span>
@@ -256,7 +256,7 @@ export default function SupplierProductsTable({
         <button
           onClick={() => openModal()}
           disabled={!isApproved}
-          className={`px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 ${
+          className={`px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 ${
             isApproved
               ? "bg-primary hover:bg-black text-white cursor-pointer"
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -268,7 +268,7 @@ export default function SupplierProductsTable({
 
       {/* Account Status Warning */}
       {!isApproved && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4">
+        <div className="bg-yellow-50 border border-yellow-200  p-4">
           <div className="flex items-center gap-3">
             <AlertCircle size={20} className="text-yellow-600" />
             <p className="text-sm text-yellow-800">
@@ -279,7 +279,7 @@ export default function SupplierProductsTable({
         </div>
       )}
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
@@ -288,7 +288,7 @@ export default function SupplierProductsTable({
               size={18}
             />
             <input
-              className="w-full bg-secondary border-none rounded-2xl py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
+              className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
               placeholder="Search products..."
               value={searchQuery}
               onChange={handleSearchChange}
@@ -297,7 +297,7 @@ export default function SupplierProductsTable({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-secondary border-none rounded-2xl px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
+            className="bg-secondary border-none  px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
           >
             <option value="all">All Status</option>
             <option value="approved">Approved</option>
@@ -346,7 +346,7 @@ export default function SupplierProductsTable({
                     >
                       <td className="py-6">
                         <div className="flex items-center gap-4">
-                          <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
+                          <div className="relative w-16 h-20  overflow-hidden bg-secondary flex-shrink-0">
                             <Image
                               src={product.image || "/images/placeholder.jpg"}
                               alt={product.name}
@@ -366,7 +366,7 @@ export default function SupplierProductsTable({
                         </div>
                       </td>
                       <td className="py-6">
-                        <span className="text-[10px] font-black text-accent bg-accent/5 px-3 py-1 rounded-lg uppercase tracking-widest">
+                        <span className="text-[10px] font-black text-accent bg-accent/5 px-3 py-1  uppercase tracking-widest">
                           {product.category}
                         </span>
                       </td>
@@ -418,7 +418,7 @@ export default function SupplierProductsTable({
                           <button
                             onClick={() => openModal(product)}
                             disabled={!isApproved}
-                            className={`p-3 rounded-xl shadow-sm transition-all ${
+                            className={`p-3  shadow-sm transition-all ${
                               isApproved
                                 ? "bg-secondary text-primary hover:bg-white hover:text-accent cursor-pointer"
                                 : "bg-gray-100 text-gray-300 cursor-not-allowed"
@@ -429,7 +429,7 @@ export default function SupplierProductsTable({
                           <button
                             onClick={() => deleteProduct(product._id)}
                             disabled={!isApproved}
-                            className={`p-3 rounded-xl shadow-sm transition-all ${
+                            className={`p-3  shadow-sm transition-all ${
                               isApproved
                                 ? "bg-secondary text-primary hover:bg-red-50 hover:text-red-500 cursor-pointer"
                                 : "bg-gray-100 text-gray-300 cursor-not-allowed"
@@ -474,7 +474,7 @@ export default function SupplierProductsTable({
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
+                        className={`px-4 py-2  font-bold text-sm transition-all ${
                           currentPage === page
                             ? "bg-accent text-white"
                             : "bg-secondary text-primary hover:bg-gray-200"
@@ -494,7 +494,7 @@ export default function SupplierProductsTable({
       {/* Product Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
+          <div className="bg-white w-full max-w-4xl  shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="p-10 pb-4 flex justify-between items-center bg-white z-10">
               <h2 className="text-3xl font-black text-primary tracking-tight">
                 {editingProduct ? "Edit Product" : "Add New Product"}
@@ -508,7 +508,7 @@ export default function SupplierProductsTable({
             </div>
 
             {/* Info Banner */}
-            <div className="mx-10 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+            <div className="mx-10 mb-4 p-4 bg-blue-50 border border-blue-200 ">
               <p className="text-sm text-blue-800">
                 <strong>Note:</strong> New products and significant edits
                 require admin approval before they appear on the store.
@@ -529,7 +529,7 @@ export default function SupplierProductsTable({
                       </label>
                       <input
                         {...register("name", { required: true })}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                         placeholder="e.g. Silk Evening Gown"
                       />
                     </div>
@@ -541,7 +541,7 @@ export default function SupplierProductsTable({
                         </label>
                         <select
                           {...register("category", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                         >
                           <option value="">Select category...</option>
                           {categories.map((cat) => (
@@ -557,7 +557,7 @@ export default function SupplierProductsTable({
                         </label>
                         <select
                           {...register("subCategory", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                         >
                           <option value="">Select subcategory...</option>
                           {subCategories
@@ -581,7 +581,7 @@ export default function SupplierProductsTable({
                       </label>
                       <select
                         {...register("brand", { required: true })}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                       >
                         <option value="">Select brand...</option>
                         {brands.map((brand) => (
@@ -600,7 +600,7 @@ export default function SupplierProductsTable({
                         <input
                           type="number"
                           {...register("price", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="0"
                         />
                       </div>
@@ -611,7 +611,7 @@ export default function SupplierProductsTable({
                         <input
                           type="number"
                           {...register("discountPrice")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-red-500"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-red-500"
                           placeholder="Optional"
                         />
                       </div>
@@ -622,7 +622,7 @@ export default function SupplierProductsTable({
                         <input
                           type="number"
                           {...register("countInStock", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="0"
                         />
                       </div>
@@ -637,7 +637,7 @@ export default function SupplierProductsTable({
                       </label>
                       <div className="flex flex-col gap-4">
                         {productImage && (
-                          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-secondary border border-gray-100 mb-2">
+                          <div className="relative w-full aspect-video  overflow-hidden bg-secondary border border-gray-100 mb-2">
                             <Image
                               src={productImage}
                               alt="Preview"
@@ -654,7 +654,7 @@ export default function SupplierProductsTable({
                         <div className="relative">
                           <input
                             {...register("image", { required: true })}
-                            className="w-full bg-secondary border-none rounded-2xl p-4 pl-12 outline-none font-bold text-primary"
+                            className="w-full bg-secondary border-none  p-4 pl-12 outline-none font-bold text-primary"
                             placeholder="Enter image URL or upload"
                           />
                           <Upload
@@ -682,7 +682,7 @@ export default function SupplierProductsTable({
                             <button
                               type="button"
                               onClick={() => open()}
-                              className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4 rounded-2xl hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+                              className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4  hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
                             >
                               <Upload size={14} /> Upload Image
                             </button>
@@ -697,7 +697,7 @@ export default function SupplierProductsTable({
                       </label>
                       <textarea
                         {...register("description", { required: true })}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary min-h-[120px]"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[120px]"
                         placeholder="Describe your product..."
                       />
                     </div>
@@ -709,7 +709,7 @@ export default function SupplierProductsTable({
                         </label>
                         <input
                           {...register("deliveryTime")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="e.g. 3-5 days"
                         />
                       </div>
@@ -719,7 +719,7 @@ export default function SupplierProductsTable({
                         </label>
                         <input
                           {...register("dimensions")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="e.g. 20x30x10 cm"
                         />
                       </div>
@@ -732,14 +732,14 @@ export default function SupplierProductsTable({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-6 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
+                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-6 hover:bg-secondary  transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-6 rounded-2xl shadow-xl hover:bg-black transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-6  shadow-xl hover:bg-black transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving
                     ? "Saving..."

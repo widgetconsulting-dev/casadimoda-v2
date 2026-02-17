@@ -108,7 +108,7 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="hidden md:flex gap-4">
-          <div className="bg-white border border-gray-100 rounded-2xl px-6 py-3 shadow-sm flex items-center gap-3">
+          <div className="bg-white border border-gray-100  px-6 py-3 shadow-sm flex items-center gap-3">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-[11px] font-black uppercase tracking-widest text-primary">
               Live Dashboard
@@ -122,11 +122,11 @@ export default function AdminDashboard() {
         {stats.map((stat, i) => (
           <div
             key={i}
-            className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group"
+            className="bg-white p-6  border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group"
           >
             <div className="flex justify-between items-start mb-4">
               <div
-                className={`${stat.bg} ${stat.color} p-4 rounded-2xl group-hover:scale-110 transition-transform duration-500`}
+                className={`${stat.bg} ${stat.color} p-4  group-hover:scale-110 transition-transform duration-500`}
               >
                 <stat.icon size={24} />
               </div>
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Sales Chart */}
-        <div className="col-span-3 xl:col-span-2 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+        <div className="col-span-3 xl:col-span-2 bg-white p-8  border border-gray-100 shadow-sm">
           <div className="flex justify-between items-center mb-10">
             <div>
               <h3 className="text-xl font-black text-primary tracking-tight">
@@ -170,7 +170,7 @@ export default function AdminDashboard() {
                 Monthly performance analysis
               </p>
             </div>
-            <select className="bg-secondary/50 border-none rounded-xl px-4 py-2 text-xs font-bold outline-none cursor-pointer">
+            <select className="bg-secondary/50 border-none  px-4 py-2 text-xs font-bold outline-none cursor-pointer">
               <option>Last 6 Months</option>
               <option>Last Year</option>
             </select>
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Categories Distribution */}
-        <div className="col-span-3 xl:col-span-1 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col justify-between">
+        <div className="col-span-3 xl:col-span-1 bg-white p-8  border border-gray-100 shadow-sm flex flex-col justify-between">
           <div>
             <h3 className="text-xl font-black text-primary tracking-tight">
               Quick Actions
@@ -236,25 +236,25 @@ export default function AdminDashboard() {
           <div className="space-y-4 my-8">
             <Link
               href="/admin/products?action=create"
-              className="w-full bg-primary hover:bg-black text-white text-xs font-black uppercase tracking-[0.2em] py-5 rounded-2xl transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 cursor-pointer"
+              className="w-full bg-primary hover:bg-black text-white text-xs font-black uppercase tracking-[0.2em] py-5  transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3 cursor-pointer"
             >
               Add New Product <ArrowUpRight size={16} />
             </Link>
             <Link
               href="/admin/giftcards"
-              className="w-full bg-accent hover:opacity-90 text-primary text-xs font-black uppercase tracking-[0.2em] py-5 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center cursor-pointer"
+              className="w-full bg-accent hover:opacity-90 text-primary text-xs font-black uppercase tracking-[0.2em] py-5  transition-all shadow-lg active:scale-95 flex items-center justify-center cursor-pointer"
             >
               Generate Gift Card
             </Link>
             <Link
               href="/admin/coupons"
-              className="w-full border-2 border-primary/5 hover:border-accent/30 text-primary text-xs font-black uppercase tracking-[0.2em] py-4 rounded-2xl transition-all flex items-center justify-center cursor-pointer"
+              className="w-full border-2 border-primary/5 hover:border-accent/30 text-primary text-xs font-black uppercase tracking-[0.2em] py-4  transition-all flex items-center justify-center cursor-pointer"
             >
               Launch Discount Campaign
             </Link>
           </div>
 
-          <div className="p-6 bg-secondary/50 rounded-3xl border border-gray-100">
+          <div className="p-6 bg-secondary/50  border border-gray-100">
             <div className="flex items-center gap-3 mb-4">
               <TrendingUp className="text-accent" size={20} />
               <span className="text-[11px] font-bold text-primary uppercase tracking-widest">

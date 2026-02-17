@@ -174,13 +174,13 @@ export default function ProductsTable({
         </div>
         <button
           onClick={() => openModal()}
-          className="bg-primary hover:bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+          className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
           <Plus size={16} /> Enlist New Item
         </button>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
@@ -189,13 +189,13 @@ export default function ProductsTable({
               size={18}
             />
             <input
-              className="w-full bg-secondary border-none rounded-2xl py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
+              className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
               placeholder="Search registry..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
-          <button className="bg-secondary px-6 py-4 rounded-2xl flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
+          <button className="bg-secondary px-6 py-4  flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
             <Filter size={16} /> Filters
           </button>
         </div>
@@ -233,7 +233,7 @@ export default function ProductsTable({
                 >
                   <td className="py-6">
                     <div className="flex items-center gap-4">
-                      <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-secondary flex-shrink-0">
+                      <div className="relative w-16 h-20  overflow-hidden bg-secondary flex-shrink-0">
                         <Image
                           src={product.image || "/images/placeholder.jpg"}
                           alt={product.name}
@@ -253,12 +253,12 @@ export default function ProductsTable({
                     </div>
                   </td>
                   <td className="py-6">
-                    <span className="text-[10px] font-black text-accent bg-accent/5 px-3 py-1 rounded-lg uppercase tracking-widest">
+                    <span className="text-[10px] font-black text-accent bg-accent/5 px-3 py-1  uppercase tracking-widest">
                       {product.category}
                     </span>
                   </td>
                   <td className="py-6">
-                    <span className="text-[10px] font-bold text-text-dark/40 bg-secondary px-3 py-1 rounded-lg uppercase tracking-widest">
+                    <span className="text-[10px] font-bold text-text-dark/40 bg-secondary px-3 py-1  uppercase tracking-widest">
                       {product.subCategory}
                     </span>
                   </td>
@@ -305,13 +305,13 @@ export default function ProductsTable({
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => openModal(product)}
-                        className="p-3 bg-secondary text-primary rounded-xl hover:bg-white hover:text-accent shadow-sm transition-all cursor-pointer"
+                        className="p-3 bg-secondary text-primary  hover:bg-white hover:text-accent shadow-sm transition-all cursor-pointer"
                       >
                         <Edit size={16} />
                       </button>
                       <button
                         onClick={() => deleteProduct(product._id)}
-                        className="p-3 bg-secondary text-primary rounded-xl hover:bg-red-50 hover:text-red-500 shadow-sm transition-all cursor-pointer"
+                        className="p-3 bg-secondary text-primary  hover:bg-red-50 hover:text-red-500 shadow-sm transition-all cursor-pointer"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -343,7 +343,7 @@ export default function ProductsTable({
       {/* Premium Product Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
+          <div className="bg-white w-full max-w-4xl  shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="p-10 pb-4 flex justify-between items-center bg-white z-10">
               <h2 className="text-3xl font-black text-primary tracking-tight">
                 {editingProduct ? "Refine Masterpiece" : "Enlist New Creation"}
@@ -370,7 +370,7 @@ export default function ProductsTable({
                       </label>
                       <input
                         {...register("name", { required: true })}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                         placeholder="e.g. Silk Evening Gown"
                       />
                     </div>
@@ -382,7 +382,7 @@ export default function ProductsTable({
                         </label>
                         <select
                           {...register("category", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                         >
                           <option value="">Select category...</option>
                           {categories.map((cat) => (
@@ -398,7 +398,7 @@ export default function ProductsTable({
                         </label>
                         <select
                           {...register("subCategory", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                         >
                           <option value="">Select subcategory...</option>
                           {subCategories
@@ -422,7 +422,7 @@ export default function ProductsTable({
                       </label>
                       <select
                         {...register("brand", { required: true })}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                       >
                         <option value="">Select brand...</option>
                         {brands.map((brand) => (
@@ -441,7 +441,7 @@ export default function ProductsTable({
                         <input
                           type="number"
                           {...register("price", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="0"
                         />
                       </div>
@@ -452,7 +452,7 @@ export default function ProductsTable({
                         <input
                           type="number"
                           {...register("discountPrice")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-red-500"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-red-500"
                           placeholder="Optional"
                         />
                       </div>
@@ -463,7 +463,7 @@ export default function ProductsTable({
                         <input
                           type="number"
                           {...register("countInStock", { required: true })}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="0"
                         />
                       </div>
@@ -478,7 +478,7 @@ export default function ProductsTable({
                       </label>
                       <div className="flex flex-col gap-4">
                         {productImage && (
-                          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-secondary border border-gray-100 mb-2">
+                          <div className="relative w-full aspect-video  overflow-hidden bg-secondary border border-gray-100 mb-2">
                             <Image
                               src={productImage}
                               alt="Preview"
@@ -496,7 +496,7 @@ export default function ProductsTable({
                         <div className="relative">
                           <input
                             {...register("image", { required: true })}
-                            className="w-full bg-secondary border-none rounded-2xl p-4 pl-12 outline-none font-bold text-primary"
+                            className="w-full bg-secondary border-none  p-4 pl-12 outline-none font-bold text-primary"
                             placeholder="Select or enter URL"
                           />
                           <Upload
@@ -526,7 +526,7 @@ export default function ProductsTable({
                             <button
                               type="button"
                               onClick={() => open()}
-                              className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4 rounded-2xl hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+                              className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4  hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
                             >
                               <Upload size={14} /> Upload to Cloudinary
                             </button>
@@ -541,7 +541,7 @@ export default function ProductsTable({
                       </label>
                       <textarea
                         {...register("description", { required: true })}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary min-h-[120px]"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[120px]"
                         placeholder="Tell the story of this masterpiece..."
                       />
                     </div>
@@ -553,7 +553,7 @@ export default function ProductsTable({
                         </label>
                         <input
                           {...register("deliveryTime")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="e.g. 3-5 days"
                         />
                       </div>
@@ -563,13 +563,13 @@ export default function ProductsTable({
                         </label>
                         <input
                           {...register("dimensions")}
-                          className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                          className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                           placeholder="e.g. 20x30x10 cm"
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 p-4 bg-secondary rounded-2xl">
+                    <div className="flex items-center gap-3 p-4 bg-secondary ">
                       <input
                         type="checkbox"
                         {...register("isFeatured")}
@@ -590,7 +590,7 @@ export default function ProductsTable({
                       </label>
                       <input
                         {...register("slug")}
-                        className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-mono text-xs text-text-dark/50"
+                        className="w-full bg-secondary border-none  p-4 outline-none font-mono text-xs text-text-dark/50"
                         placeholder="silk-evening-gown"
                       />
                     </div>
@@ -602,14 +602,14 @@ export default function ProductsTable({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-6 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
+                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-6 hover:bg-secondary  transition-all cursor-pointer"
                 >
                   Abort Mission
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-6 rounded-2xl shadow-xl hover:bg-black transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-6  shadow-xl hover:bg-black transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? "Committing..." : "Commit to Registry"}
                 </button>

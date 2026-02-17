@@ -61,7 +61,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         }
       : {};
 
-  // Price filter handling: "min-max"
   const priceFilter =
     price && price !== "all"
       ? {
@@ -132,120 +131,127 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-      <div className="flex flex-col-reverse lg:flex-row gap-8">
-        {/* Sidebar Filters */}
-        <div className="w-full lg:w-1/4 flex-shrink-0">
-          <SearchSidebar
-            categories={categories}
-            brands={brands}
-            category={category}
-            brand={brand}
-            price={price}
-            rating={rating}
-            sort={sort}
-          />
-        </div>
-
-        {/* Main Content */}
-        <div className="w-full lg:w-3/4">
-          <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-            <div>
-              <h1 className="text-xl font-black text-primary">
-                {q !== "all" ? `Results for &ldquo;${q}&rdquo;` : "All Collections"}
-              </h1>
-              <p className="text-xs text-text-dark/50 font-bold uppercase tracking-widest mt-1">
-                {countProducts}{" "}
-                {countProducts === 1 ? "Masterpiece" : "Masterpieces"} Found
-              </p>
-            </div>
-
-            <SortSelect currentSort={sort} />
+    <div className="bg-[#2a2a2a] min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        <div className="flex flex-col-reverse lg:flex-row gap-6">
+          {/* Sidebar Filters */}
+          <div className="w-full lg:w-1/4 flex-shrink-0">
+            <SearchSidebar
+              categories={categories}
+              brands={brands}
+              category={category}
+              brand={brand}
+              price={price}
+              rating={rating}
+              sort={sort}
+            />
           </div>
 
-          {/* Active Filters Display */}
-          {(category !== "all" ||
-            brand !== "all" ||
-            price !== "all" ||
-            rating !== "all" ||
-            (q !== "all" && q !== "")) && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {q !== "all" && q !== "" && (
-                <Link
-                  href={getFilterUrl("q", "all")}
-                  className="bg-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 hover:bg-black transition-colors"
-                >
-                  &ldquo;{q}&rdquo; <X size={12} />
-                </Link>
-              )}
-              {category !== "all" && (
-                <Link
-                  href={getFilterUrl("category", "all")}
-                  className="bg-secondary text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 hover:bg-gray-200 transition-colors"
-                >
-                  {category} <X size={12} />
-                </Link>
-              )}
-              {brand !== "all" && (
-                <Link
-                  href={getFilterUrl("brand", "all")}
-                  className="bg-secondary text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 hover:bg-gray-200 transition-colors"
-                >
-                  {brand} <X size={12} />
-                </Link>
-              )}
-              {price !== "all" && (
-                <Link
-                  href={getFilterUrl("price", "all")}
-                  className="bg-secondary text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 hover:bg-gray-200 transition-colors"
-                >
-                  Price: {price} <X size={12} />
-                </Link>
-              )}
-              <Link
-                href="/search"
-                className="text-[10px] font-bold text-red-500 underline ml-2 hover:text-red-700"
-              >
-                Clear All
-              </Link>
-            </div>
-          )}
+          {/* Main Content */}
+          <div className="w-full lg:w-3/4">
+            <div className="mb-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 bg-[#363636] border border-white/[0.08] p-4">
+              <div>
+                <h1 className="text-base md:text-lg font-bold text-white">
+                  {q !== "all"
+                    ? `Résultats pour « ${q} »`
+                    : "Toutes les Collections"}
+                </h1>
+                <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest mt-0.5">
+                  {countProducts} produit{countProducts !== 1 ? "s" : ""} trouvé
+                  {countProducts !== 1 ? "s" : ""}
+                </p>
+              </div>
 
-          {products.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-xl font-bold text-text-dark/30">
-                No results found matching your criteria.
-              </p>
-              <button className="mt-4 bg-primary text-white px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-black transition-all">
-                View Latest Collection
-              </button>
+              <SortSelect currentSort={sort} />
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product: Product) => (
-                <ProductItem key={product._id} product={product} />
-              ))}
-            </div>
-          )}
 
-          {/* Pagination */}
-          {pages > 1 && (
-            <div className="flex justify-center mt-10 gap-2">
-              {[...Array(pages).keys()].map((x) => (
+            {/* Active Filters Display */}
+            {(category !== "all" ||
+              brand !== "all" ||
+              price !== "all" ||
+              rating !== "all" ||
+              (q !== "all" && q !== "")) && (
+              <div className="flex flex-wrap gap-2 mb-5">
+                {q !== "all" && q !== "" && (
+                  <Link
+                    href={getFilterUrl("q", "all")}
+                    className="bg-accent/20 text-accent text-[9px] font-bold uppercase tracking-widest px-3 py-1 flex items-center gap-1 hover:bg-accent/30 transition-colors"
+                  >
+                    « {q} » <X size={10} />
+                  </Link>
+                )}
+                {category !== "all" && (
+                  <Link
+                    href={getFilterUrl("category", "all")}
+                    className="bg-white/10 text-white/60 text-[9px] font-bold uppercase tracking-widest px-3 py-1 flex items-center gap-1 hover:bg-white/20 transition-colors"
+                  >
+                    {category} <X size={10} />
+                  </Link>
+                )}
+                {brand !== "all" && (
+                  <Link
+                    href={getFilterUrl("brand", "all")}
+                    className="bg-white/10 text-white/60 text-[9px] font-bold uppercase tracking-widest px-3 py-1 flex items-center gap-1 hover:bg-white/20 transition-colors"
+                  >
+                    {brand} <X size={10} />
+                  </Link>
+                )}
+                {price !== "all" && (
+                  <Link
+                    href={getFilterUrl("price", "all")}
+                    className="bg-white/10 text-white/60 text-[9px] font-bold uppercase tracking-widest px-3 py-1 flex items-center gap-1 hover:bg-white/20 transition-colors"
+                  >
+                    Prix: {price} <X size={10} />
+                  </Link>
+                )}
                 <Link
-                  key={x + 1}
-                  href={getFilterUrl("page", (x + 1).toString())}
-                  className={`w-10 h-10 flex items-center justify-center rounded-full text-xs font-black ${
-                    Number(page) === x + 1
-                      ? "bg-accent text-primary"
-                      : "bg-secondary text-text-dark/50 hover:bg-gray-200"
-                  } transition-all`}
+                  href="/search"
+                  className="text-[9px] font-bold text-accent/70 underline ml-2 hover:text-accent"
                 >
-                  {x + 1}
+                  Tout effacer
                 </Link>
-              ))}
-            </div>
-          )}
+              </div>
+            )}
+
+            {products.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-lg font-bold text-white/20 mb-3">
+                  Aucun résultat trouvé
+                </p>
+                <Link
+                  href="/products"
+                  className="inline-block mt-3 bg-accent text-white px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-accent/80 transition-all"
+                >
+                  Voir la Collection
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+                {products.map((product: Product) => (
+                  <ProductItem key={product._id} product={product} />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {pages > 1 && (
+              <div className="flex justify-center mt-8 gap-1.5">
+                {[...Array(pages).keys()].map((x) => (
+                  <Link
+                    key={x + 1}
+                    href={getFilterUrl("page", (x + 1).toString())}
+                    className={`w-9 h-9 flex items-center justify-center text-xs font-bold transition-all ${
+                      Number(page) === x + 1
+                        ? "bg-accent text-white"
+                        : "bg-white/5 text-white/40 hover:bg-white/10"
+                    }`}
+                  >
+                    {x + 1}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -53,7 +53,7 @@ export default function BrandsList({
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-primary hover:bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+          className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
           <Plus size={16} /> Enlist Brand
         </button>
@@ -63,10 +63,10 @@ export default function BrandsList({
         {brands.map((brand) => (
           <div
             key={brand._id}
-            className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
+            className="bg-white p-8  border border-gray-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
           >
             <div className="flex justify-between items-start mb-6">
-              <div className="bg-secondary p-4 rounded-2xl text-accent">
+              <div className="bg-secondary p-4  text-accent">
                 <ShieldCheck size={24} />
               </div>
               <button
@@ -89,7 +89,7 @@ export default function BrandsList({
           </div>
         ))}
         {brands.length === 0 && (
-          <div className="col-span-full py-20 bg-secondary/20 border-2 border-dashed border-gray-100 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-center p-10">
+          <div className="col-span-full py-20 bg-secondary/20 border-2 border-dashed border-gray-100  flex flex-col items-center justify-center gap-4 text-center p-10">
             <ShieldCheck size={64} className="text-gray-100" />
             <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
               No brands registered in the registry.
@@ -100,7 +100,7 @@ export default function BrandsList({
 
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl animate-in zoom-in duration-300">
+          <div className="bg-white w-full max-w-lg  p-10 shadow-2xl animate-in zoom-in duration-300">
             <h2 className="text-2xl font-black text-primary mb-8 tracking-tight italic">
               Enlist New Luxury House
             </h2>
@@ -111,7 +111,7 @@ export default function BrandsList({
                 </label>
                 <input
                   {...register("name", { required: true })}
-                  className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                  className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                   placeholder="e.g. Rolex or Gucci"
                 />
               </div>
@@ -121,7 +121,7 @@ export default function BrandsList({
                 </label>
                 <textarea
                   {...register("description")}
-                  className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary min-h-[100px]"
+                  className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[100px]"
                   placeholder="A brief history of the house..."
                 />
               </div>
@@ -129,13 +129,13 @@ export default function BrandsList({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
+                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-accent text-primary font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl shadow-lg border-2 border-transparent hover:border-primary transition-all cursor-pointer"
+                  className="flex-1 bg-accent text-primary font-black uppercase text-[10px] tracking-widest py-5  shadow-lg border-2 border-transparent hover:border-primary transition-all cursor-pointer"
                 >
                   Authorize Enlistment
                 </button>

@@ -50,7 +50,7 @@ export default function CouponsList({
             reset();
             setShowModal(true);
           }}
-          className="bg-primary hover:bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+          className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
           <Plus size={16} /> New Campaign
         </button>
@@ -60,7 +60,7 @@ export default function CouponsList({
         {coupons.map((coupon) => (
           <div
             key={coupon._id}
-            className="bg-white p-6 rounded-[2rem] border border-dashed border-gray-200 hover:border-accent transition-all duration-500 relative group overflow-hidden"
+            className="bg-white p-6  border border-dashed border-gray-200 hover:border-accent transition-all duration-500 relative group overflow-hidden"
           >
             <div className="absolute top-4 right-4 text-accent/20 group-hover:text-accent transition-colors">
               <Ticket size={48} strokeWidth={1} />
@@ -96,7 +96,7 @@ export default function CouponsList({
           </div>
         ))}
         {coupons.length === 0 && (
-          <div className="col-span-full py-20 bg-secondary/20 border-2 border-dashed border-gray-100 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 text-center p-10">
+          <div className="col-span-full py-20 bg-secondary/20 border-2 border-dashed border-gray-100  flex flex-col items-center justify-center gap-4 text-center p-10">
             <Ticket size={64} className="text-gray-100" />
             <p className="max-w-xs text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em] leading-relaxed">
               No marketing campaigns are currently running. Launch your first
@@ -108,7 +108,7 @@ export default function CouponsList({
 
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl animate-in zoom-in duration-300">
+          <div className="bg-white w-full max-w-lg  p-10 shadow-2xl animate-in zoom-in duration-300">
             <h2 className="text-2xl font-black text-primary mb-8 tracking-tight italic">
               Initiate Reduction
             </h2>
@@ -119,7 +119,7 @@ export default function CouponsList({
                 </label>
                 <input
                   {...register("code", { required: true })}
-                  className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-black text-primary uppercase placeholder:lowercase"
+                  className="w-full bg-secondary border-none  p-4 outline-none font-black text-primary uppercase placeholder:lowercase"
                   placeholder="e.g. SUMMER24"
                 />
               </div>
@@ -130,7 +130,7 @@ export default function CouponsList({
                   </label>
                   <select
                     {...register("type")}
-                    className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary appearance-none cursor-pointer"
+                    className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none cursor-pointer"
                   >
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Fixed Amount ($)</option>
@@ -146,7 +146,7 @@ export default function CouponsList({
                       required: true,
                       valueAsNumber: true,
                     })}
-                    className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                    className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                     placeholder="e.g. 20"
                   />
                 </div>
@@ -155,13 +155,13 @@ export default function CouponsList({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
+                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl shadow-lg hover:bg-black transition-all cursor-pointer"
+                  className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-5  shadow-lg hover:bg-black transition-all cursor-pointer"
                 >
                   Launch Campaign
                 </button>

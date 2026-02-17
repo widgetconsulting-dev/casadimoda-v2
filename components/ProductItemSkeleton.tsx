@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ProductItemSkeleton() {
   return (
-    <div className="group border border-gray-100 rounded-xl shadow-sm overflow-hidden flex flex-col bg-white">
+    <div className="group border border-gray-100  shadow-sm overflow-hidden flex flex-col bg-white">
       <div className="relative aspect-[3/4] w-full bg-gray-200 animate-pulse" />
 
       <div className="p-5 flex-grow">

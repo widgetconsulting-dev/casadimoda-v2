@@ -62,7 +62,7 @@ export default function SearchSidebar({
   const ratings = [4, 3, 2, 1];
 
   return (
-    <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm space-y-8">
+    <div className="bg-white p-6  border border-gray-100 shadow-sm space-y-8">
       {/* Categories */}
       <div>
         <h3 className="text-sm font-black text-primary uppercase tracking-widest mb-4">

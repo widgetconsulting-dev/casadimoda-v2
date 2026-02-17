@@ -76,13 +76,13 @@ export default function RegisterPage() {
     <div className="min-h-[60vh] flex items-center justify-center p-4 py-6 md:py-8">
       <div className="w-full max-w-2xl">
         {/* Card Container */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 italic-shimmer relative">
+        <div className="bg-white  md: shadow-2xl overflow-hidden border border-gray-100 italic-shimmer relative">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-accent" />
 
           <div className="p-5 md:p-8 lg:p-12">
             {/* Header */}
             <div className="hidden md:flex flex-col items-center mb-6 md:mb-8 text-center">
-              <div className="bg-primary p-3 md:p-4 rounded-xl md:rounded-2xl mb-4 md:mb-6 shadow-lg rotate-3 group-hover:rotate-0 transition-transform">
+              <div className="bg-primary p-3 md:p-4  md: mb-4 md:mb-6 shadow-lg rotate-3 group-hover:rotate-0 transition-transform">
                 <Logo />
               </div>
               <h1 className="text-xl md:text-3xl font-black text-primary tracking-tight mb-1 md:mb-2">
@@ -96,7 +96,7 @@ export default function RegisterPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 border border-red-200 rounded-xl md:rounded-2xl">
+              <div className="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 border border-red-200  md:">
                 <p className="text-red-600 text-[10px] md:text-sm font-medium text-center">
                   {error}
                 </p>
@@ -128,7 +128,7 @@ export default function RegisterPage() {
                       errors.name
                         ? "border-red-500/50"
                         : "border-transparent focus:border-accent"
-                    } rounded-xl md:rounded-2xl py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                    }  md: py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                   />
                 </div>
                 {errors.name && (
@@ -161,7 +161,7 @@ export default function RegisterPage() {
                       errors.email
                         ? "border-red-500/50"
                         : "border-transparent focus:border-accent"
-                    } rounded-xl md:rounded-2xl py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                    }  md: py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                   />
                 </div>
                 {errors.email && (
@@ -192,7 +192,7 @@ export default function RegisterPage() {
                         errors.password
                           ? "border-red-500/50"
                           : "border-transparent focus:border-accent"
-                      } rounded-xl md:rounded-2xl py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                      }  md: py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                     />
                   </div>
                 </div>
@@ -216,7 +216,7 @@ export default function RegisterPage() {
                         errors.confirmPassword
                           ? "border-red-500/50"
                           : "border-transparent focus:border-accent"
-                      } rounded-xl md:rounded-2xl py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                      }  md: py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                     />
                   </div>
                 </div>
@@ -226,7 +226,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary hover:bg-black text-secondary font-black py-4 md:py-5 rounded-xl md:rounded-2xl transition-all shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 uppercase text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] disabled:bg-gray-200 group relative overflow-hidden"
+                className="w-full bg-primary hover:bg-black text-secondary font-black py-4 md:py-5  md: transition-all shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 uppercase text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] disabled:bg-gray-200 group relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-accent w-0 group-hover:w-full transition-all duration-500 opacity-10" />
                 {isSubmitting ? (
@@ -244,9 +244,9 @@ export default function RegisterPage() {
             </form>
 
             {/* Become Supplier CTA - Compact version for mobile */}
-            <div className="mt-6 md:mt-8 p-3 md:p-4 bg-accent/5 rounded-xl md:rounded-2xl border border-accent/20">
+            <div className="mt-6 md:mt-8 p-3 md:p-4 bg-accent/5  md: border border-accent/20">
               <div className="flex items-center gap-2 md:gap-3">
-                <div className="p-1.5 md:p-2 bg-accent/10 rounded-lg md:rounded-xl">
+                <div className="p-1.5 md:p-2 bg-accent/10  md:">
                   <Store size={16} className="text-accent md:w-5" />
                 </div>
                 <div className="flex-1">

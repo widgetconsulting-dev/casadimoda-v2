@@ -40,7 +40,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <StoreProvider>
-            <NextTopLoader color="#D4AF37" showSpinner={false} height={3} />
+            <NextTopLoader color="#c9a96e" showSpinner={false} height={2} />
             {children}
           </StoreProvider>
         </AuthProvider>

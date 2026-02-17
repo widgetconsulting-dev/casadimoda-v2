@@ -64,13 +64,13 @@ export default function GiftCardsList({
             reset();
             setShowModal(true);
           }}
-          className="bg-primary hover:bg-black text-white px-8 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+          className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
           <Plus size={16} /> Mint Gift Card
         </button>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-secondary/50 border-b border-gray-100">
             <tr>
@@ -98,7 +98,7 @@ export default function GiftCardsList({
                 className="hover:bg-secondary/20 transition-colors group"
               >
                 <td className="px-8 py-6 font-mono font-bold text-primary flex items-center gap-3">
-                  <div className="bg-accent/10 p-2 rounded-lg text-accent">
+                  <div className="bg-accent/10 p-2  text-accent">
                     <Gift size={16} />
                   </div>
                   {card.code}
@@ -152,7 +152,7 @@ export default function GiftCardsList({
 
       {showModal && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-lg rounded-[2.5rem] p-10 shadow-2xl animate-in zoom-in duration-300">
+          <div className="bg-white w-full max-w-lg  p-10 shadow-2xl animate-in zoom-in duration-300">
             <h2 className="text-2xl font-black text-primary mb-8 tracking-tight italic">
               Mint Private Asset
             </h2>
@@ -164,13 +164,13 @@ export default function GiftCardsList({
                 <div className="relative">
                   <input
                     {...register("code", { required: true })}
-                    className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary font-mono pr-24"
+                    className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary font-mono pr-24"
                     placeholder="CM-XXXXXXXX"
                   />
                   <button
                     type="button"
                     onClick={generateCode}
-                    className="absolute right-2 top-2 bottom-2 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-4 rounded-xl hover:bg-black transition-all cursor-pointer"
+                    className="absolute right-2 top-2 bottom-2 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-4  hover:bg-black transition-all cursor-pointer"
                   >
                     Regen
                   </button>
@@ -183,7 +183,7 @@ export default function GiftCardsList({
                 <input
                   type="number"
                   {...register("amount", { required: true })}
-                  className="w-full bg-secondary border-none rounded-2xl p-4 outline-none font-bold text-primary"
+                  className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
                   placeholder="e.g. 500"
                 />
               </div>
@@ -191,13 +191,13 @@ export default function GiftCardsList({
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary rounded-2xl transition-all cursor-pointer"
+                  className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-accent text-primary font-black uppercase text-[10px] tracking-widest py-5 rounded-2xl shadow-lg border-2 border-transparent hover:border-primary transition-all cursor-pointer"
+                  className="flex-1 bg-accent text-primary font-black uppercase text-[10px] tracking-widest py-5  shadow-lg border-2 border-transparent hover:border-primary transition-all cursor-pointer"
                 >
                   Confirm Minting
                 </button>

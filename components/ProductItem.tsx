@@ -4,32 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useStore } from "@/utils/context/Store";
 import { Product, Supplier } from "@/types";
-import { Star } from "lucide-react";
+import { Heart } from "lucide-react";
 
 interface ProductItemProps {
   product: Product;
-}
-
-function RatingStars({ rating, count }: { rating: number; count: number }) {
-  return (
-    <div className="flex items-center gap-1">
-      <div className="flex items-center">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${
-              star <= Math.round(rating)
-                ? "fill-amber-400 text-amber-400"
-                : "fill-gray-200 text-gray-200"
-            }`}
-          />
-        ))}
-      </div>
-      <span className="text-[8px] sm:text-[10px] text-blue-600">
-        ({count.toLocaleString()})
-      </span>
-    </div>
-  );
 }
 
 export default function ProductItem({ product }: ProductItemProps) {
@@ -63,138 +41,102 @@ export default function ProductItem({ product }: ProductItemProps) {
   const hasDiscount =
     product.discountPrice > 0 && product.discountPrice < product.price;
 
-  const imageBlock = (
-    <div className="relative aspect-[4/3] sm:aspect-square w-full bg-gray-50">
-      <Image
-        src={product.image || "/images/placeholder.jpg"}
-        alt={product.name}
-        fill
-        className="object-contain p-2 sm:object-cover sm:p-0 transition-transform duration-700 group-hover:scale-110"
-        sizes="(max-width: 640px) 40vw, (max-width: 1200px) 33vw, 25vw"
-        unoptimized={true}
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          const fallbacks: Record<string, string> = {
-            Jackets: "1551006917-0624bb7c3cfd",
-            Accessories: "1523275335684-37898b6baf30",
-            Shoes: "1549298916-b41d501d3772",
-            Pants: "1541099649105-f69ad21f3246",
-            Home: "1513519245088-0e12902e5a38",
-            Electronics: "1498050108023-c5249f4df085",
-            Shirts: "1523381235312-3c1a403824ae",
-          };
-          const photoId =
-            fallbacks[product.category as string] ||
-            "1515886657613-9f3515b0c78f";
-          target.src = `https://images.unsplash.com/photo-${photoId}?q=80&w=1020&auto=format&fit=crop`;
-        }}
-      />
-    </div>
-  );
-
-  const infoBlock = (
-    <div>
-      <p className="text-primary font-medium text-[10px] sm:text-sm leading-tight line-clamp-2 group-hover:text-accent transition-colors duration-300">
-        {product.name}
-      </p>
-
-      <p className="text-[7px] sm:text-[10px] text-gray-500 mt-0.5 sm:mt-1 bg-gray-100 inline-block px-1 sm:px-1.5 py-px sm:py-0.5 rounded">
-        {product.subCategory || product.category}
-      </p>
-
-      {product.rating > 0 && (
-        <div className="mt-1">
-          <RatingStars rating={product.rating} count={product.numReviews} />
-        </div>
-      )}
-
-      <div className="mt-1 sm:mt-2">
-        {hasDiscount ? (
-          <>
-            <span
-              suppressHydrationWarning
-              className="text-sm sm:text-xl font-bold text-primary"
-            >
-              ${product.discountPrice.toLocaleString("en-US")}
-            </span>
-            <span
-              suppressHydrationWarning
-              className="text-[8px] sm:text-xs text-gray-400 line-through ml-1"
-            >
-              ${product.price.toLocaleString("en-US")}
-            </span>
-          </>
-        ) : (
-          <span
-            suppressHydrationWarning
-            className="text-sm sm:text-xl font-bold text-primary"
-          >
-            ${product.price.toLocaleString("en-US")}
-          </span>
-        )}
-      </div>
-
-      {product.deliveryTime && (
-        <p className="text-[7px] sm:text-[11px] text-gray-500 mt-0.5 sm:mt-1">
-          Delivery:{" "}
-          <span className="font-semibold text-primary">
-            {product.deliveryTime}
-          </span>
-        </p>
-      )}
-
-      {product.supplier && typeof product.supplier === "object" && (
-        <p className="hidden sm:block text-[10px] text-gray-400 mt-1">
-          by{" "}
-          <Link
-            href={`/supplier/${(product.supplier as Supplier).businessSlug}`}
-            className="font-bold text-accent/80 hover:text-accent hover:underline"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {(product.supplier as Supplier).businessName}
-          </Link>
-        </p>
-      )}
-    </div>
-  );
+  const displayPrice = hasDiscount ? product.discountPrice : product.price;
 
   return (
-    <div className="group border border-gray-100 rounded-xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden bg-white">
-      {/* Mobile: horizontal layout */}
-      <div className="flex sm:hidden">
-        <Link
-          href={`/product/${product.slug}`}
-          className="w-[100px] flex-shrink-0"
-        >
-          {imageBlock}
-        </Link>
-        <div className="flex flex-col flex-grow p-2 min-w-0">
-          <Link href={`/product/${product.slug}`} className="flex-grow">
-            {infoBlock}
-          </Link>
-          <button
-            onClick={addToCartHandler}
-            className="mt-1.5 w-full bg-accent hover:bg-amber-400 text-primary py-1 rounded-full text-[8px] font-bold shadow-sm active:scale-95 cursor-pointer"
-          >
-            Add to Cart
-          </button>
-        </div>
+    <div className="group relative bg-[#1a1a1a]/90 border border-white/[0.08] overflow-hidden flex flex-col">
+      {/* Top bar: logo + heart */}
+      <div className="flex items-center justify-between px-3 pt-3 pb-1 sm:px-4 sm:pt-4">
+        <span className="font-serif text-[9px] sm:text-[11px] text-accent/60 tracking-widest uppercase">
+          Casa di Moda
+        </span>
+        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
       </div>
 
-      {/* Desktop: vertical card layout */}
-      <div className="hidden sm:flex sm:flex-col">
-        <Link href={`/product/${product.slug}`} className="flex-grow">
-          {imageBlock}
-          <div className="p-4">{infoBlock}</div>
+      {/* Product Image */}
+      <Link
+        href={`/product/${product.slug}`}
+        className="relative aspect-square w-full overflow-hidden bg-[#222]"
+      >
+        {/* Badge */}
+        {product.isFeatured && (
+          <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-accent/90 text-[6px] sm:text-[8px] font-bold uppercase tracking-widest text-white px-2 py-0.5 sm:px-2.5 sm:py-1">
+            Nouveauté
+          </span>
+        )}
+        <Image
+          src={product.image || "/images/placeholder.jpg"}
+          alt={product.name}
+          fill
+          className="object-contain p-4 sm:p-6 transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 640px) 50vw, (max-width: 1200px) 33vw, 20vw"
+          unoptimized={true}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            const fallbacks: Record<string, string> = {
+              Jackets: "1551006917-0624bb7c3cfd",
+              Accessories: "1523275335684-37898b6baf30",
+              Shoes: "1549298916-b41d501d3772",
+              Pants: "1541099649105-f69ad21f3246",
+              Home: "1513519245088-0e12902e5a38",
+              Electronics: "1498050108023-c5249f4df085",
+              Shirts: "1523381235312-3c1a403824ae",
+            };
+            const photoId =
+              fallbacks[product.category as string] ||
+              "1515886657613-9f3515b0c78f";
+            target.src = `https://images.unsplash.com/photo-${photoId}?q=80&w=1020&auto=format&fit=crop`;
+          }}
+        />
+      </Link>
+
+      {/* Product Info */}
+      <div className="flex flex-col items-center text-center px-3 py-3 sm:px-4 sm:py-4 flex-grow">
+        <Link href={`/product/${product.slug}`} className="flex-grow w-full">
+          <h3 className="text-white font-bold uppercase tracking-wider text-[9px] sm:text-xs leading-tight line-clamp-2 mb-1">
+            {product.name}
+          </h3>
+          <p className="text-white/30 uppercase tracking-wider text-[7px] sm:text-[10px] mb-2">
+            {product.brand}
+          </p>
+          <div className="mb-2 sm:mb-3">
+            {hasDiscount ? (
+              <div className="flex items-center justify-center gap-2">
+                <span
+                  suppressHydrationWarning
+                  className="text-white font-bold text-sm sm:text-lg"
+                >
+                  {displayPrice.toLocaleString("en-US")}
+                </span>
+                <span className="text-white/30 text-[9px] sm:text-xs">TND</span>
+                <span
+                  suppressHydrationWarning
+                  className="text-white/25 line-through text-[9px] sm:text-xs"
+                >
+                  {product.price.toLocaleString("en-US")}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-1.5">
+                <span
+                  suppressHydrationWarning
+                  className="text-white font-bold text-sm sm:text-lg"
+                >
+                  {displayPrice.toLocaleString("en-US")}
+                </span>
+                <span className="text-white/30 text-[9px] sm:text-xs">TND</span>
+              </div>
+            )}
+          </div>
         </Link>
-        <div className="p-4 pt-0 mt-auto">
-          <button
-            onClick={addToCartHandler}
-            className="w-full bg-accent hover:bg-amber-400 text-primary py-2.5 rounded-full transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md active:scale-95 cursor-pointer"
-          >
-            Add to Cart
-          </button>
-        </div>
+
+        {/* Add to Cart */}
+        <button
+          onClick={addToCartHandler}
+          className="w-full border border-white/20 hover:border-accent hover:bg-accent/10 text-white/80 hover:text-accent py-1.5 sm:py-2 text-[7px] sm:text-[9px] font-bold uppercase tracking-[0.2em] transition-all duration-300 cursor-pointer"
+        >
+          Ajouter au Panier
+        </button>
       </div>
     </div>
   );

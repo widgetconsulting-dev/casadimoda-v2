@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useStore } from "@/utils/context/Store";
-import Logo from "@/components/Logo";
 import { useSession, signOut } from "next-auth/react";
-import { MapPin, Search, ShoppingCart, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Heart, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Image from "next/image";
@@ -17,6 +16,7 @@ export default function TopBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [bump, setBump] = useState(false);
@@ -30,12 +30,8 @@ export default function TopBar() {
 
   useEffect(() => {
     if (cartQuantity === 0) return;
-    const bumper = setTimeout(() => {
-      setBump(true);
-    }, 0);
-    const timer = setTimeout(() => {
-      setBump(false);
-    }, 300);
+    const bumper = setTimeout(() => setBump(true), 0);
+    const timer = setTimeout(() => setBump(false), 300);
     return () => {
       clearTimeout(bumper);
       clearTimeout(timer);
@@ -60,11 +56,9 @@ export default function TopBar() {
         setShowDropdown(false);
       }
     }, 300);
-
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -72,6 +66,7 @@ export default function TopBar() {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setShowDropdown(false);
+        setShowSearch(false);
       }
       if (
         accountMenuRef.current &&
@@ -81,279 +76,282 @@ export default function TopBar() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleSearchSubmit = () => {
     if (searchQuery.trim()) {
       setShowDropdown(false);
+      setShowSearch(false);
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
 
   return (
-    <div className="bg-primary px-4 py-2 flex items-center gap-2 md:gap-4  relative z-50 flex-wrap">
-      {/* Logo */}
-      <Link
-        href="/"
-        className="hidden lg:flex items-center p-2 border border-transparent hover:border-accent rounded-sm group transition-all"
-      >
-        <Logo />
-      </Link>
+    <>
+      <div className="relative z-50 bg-[radial-gradient(circle_at_center,_#1e1e1d_0%,_#1e1e1d_25%,_#000_75%)]">
+        {/* Gold accent line */}
+        <div className="h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent" />
 
-      {/* Deliver to */}
-      <div className="hidden lg:flex flex-col items-start p-2 border border-transparent  rounded-sm cursor-pointer leading-tight group">
-        <span className="text-xs text-secondary opacity-70">Deliver to</span>
-        <div className="flex items-center gap-1 font-bold text-sm text-secondary">
-          <MapPin className="w-4 h-4 text-accent" />
-          Tunisia
-        </div>
-      </div>
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="flex items-center justify-between h-14 md:h-16">
+            {/* Left Nav */}
+            <nav className="hidden md:flex items-center gap-6">
+              <Link
+                href="/"
+                className="text-xs font-medium tracking-wide text-secondary hover:text-accent transition-colors underline underline-offset-4 decoration-accent"
+              >
+                Accueil
+              </Link>
+              <Link
+                href="/products"
+                className="text-xs font-medium tracking-wide text-secondary/70 hover:text-accent transition-colors"
+              >
+                Boutique
+              </Link>
+              <Link
+                href="/wholesale"
+                className="text-xs font-medium tracking-wide text-secondary/70 hover:text-accent transition-colors"
+              >
+                Wholesale
+              </Link>
+            </nav>
 
-      {/* Search Bar */}
-      <div ref={dropdownRef} className="flex-grow relative group z-50">
-        <div className="flex h-10 rounded-md overflow-hidden bg-white focus-within:ring-2 focus-within:ring-accent">
-          <input
-            type="text"
-            className="flex-grow px-3 text-primary text-sm outline-none placeholder:text-gray-400"
-            placeholder="Search our exclusive collection..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => {
-              if (searchQuery.length > 1 && searchResults.length > 0)
-                setShowDropdown(true);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
-          />
-          <button
-            onClick={handleSearchSubmit}
-            className="bg-accent hover:opacity-90 px-5 flex items-center justify-center cursor-pointer transition-all text-primary"
-          >
-            <Search className="w-5 h-5" strokeWidth={2.5} />
-          </button>
-        </div>
+            {/* Center Logo */}
+            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+              <h1 className="font-serif text-xl md:text-2xl tracking-[0.15em] text-accent whitespace-nowrap">
+                CASA DI MODA
+              </h1>
+            </Link>
 
-        {/* Live Search Dropdown */}
-        {showDropdown && searchResults.length > 0 && (
-          <div className="absolute top-full left-0 w-full bg-white mt-1 rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[100]">
-            <ul className="divide-y divide-gray-50">
-              {searchResults.map((product) => (
-                <li key={product._id}>
-                  <Link
-                    href={`/product/${product.slug}`}
-                    className="flex items-center gap-4 p-3 hover:bg-gray-50 transition-all duration-200 group/item"
-                    onClick={() => setShowDropdown(false)}
-                  >
-                    <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 group-hover/item:border-accent/30 transition-colors">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover/item:scale-110 transition-transform duration-500"
-                        unoptimized={true}
-                      />
-                    </div>
-                    <div className="flex-grow min-w-0">
-                      <h4 className="text-sm font-bold text-primary truncate group-hover/item:text-accent transition-colors">
-                        {product.name}
-                      </h4>
-                      <p className="text-[10px] text-text-dark/50 uppercase tracking-wider group-hover/item:text-text-dark/70">
-                        {product.brand}
-                      </p>
-                    </div>
-                    <div className="text-xs font-black text-accent whitespace-nowrap group-hover/item:scale-105 transition-transform">
-                      $
-                      {(
-                        product.discountPrice || product.price
-                      ).toLocaleString()}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <button
-              onClick={handleSearchSubmit}
-              className="w-full p-2 bg-secondary cursor-pointer text-[10px] font-black uppercase tracking-widest text-primary hover:bg-accent hover:text-white transition-colors"
-            >
-              View All Results
-            </button>
-          </div>
-        )}
-      </div>
+            {/* Right Icons */}
+            <div className="flex items-center gap-3 md:gap-5 ml-auto">
+              {/* Search Toggle */}
+              <button
+                onClick={() => setShowSearch(!showSearch)}
+                className="text-secondary/70 hover:text-accent transition-colors cursor-pointer"
+              >
+                <Search className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+              </button>
 
-      {/* Language Selection */}
-      <div className="hidden md:flex items-center gap-1 p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer font-bold text-sm text-secondary">
-        🇫🇷 EN <ChevronDown className="w-2.5 h-2.5 mt-0.5 opacity-60" />
-      </div>
-
-      {/* Accounts & Lists */}
-      <div
-        ref={accountMenuRef}
-        className="relative p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer leading-tight"
-        onClick={() => setShowAccountMenu(!showAccountMenu)}
-      >
-        {session?.user ? (
-          <>
-            <span className="text-xs text-secondary opacity-70 font-normal">
-              Hello, {session.user.name}
-            </span>
-            <div className="flex items-center gap-1 font-bold text-sm text-secondary whitespace-nowrap">
-              Account & Lists{" "}
-              <ChevronDown
-                className={`w-2.5 h-2.5 mt-0.5 opacity-60 transition-transform ${showAccountMenu ? "rotate-180" : ""}`}
-              />
-            </div>
-
-            {/* Dropdown Menu */}
-            <div
-              className={`absolute top-full left-0 w-56 mt-0 bg-white shadow-2xl rounded-b-xl overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
-            >
-              <div className="p-4 border-b border-gray-50 bg-secondary/20">
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 mb-1">
-                  Authenticated As
-                </p>
-                <p className="text-sm font-bold text-primary truncate">
-                  {session.user.isAdmin
-                    ? "Luxe Administrator"
-                    : "Privileged Member"}
-                </p>
-              </div>
-              <div className="flex flex-col py-2">
-                {session.user.isAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setShowAccountMenu(false)}
-                    className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors flex items-center justify-between"
-                  >
-                    Admin Dashboard
-                    <span className="bg-primary/5 px-2 py-0.5 rounded text-[8px] uppercase">
-                      Staff Only
-                    </span>
-                  </Link>
-                )}
-                <Link
-                  href="/profile"
-                  onClick={() => setShowAccountMenu(false)}
-                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
-                >
-                  Member Profile
-                </Link>
-                <Link
-                  href="/orders"
-                  onClick={() => setShowAccountMenu(false)}
-                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
-                >
-                  Order History
-                </Link>
-                <div className="h-[1px] bg-gray-50 my-2 mx-4" />
-                <button
-                  onClick={() => signOut()}
-                  className="mx-4 cursor-pointer mb-2 py-3 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-accent hover:text-primary transition-all active:scale-95 shadow-sm"
-                >
-                  Sign Out
+              {/* Account */}
+              <div
+                ref={accountMenuRef}
+                className="relative"
+                onClick={() => setShowAccountMenu(!showAccountMenu)}
+              >
+                <button className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors cursor-pointer">
+                  <User className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+                  <span className="hidden md:inline text-xs font-medium">
+                    {session?.user ? session.user.name : "Connexion"}
+                  </span>
                 </button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <span className="text-xs text-secondary opacity-70 font-normal">
-              Hello, sign in
-            </span>
-            <div className="flex items-center gap-1 font-bold text-sm text-secondary whitespace-nowrap">
-              Account & Lists{" "}
-              <ChevronDown
-                className={`w-2.5 h-2.5 mt-0.5 opacity-60 transition-transform ${showAccountMenu ? "rotate-180" : ""}`}
-              />
-            </div>
 
-            {/* Dropdown Menu for non-authenticated users */}
-            <div
-              className={`absolute top-full left-0 w-56 mt-0 bg-white shadow-2xl rounded-b-xl overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
-            >
-              <div className="p-4 border-b border-gray-50">
-                <Link
-                  href="/login"
-                  onClick={() => setShowAccountMenu(false)}
-                  className="block w-full py-2.5 bg-accent text-primary text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm text-center"
+                {/* Account Dropdown */}
+                <div
+                  className={`absolute top-full right-0 w-56 mt-2 bg-white shadow-2xl  overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
                 >
-                  Sign In
-                </Link>
-                <p className="text-[10px] text-text-dark/50 mt-2 text-center">
-                  New customer?{" "}
-                  <Link
-                    href="/register"
-                    onClick={() => setShowAccountMenu(false)}
-                    className="text-accent font-bold hover:underline"
-                  >
-                    Start here
-                  </Link>
-                </p>
+                  {session?.user ? (
+                    <>
+                      <div className="p-4 border-b border-gray-50 bg-secondary/30">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/40 mb-1">
+                          Signed in as
+                        </p>
+                        <p className="text-sm font-bold text-secondary truncate">
+                          {session.user.name}
+                        </p>
+                      </div>
+                      <div className="flex flex-col py-1">
+                        {session.user.isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setShowAccountMenu(false)}
+                            className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                          >
+                            Admin Dashboard
+                          </Link>
+                        )}
+                        <Link
+                          href="/profile"
+                          onClick={() => setShowAccountMenu(false)}
+                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                        >
+                          Mon Profil
+                        </Link>
+                        <Link
+                          href="/orders"
+                          onClick={() => setShowAccountMenu(false)}
+                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                        >
+                          Mes Commandes
+                        </Link>
+                        <div className="h-px bg-gray-100 mx-4 my-1" />
+                        <button
+                          onClick={() => signOut()}
+                          className="mx-4 my-2 py-2 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all cursor-pointer"
+                        >
+                          Déconnexion
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="p-4 border-b border-gray-50">
+                        <Link
+                          href="/login"
+                          onClick={() => setShowAccountMenu(false)}
+                          className="block w-full py-2.5 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all text-center"
+                        >
+                          Connexion
+                        </Link>
+                        <p className="text-[10px] text-secondary/50 mt-2 text-center">
+                          Nouveau client?{" "}
+                          <Link
+                            href="/register"
+                            onClick={() => setShowAccountMenu(false)}
+                            className="text-accent font-bold hover:underline"
+                          >
+                            Créer un compte
+                          </Link>
+                        </p>
+                      </div>
+                      <div className="flex flex-col py-1">
+                        <Link
+                          href="/orders"
+                          onClick={() => setShowAccountMenu(false)}
+                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                        >
+                          Commandes
+                        </Link>
+                        <Link
+                          href="/become-supplier"
+                          onClick={() => setShowAccountMenu(false)}
+                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                        >
+                          Devenir Fournisseur
+                        </Link>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col py-2">
-                <Link
-                  href="/profile"
-                  onClick={() => setShowAccountMenu(false)}
-                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
-                >
-                  My Account
-                </Link>
-                <Link
-                  href="/orders"
-                  onClick={() => setShowAccountMenu(false)}
-                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
-                >
-                  Orders
-                </Link>
-                <Link
-                  href="/become-supplier"
-                  onClick={() => setShowAccountMenu(false)}
-                  className="px-4 py-3 text-xs font-bold text-primary hover:bg-accent hover:text-white transition-colors"
-                >
-                  Become a Supplier
-                </Link>
-              </div>
+
+              {/* Favorites */}
+              <Link
+                href="/products"
+                className="hidden md:flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors"
+              >
+                <Heart className="w-[18px] h-[18px]" />
+                <span className="text-xs font-medium">Favoris</span>
+              </Link>
+
+              {/* Cart */}
+              <Link
+                href="/cart"
+                className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"
+              >
+                <div className="relative">
+                  <ShoppingCart className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+                  {cartQuantity > 0 && (
+                    <span
+                      className={`absolute -top-1.5 -right-1.5 bg-accent text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                        bump ? "scale-150" : "scale-100"
+                      }`}
+                    >
+                      {cartQuantity}
+                    </span>
+                  )}
+                </div>
+                <span className="hidden md:inline text-xs font-medium">
+                  Panier
+                </span>
+              </Link>
             </div>
-          </>
-        )}
-      </div>
-
-      {/* Returns & Orders */}
-      <div className="flex flex-col items-start p-2 border border-transparent hover:border-accent rounded-sm cursor-pointer leading-tight">
-        <span className="text-xs text-secondary opacity-70 font-normal">
-          Returns
-        </span>
-        <div className="font-bold text-sm text-secondary">& Orders</div>
-      </div>
-
-      {/* Cart */}
-      <Link
-        href="/cart"
-        className="flex items-end p-2 border border-transparent hover:border-accent rounded-sm group"
-      >
-        <div className="relative">
-          <ShoppingCart
-            className="w-8 h-8 text-white group-hover:text-accent transition-colors"
-            strokeWidth={1.5}
-          />
-          <span
-            className={`absolute top-[-2px] right-[5px] text-primary text-[10px] font-black px-0.5 rounded-full leading-none min-w-[18px] min-h-[18px] flex items-center justify-center transition-transform duration-300 ${
-              bump ? "scale-150 bg-yellow-400" : "scale-100 bg-accent"
-            }`}
-          >
-            {cartQuantity}
-          </span>
+          </div>
         </div>
-        <span className="font-bold text-sm mb-1 hidden lg:inline ml-1 text-secondary">
-          Basket
-        </span>
-      </Link>
-    </div>
+      </div>
+
+      {/* Expandable Search Bar */}
+      {showSearch && (
+        <div
+          ref={dropdownRef}
+          className="bg-white border-b border-gray-100 px-4 md:px-8 py-3 relative z-40"
+        >
+          <div className="max-w-2xl mx-auto">
+            <div className="flex h-10  overflow-hidden border border-gray-200 focus-within:border-accent">
+              <input
+                type="text"
+                className="flex-grow px-4 text-primary text-sm outline-none placeholder:text-gray-400"
+                placeholder="Rechercher..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearchSubmit();
+                }}
+                autoFocus
+              />
+              <button
+                onClick={handleSearchSubmit}
+                className="bg-primary hover:bg-accent px-5 flex items-center justify-center cursor-pointer transition-all text-white"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Search Results */}
+            {showDropdown && searchResults.length > 0 && (
+              <div className="absolute left-0 right-0 top-full bg-white shadow-2xl border border-gray-100 overflow-hidden z-[100]">
+                <div className="max-w-2xl mx-auto">
+                  <ul className="divide-y divide-gray-50">
+                    {searchResults.map((product) => (
+                      <li key={product._id}>
+                        <Link
+                          href={`/product/${product.slug}`}
+                          className="flex items-center gap-4 p-3 hover:bg-secondary/50 transition-all"
+                          onClick={() => {
+                            setShowDropdown(false);
+                            setShowSearch(false);
+                          }}
+                        >
+                          <div className="relative w-10 h-10  overflow-hidden flex-shrink-0 border border-gray-100">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                              unoptimized={true}
+                            />
+                          </div>
+                          <div className="flex-grow min-w-0">
+                            <h4 className="text-sm font-medium text-primary truncate">
+                              {product.name}
+                            </h4>
+                            <p className="text-[10px] text-primary/40 uppercase tracking-wider">
+                              {product.brand}
+                            </p>
+                          </div>
+                          <div className="text-xs font-bold text-accent">
+                            $
+                            {(
+                              product.discountPrice || product.price
+                            ).toLocaleString()}
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={handleSearchSubmit}
+                    className="w-full p-2.5 bg-secondary/50 text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-accent hover:text-white transition-colors cursor-pointer"
+                  >
+                    Voir tous les résultats
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

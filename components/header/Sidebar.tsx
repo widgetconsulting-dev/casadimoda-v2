@@ -21,15 +21,17 @@ export default function Sidebar({
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] transition-opacity duration-500 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
         onClick={onClose}
       />
 
       {/* Sidebar Panel */}
       <aside
-        className={`fixed top-0 left-0 h-full w-[350px] bg-secondary z-[101] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 left-0 h-full w-[350px] bg-secondary z-[101] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         {/* Header */}
         <div className="bg-primary p-6 flex items-center justify-between text-white">
@@ -60,7 +62,11 @@ export default function Sidebar({
               {categories.map((cat) => (
                 <li key={cat} className="space-y-2">
                   <div className="text-primary font-bold text-lg hover:text-accent transition-colors cursor-pointer flex items-center justify-between group">
-                    <Link href={`/search?category=${encodeURIComponent(cat)}`} onClick={onClose} className="flex-grow">
+                    <Link
+                      href={`/search?category=${encodeURIComponent(cat)}`}
+                      onClick={onClose}
+                      className="flex-grow"
+                    >
                       <span>{cat}</span>
                     </Link>
                     <ChevronRight className="w-4 h-4 text-accent group-hover:translate-x-1 transition-transform" />
@@ -94,7 +100,7 @@ export default function Sidebar({
                 <Link
                   key={brand}
                   href={`/search?brand=${encodeURIComponent(brand)}`}
-                  className="bg-white border border-gray-100 p-3 rounded-xl text-[10px] font-black text-center uppercase tracking-widest text-primary hover:border-accent hover:text-accent transition-all shadow-sm"
+                  className="bg-white border border-gray-100 p-3  text-[10px] font-black text-center uppercase tracking-widest text-primary hover:border-accent hover:text-accent transition-all shadow-sm"
                   onClick={onClose}
                 >
                   {brand}

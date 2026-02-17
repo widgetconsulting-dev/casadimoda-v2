@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ShoppingBag,
+  Building2,
+  Crown,
+} from "lucide-react";
 
 interface HeroSlide {
   type: "image" | "video";
@@ -11,10 +17,6 @@ interface HeroSlide {
   title: string;
   subtitle: string;
   description: string;
-  cta1Text: string;
-  cta1Link: string;
-  cta2Text: string;
-  cta2Link: string;
 }
 
 interface HeroCarouselProps {
@@ -43,7 +45,6 @@ export default function HeroCarousel({
     setCurrentSlide(index);
   };
 
-  // Dynamically calculate header height
   useEffect(() => {
     const updateHeaderHeight = () => {
       const header = document.querySelector("header");
@@ -53,11 +54,8 @@ export default function HeroCarousel({
     };
 
     updateHeaderHeight();
-
-    // Update on resize
     window.addEventListener("resize", updateHeaderHeight);
 
-    // Use MutationObserver to detect header changes (like announcement bar closing)
     const observer = new MutationObserver(updateHeaderHeight);
     const header = document.querySelector("header");
     if (header) {
@@ -74,7 +72,6 @@ export default function HeroCarousel({
     };
   }, []);
 
-  // Control video playback based on current slide
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (video) {
@@ -101,7 +98,7 @@ export default function HeroCarousel({
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden group/hero"
       style={{ height: `calc(100vh - ${headerHeight}px)` }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -134,64 +131,100 @@ export default function HeroCarousel({
                 className="w-full h-full object-cover"
               />
             )}
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/40"></div>
           </div>
         ))}
       </div>
 
-      {/* Content Overlay */}
-      <div className="relative h-full flex items-center">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
-          <div className="max-w-2xl">
-            <h2 className="text-white/90 font-bold uppercase tracking-[0.3em] text-xs mb-4 animate-fade-in">
-              {currentSlideData.subtitle}
-            </h2>
-            <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight mb-6 animate-fade-in">
-              {currentSlideData.title}
-            </h1>
-            <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-8 animate-fade-in">
-              {currentSlideData.description}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in">
-              <Link
-                href={currentSlideData.cta1Link}
-                className="bg-accent text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-white hover:text-primary transition-all shadow-lg text-center"
-              >
-                {currentSlideData.cta1Text}
-              </Link>
-              <Link
-                href={currentSlideData.cta2Link}
-                className="bg-transparent border-2 border-white text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-white hover:text-primary transition-all text-center"
-              >
-                {currentSlideData.cta2Text}
-              </Link>
-            </div>
+      {/* Content - Centered */}
+      <div className="relative h-full flex flex-col items-center justify-center">
+        <div className="text-center max-w-4xl mx-auto px-6 flex-1 flex flex-col items-center justify-center">
+          {/* Top label */}
+          <p className="text-white/70 font-bold uppercase tracking-[0.35em] text-[9px] md:text-[11px] mb-4 md:mb-6">
+            {currentSlideData.subtitle}
+          </p>
+
+          {/* Main title */}
+          <h1 className="font-serif text-3xl md:text-5xl lg:text-6xl text-white tracking-tight mb-3 md:mb-5 leading-[1.15] italic">
+            {currentSlideData.title}
+          </h1>
+
+          {/* Description */}
+          <p className="text-white/60 text-xs md:text-sm leading-relaxed max-w-lg mx-auto">
+            {currentSlideData.description}
+          </p>
+        </div>
+
+        {/* Category Cards - Inside hero at bottom */}
+        <div className="w-full max-w-4xl mx-auto px-4 md:px-8 pb-10 md:pb-16">
+          <div className="grid grid-cols-3 gap-2 md:gap-4">
+            {/* Shop Détail */}
+            <Link
+              href="/products"
+              className="group/card bg-black/60 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
+            >
+              <ShoppingBag className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
+              <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
+                Shop Détail
+              </h3>
+              <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
+                Marques & Accessoires
+              </p>
+            </Link>
+
+            {/* Espace Wholesale */}
+            <Link
+              href="/wholesale"
+              className="group/card bg-black/60 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
+            >
+              <Building2 className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
+              <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
+                Espace Wholesale
+              </h3>
+              <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
+                Vente en Gros
+              </p>
+            </Link>
+
+            {/* VIP Store */}
+            <Link
+              href="/vip-store"
+              className="group/card bg-black/60 backdrop-blur-sm border border-white/10 hover:border-accent/40 p-3 md:p-6 flex flex-col items-center text-center transition-all duration-300 hover:bg-black/70"
+            >
+              <Crown className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
+              <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
+                VIP Store
+              </h3>
+              <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
+                Sur Mesure & Création
+              </p>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Ghost Navigation Arrows - visible only on hover */}
       {slides.length > 1 && (
         <>
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full flex items-center justify-center transition-all group"
+            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all duration-300 opacity-0 group-hover/hero:opacity-100 hover:bg-white/10 cursor-pointer"
             aria-label="Previous slide"
           >
             <ChevronLeft
               size={24}
-              className="text-white group-hover:scale-110 transition-transform"
+              className="text-white/60 hover:text-white transition-colors"
             />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full flex items-center justify-center transition-all group"
+            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all duration-300 opacity-0 group-hover/hero:opacity-100 hover:bg-white/10 cursor-pointer"
             aria-label="Next slide"
           >
             <ChevronRight
               size={24}
-              className="text-white group-hover:scale-110 transition-transform"
+              className="text-white/60 hover:text-white transition-colors"
             />
           </button>
         </>
@@ -199,38 +232,21 @@ export default function HeroCarousel({
 
       {/* Dot Indicators */}
       {slides.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+        <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`transition-all ${
+              className={`transition-all h-[2px] cursor-pointer ${
                 index === currentSlide
-                  ? "w-12 h-3 bg-accent"
-                  : "w-3 h-3 bg-white/50 hover:bg-white/80"
-              } rounded-full`}
-              aria-label={`Go to slide ${index + 1}`}
+                  ? "w-8 bg-accent"
+                  : "w-4 bg-white/30 hover:bg-white/60"
+              }`}
+              aria-label={`Slide ${index + 1}`}
             />
           ))}
         </div>
       )}
-
-      {/* CSS for animations */}
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 }

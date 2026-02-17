@@ -49,13 +49,13 @@ export default function LoginPage() {
     <div className="min-h-[60vh] flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Card Container */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 italic-shimmer relative">
+        <div className="bg-white  md: shadow-2xl overflow-hidden border border-gray-100 italic-shimmer relative">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-accent" />
 
           <div className="p-5 md:p-8 lg:p-12">
             {/* Header */}
             <div className="hidden md:flex flex-col items-center mb-6 md:mb-10 text-center">
-              <div className="bg-primary p-3 md:p-4 rounded-xl md:rounded-2xl mb-4 md:mb-6 shadow-lg rotate-3 group-hover:rotate-0 transition-transform">
+              <div className="bg-primary p-3 md:p-4  md: mb-4 md:mb-6 shadow-lg rotate-3 group-hover:rotate-0 transition-transform">
                 <Logo />
               </div>
               <h1 className="text-xl md:text-3xl font-black text-primary tracking-tight mb-1 md:mb-2">
@@ -95,7 +95,7 @@ export default function LoginPage() {
                       errors.email
                         ? "border-red-500/50"
                         : "border-transparent focus:border-accent"
-                    } rounded-xl md:rounded-2xl py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                    }  md: py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                   />
                 </div>
                 {errors.email && (
@@ -136,7 +136,7 @@ export default function LoginPage() {
                       errors.password
                         ? "border-red-500/50"
                         : "border-transparent focus:border-accent"
-                    } rounded-xl md:rounded-2xl py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
+                    }  md: py-3 md:py-4 pl-10 md:pl-12 pr-4 text-sm md:text-base text-primary font-bold placeholder:text-gray-300 outline-none transition-all`}
                   />
                 </div>
                 {errors.password && (
@@ -150,7 +150,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary hover:bg-black text-secondary font-black py-4 md:py-5 rounded-xl md:rounded-2xl transition-all shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 uppercase text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] disabled:bg-gray-200 disabled:text-gray-400 group relative overflow-hidden"
+                className="w-full bg-primary hover:bg-black text-secondary font-black py-4 md:py-5  md: transition-all shadow-xl active:scale-[0.98] flex items-center justify-center gap-3 uppercase text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] disabled:bg-gray-200 disabled:text-gray-400 group relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-accent w-0 group-hover:w-full transition-all duration-500 opacity-10" />
                 {isSubmitting ? (
@@ -172,7 +172,7 @@ export default function LoginPage() {
               <p className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-text-dark/20 mb-4 md:mb-6">
                 Or continue with
               </p>
-              <button className="w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3 md:py-4 rounded-xl md:rounded-2xl transition-all flex items-center justify-center gap-3 text-[10px] md:text-xs uppercase tracking-widest cursor-pointer border border-gray-100">
+              <button className="w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3 md:py-4  md: transition-all flex items-center justify-center gap-3 text-[10px] md:text-xs uppercase tracking-widest cursor-pointer border border-gray-100">
                 <GoogleIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Google Account
               </button>

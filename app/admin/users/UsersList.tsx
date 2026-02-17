@@ -25,7 +25,7 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
@@ -34,11 +34,11 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
               size={18}
             />
             <input
-              className="w-full bg-secondary border-none rounded-2xl py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
+              className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
               placeholder="Search members..."
             />
           </div>
-          <button className="bg-secondary px-6 py-4 rounded-2xl flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
+          <button className="bg-secondary px-6 py-4  flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
             <Filter size={16} /> Filters
           </button>
         </div>
@@ -91,11 +91,11 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
                   </td>
                   <td className="py-6">
                     {user.isAdmin ? (
-                      <span className="inline-flex items-center gap-2 text-[10px] font-black text-accent bg-accent/5 px-4 py-2 rounded-xl uppercase tracking-widest border border-accent/10">
+                      <span className="inline-flex items-center gap-2 text-[10px] font-black text-accent bg-accent/5 px-4 py-2  uppercase tracking-widest border border-accent/10">
                         <Shield size={12} /> Administrator
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-2 text-[10px] font-bold text-text-dark/40 bg-secondary px-4 py-2 rounded-xl uppercase tracking-widest">
+                      <span className="inline-flex items-center gap-2 text-[10px] font-bold text-text-dark/40 bg-secondary px-4 py-2  uppercase tracking-widest">
                         Member
                       </span>
                     )}

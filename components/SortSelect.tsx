@@ -3,29 +3,26 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface SortSelectProps {
   currentSort: string;
 }
 
-interface SortOption {
-  value: string;
-  label: string;
-}
-
-const sortOptions: SortOption[] = [
-  { value: "newest", label: "Newest Arrivals" },
-  { value: "featured", label: "Featured" },
-  { value: "lowest", label: "Price: Low to High" },
-  { value: "highest", label: "Price: High to Low" },
-  { value: "toprated", label: "Top Rated" },
-];
-
 export default function SortSelect({ currentSort }: SortSelectProps) {
+  const t = useTranslations("products");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const sortOptions = [
+    { value: "newest", label: t("sortNewest") },
+    { value: "featured", label: t("sortFeatured") },
+    { value: "lowest", label: t("sortPriceLow") },
+    { value: "highest", label: t("sortPriceHigh") },
+    { value: "toprated", label: t("sortTopRated") },
+  ];
 
   const currentOption =
     sortOptions.find((opt) => opt.value === currentSort) || sortOptions[0];
@@ -33,24 +30,20 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Update or remove sort parameter
     if (newSort === "newest") {
       params.delete("sort");
     } else {
       params.set("sort", newSort);
     }
 
-    // Reset to first page when sorting changes
     params.delete("page");
 
-    // Navigate to the new URL
     const queryString = params.toString();
     router.push(`/search${queryString ? `?${queryString}` : ""}`);
 
     setIsOpen(false);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -67,7 +60,9 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
 
   return (
     <div className="flex items-center gap-4">
-      <span className="text-xs font-bold text-text-dark/70">Sort by:</span>
+      <span className="text-xs font-bold text-text-dark/70">
+        {t("sortBy")}:
+      </span>
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}

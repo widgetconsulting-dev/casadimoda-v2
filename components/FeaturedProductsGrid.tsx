@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import ProductItem from "@/components/ProductItem";
 import { Product } from "@/types";
 
@@ -13,6 +14,7 @@ export default function FeaturedProductsGrid({
   products,
   pageSize = 8,
 }: FeaturedProductsGridProps) {
+  const t = useTranslations("products");
   const [visible, setVisible] = useState(pageSize);
 
   const visibleProducts = products.slice(0, visible);
@@ -31,7 +33,7 @@ export default function FeaturedProductsGrid({
             onClick={() => setVisible((prev) => prev + pageSize)}
             className="border border-white/20 hover:border-accent text-white/60 hover:text-accent px-10 py-3 transition-all duration-300 text-[9px] font-bold uppercase tracking-[0.25em] cursor-pointer"
           >
-            Voir Plus
+            {t("seeMore")}
           </button>
         </div>
       )}

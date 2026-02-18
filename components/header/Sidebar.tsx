@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { ChevronRight, User, X } from "lucide-react";
 interface SidebarProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function Sidebar({
   brands,
   categoryMap,
 }: SidebarProps) {
+  const t = useTranslations("sidebar");
   return (
     <>
       {/* Overlay */}
@@ -40,7 +42,7 @@ export default function Sidebar({
               <User className="w-5 h-5" />
             </div>
             <span className="text-lg font-black tracking-tight font-sans">
-              Hello, Sign In.
+              {t("hello")}
             </span>
           </div>
           <button
@@ -56,7 +58,7 @@ export default function Sidebar({
           {/* Shop By Category */}
           <section>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-accent mb-6 border-b border-gray-100 pb-2">
-              Shop by Category
+              {t("shopByCategory")}
             </h3>
             <ul className="space-y-4">
               {categories.map((cat) => (
@@ -93,7 +95,7 @@ export default function Sidebar({
           {/* Featured Brands */}
           <section>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-accent mb-6 border-b border-gray-100 pb-2">
-              Exclusive Brands
+              {t("exclusiveBrands")}
             </h3>
             <div className="grid grid-cols-2 gap-3">
               {brands.map((brand) => (
@@ -112,16 +114,16 @@ export default function Sidebar({
           {/* Help & Settings */}
           <section className="pt-6 border-t border-gray-100">
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-accent mb-4">
-              Help & Settings
+              {t("helpSettings")}
             </h3>
             <ul className="space-y-3 text-sm font-medium text-text-dark/70">
               <li className="hover:text-primary cursor-pointer">
-                Your Account
+                {t("yourAccount")}
               </li>
               <li className="hover:text-primary cursor-pointer">
-                Customer Service
+                {t("customerService")}
               </li>
-              <li className="hover:text-primary cursor-pointer">Sign In</li>
+              <li className="hover:text-primary cursor-pointer">{t("signIn")}</li>
             </ul>
           </section>
         </div>

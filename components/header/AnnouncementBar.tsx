@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 
 export default function AnnouncementBar() {
+  const t = useTranslations("announcement");
   const [isVisible, setIsVisible] = useState(true);
 
   const announcements = [
-    "Livraison gratuite pour les commandes de plus de 500$",
-    "Nouvelle collection Printemps 2026 disponible",
-    "Accès exclusif VIP aux éditions limitées",
+    t("freeShipping"),
+    t("newCollection"),
+    t("vipAccess"),
   ];
 
   if (!isVisible) return null;

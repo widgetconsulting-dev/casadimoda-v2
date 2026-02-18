@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import {
   ChevronLeft,
   ChevronRight,
@@ -28,6 +29,7 @@ export default function HeroCarousel({
   slides,
   autoplayInterval = 5000,
 }: HeroCarouselProps) {
+  const t = useTranslations("hero");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(140);
@@ -164,10 +166,10 @@ export default function HeroCarousel({
               >
                 <ShoppingBag className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
                 <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
-                  Shop Détail
+                  {t("shopDetail")}
                 </h3>
                 <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
-                  Marques & Accessoires
+                  {t("brandsAccessories")}
                 </p>
               </Link>
 
@@ -178,10 +180,10 @@ export default function HeroCarousel({
               >
                 <Building2 className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
                 <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
-                  Espace Wholesale
+                  {t("wholesaleSpace")}
                 </h3>
                 <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
-                  Vente en Gros
+                  {t("wholesaleSales")}
                 </p>
               </Link>
 
@@ -192,10 +194,10 @@ export default function HeroCarousel({
               >
                 <Crown className="w-5 h-5 md:w-8 md:h-8 text-accent mb-2 md:mb-3" />
                 <h3 className="text-white font-black uppercase tracking-wider text-[9px] md:text-sm mb-0.5 md:mb-1">
-                  VIP Store
+                  {t("vipStore")}
                 </h3>
                 <p className="text-white/50 text-[7px] md:text-[11px] tracking-wide">
-                  Sur Mesure & Création
+                  {t("customCreation")}
                 </p>
               </Link>
             </div>
@@ -209,7 +211,7 @@ export default function HeroCarousel({
           <button
             onClick={prevSlide}
             className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all duration-300 opacity-0 group-hover/hero:opacity-100 hover:bg-white/10 cursor-pointer"
-            aria-label="Previous slide"
+            aria-label={t("previousSlide")}
           >
             <ChevronLeft
               size={24}
@@ -219,7 +221,7 @@ export default function HeroCarousel({
           <button
             onClick={nextSlide}
             className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all duration-300 opacity-0 group-hover/hero:opacity-100 hover:bg-white/10 cursor-pointer"
-            aria-label="Next slide"
+            aria-label={t("nextSlide")}
           >
             <ChevronRight
               size={24}

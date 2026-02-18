@@ -54,6 +54,9 @@ export interface Product {
   brand: string;
   price: number;
   discountPrice: number;
+  sizes: string[];
+  colors: string[];
+  parentCategory: "detail" | "gros";
   countInStock: number;
   image: string;
   description: string;

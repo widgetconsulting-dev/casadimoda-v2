@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useStore } from "@/utils/context/Store";
 import { Product, Supplier } from "@/types";
 import { Heart, Star } from "lucide-react";
@@ -11,6 +12,8 @@ interface ProductItemProps {
 }
 
 export default function ProductItem({ product }: ProductItemProps) {
+  const t = useTranslations("products");
+  const tc = useTranslations("common");
   const { state, dispatch } = useStore();
 
   const addToCartHandler = () => {
@@ -18,7 +21,7 @@ export default function ProductItem({ product }: ProductItemProps) {
     const quantity = existItem ? existItem.quantity + 1 : 1;
 
     if (product.countInStock < quantity) {
-      alert("Sorry. Product is out of stock");
+      alert(tc("outOfStock"));
       return;
     }
 
@@ -48,7 +51,7 @@ export default function ProductItem({ product }: ProductItemProps) {
         <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
 
         <span className="font-serif text-[9px] sm:text-[11px] text-accent/60 tracking-widest uppercase">
-          Casa di Moda
+          {tc("brand")}
         </span>
         <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
       </div>
@@ -64,7 +67,7 @@ export default function ProductItem({ product }: ProductItemProps) {
         {/* Badge */}
         {product.isFeatured && (
           <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-accent/90 text-[6px] sm:text-[8px] font-bold uppercase tracking-widest text-white px-2 py-0.5 sm:px-2.5 sm:py-1">
-            Nouveauté
+            {t("newBadge")}
           </span>
         )}
         <Image
@@ -111,7 +114,7 @@ export default function ProductItem({ product }: ProductItemProps) {
                 >
                   {displayPrice.toLocaleString("en-US")}
                 </span>
-                <span className="text-white/30 text-[9px] sm:text-xs">TND</span>
+                <span className="text-white/30 text-[9px] sm:text-xs">{tc("currency")}</span>
                 <span
                   suppressHydrationWarning
                   className="text-white/25 line-through text-[9px] sm:text-xs"
@@ -127,7 +130,7 @@ export default function ProductItem({ product }: ProductItemProps) {
                 >
                   {displayPrice.toLocaleString("en-US")}
                 </span>
-                <span className="text-white/30 text-[9px] sm:text-xs">TND</span>
+                <span className="text-white/30 text-[9px] sm:text-xs">{tc("currency")}</span>
               </div>
             )}
           </div>
@@ -138,7 +141,7 @@ export default function ProductItem({ product }: ProductItemProps) {
           onClick={addToCartHandler}
           className="w-full border border-white/20 hover:border-accent hover:bg-accent/10 text-white/80 hover:text-accent py-1.5 sm:py-2 text-[7px] sm:text-[9px] font-bold uppercase tracking-[0.2em] transition-all duration-300 cursor-pointer"
         >
-          Ajouter au Panier
+          {t("addToCart")}
         </button>
       </div>
     </div>

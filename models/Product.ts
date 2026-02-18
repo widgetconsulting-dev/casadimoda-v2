@@ -19,6 +19,13 @@ const productSchema = new mongoose.Schema(
     cbm: { type: Number },
     hsCode: { type: String },
     discountPrice: { type: Number, default: 0 },
+    sizes: [{ type: String }],
+    colors: [{ type: String }],
+    parentCategory: {
+      type: String,
+      enum: ["detail", "gros"],
+      default: "detail",
+    },
     isFeatured: { type: Boolean, default: false },
     // Supplier/Vendor Reference
     supplier: {

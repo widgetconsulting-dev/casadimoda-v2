@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import NextTopLoader from "nextjs-toploader";
-import { StoreProvider } from "@/utils/context/Store";
-import { AuthProvider } from "@/components/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,16 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased min-h-screen flex flex-col bg-secondary text-text-dark`}
       >
-        <AuthProvider>
-          <StoreProvider>
-            <NextTopLoader color="#c9a96e" showSpinner={false} height={2} />
-            {children}
-          </StoreProvider>
-        </AuthProvider>
+        {children}
       </body>
     </html>
   );

@@ -1,15 +1,18 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useStore } from "@/utils/context/Store";
 import { useSession, signOut } from "next-auth/react";
 import { Search, ShoppingCart, Heart, User } from "lucide-react";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Image from "next/image";
 
 export default function TopBar() {
+  const t = useTranslations("nav");
   const { state } = useStore();
   const { cart } = state;
   const { data: session } = useSession();
@@ -101,20 +104,22 @@ export default function TopBar() {
                 href="/"
                 className="text-xs font-medium tracking-wide text-secondary hover:text-accent transition-colors underline underline-offset-4 decoration-accent"
               >
-                Accueil
+                {t("home")}
               </Link>
               <Link
                 href="/products"
                 className="text-xs font-medium tracking-wide text-secondary/70 hover:text-accent transition-colors"
               >
-                Boutique
+                {t("shop")}
               </Link>
               <Link
                 href="/wholesale"
                 className="text-xs font-medium tracking-wide text-secondary/70 hover:text-accent transition-colors"
               >
-                Wholesale
+                {t("wholesale")}
               </Link>
+              {/* Language Switcher */}
+              <LanguageSwitcher />
             </nav>
 
             {/* Center Logo */}
@@ -143,21 +148,21 @@ export default function TopBar() {
                 <button className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors cursor-pointer">
                   <User className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                   <span className="hidden md:inline text-xs font-medium">
-                    {session?.user ? session.user.name : "Connexion"}
+                    {session?.user ? session.user.name : t("login")}
                   </span>
                 </button>
 
                 {/* Account Dropdown */}
                 <div
-                  className={`absolute top-full right-0 w-56 mt-2 bg-white shadow-2xl  overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
+                  className={`absolute top-full bg-secondary right-0 w-56 mt-2 shadow-2xl overflow-hidden transition-all duration-300 z-[100] border border-gray-100 cursor-default ${showAccountMenu ? "opacity-100 visible" : "opacity-0 invisible"}`}
                 >
                   {session?.user ? (
                     <>
                       <div className="p-4 border-b border-gray-50 bg-secondary/30">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-secondary/40 mb-1">
-                          Signed in as
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/40 mb-1">
+                          {t("signedInAs")}
                         </p>
-                        <p className="text-sm font-bold text-secondary truncate">
+                        <p className="text-sm font-bold text-primary truncate">
                           {session.user.name}
                         </p>
                       </div>
@@ -166,31 +171,31 @@ export default function TopBar() {
                           <Link
                             href="/admin"
                             onClick={() => setShowAccountMenu(false)}
-                            className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                            className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                           >
-                            Admin Dashboard
+                            {t("adminDashboard")}
                           </Link>
                         )}
                         <Link
                           href="/profile"
                           onClick={() => setShowAccountMenu(false)}
-                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                          className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                         >
-                          Mon Profil
+                          {t("myProfile")}
                         </Link>
                         <Link
                           href="/orders"
                           onClick={() => setShowAccountMenu(false)}
-                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                          className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                         >
-                          Mes Commandes
+                          {t("myOrders")}
                         </Link>
                         <div className="h-px bg-gray-100 mx-4 my-1" />
                         <button
                           onClick={() => signOut()}
-                          className="mx-4 my-2 py-2 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all cursor-pointer"
+                          className="mx-4 my-2 py-2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all cursor-pointer"
                         >
-                          Déconnexion
+                          {t("logout")}
                         </button>
                       </div>
                     </>
@@ -202,10 +207,10 @@ export default function TopBar() {
                           onClick={() => setShowAccountMenu(false)}
                           className="block w-full py-2.5 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all text-center"
                         >
-                          Connexion
+                          {t("login")}
                         </Link>
                         <p className="text-[10px] text-secondary/50 mt-2 text-center">
-                          Nouveau client?{" "}
+                          {t("newCustomer")}{" "}
                           <Link
                             href="/register"
                             onClick={() => setShowAccountMenu(false)}
@@ -242,7 +247,7 @@ export default function TopBar() {
                 className="hidden md:flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors"
               >
                 <Heart className="w-[18px] h-[18px]" />
-                <span className="text-xs font-medium">Favoris</span>
+                <span className="text-xs font-medium">{t("favorites")}</span>
               </Link>
 
               {/* Cart */}
@@ -263,7 +268,7 @@ export default function TopBar() {
                   )}
                 </div>
                 <span className="hidden md:inline text-xs font-medium">
-                  Panier
+                  {t("cart")}
                 </span>
               </Link>
             </div>

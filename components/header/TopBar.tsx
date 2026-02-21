@@ -96,10 +96,10 @@ export default function TopBar() {
         {/* Gold accent line */}
         <div className="h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent" />
 
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Left Nav */}
-            <nav className="hidden md:flex items-center gap-6">
+            <nav className="flex items-center gap-6">
               <Link
                 href="/"
                 className="text-xs font-medium tracking-wide text-secondary hover:text-accent transition-colors underline underline-offset-4 decoration-accent"
@@ -123,8 +123,11 @@ export default function TopBar() {
             </nav>
 
             {/* Center Logo */}
-            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-              <h1 className="font-serif text-xl md:text-2xl tracking-[0.15em] text-accent whitespace-nowrap">
+            <Link
+              href="/"
+              className="hidden md:block absolute left-1/2 -translate-x-1/2"
+            >
+              <h1 className="font-serif text-xl md:text-2xl tracking-[0.01em] lg:tracking-[0.15em] text-accent whitespace-nowrap">
                 CASA DI MODA
               </h1>
             </Link>
@@ -205,7 +208,7 @@ export default function TopBar() {
                         <Link
                           href="/login"
                           onClick={() => setShowAccountMenu(false)}
-                          className="block w-full py-2.5 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all text-center"
+                          className="block w-full py-2.5 bg-primary text-white text-[10px] font-bold uppercase tracking-widest  hover:bg-accent transition-all text-center"
                         >
                           {t("login")}
                         </Link>
@@ -224,14 +227,14 @@ export default function TopBar() {
                         <Link
                           href="/orders"
                           onClick={() => setShowAccountMenu(false)}
-                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                          className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                         >
                           Commandes
                         </Link>
                         <Link
                           href="/become-supplier"
                           onClick={() => setShowAccountMenu(false)}
-                          className="px-4 py-2.5 text-xs font-medium text-secondary hover:bg-accent/10 hover:text-accent transition-colors"
+                          className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                         >
                           Devenir Fournisseur
                         </Link>

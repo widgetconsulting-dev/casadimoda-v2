@@ -307,14 +307,12 @@ export default function CartScreen() {
               </div>
             </div>
 
-            <button
-              className="w-full bg-accent hover:bg-white text-primary font-black py-5  transition-all shadow-lg active:scale-95 text-xs uppercase tracking-[0.3em] mb-4 cursor-pointer"
-              onClick={() =>
-                alert(t("checkoutMessage"))
-              }
+            <Link
+              href="/checkout"
+              className="w-full bg-accent hover:bg-white text-primary font-black py-5 transition-all shadow-lg active:scale-95 text-xs uppercase tracking-[0.3em] mb-4 cursor-pointer flex items-center justify-center"
             >
               {t("secureCheckout")}
-            </button>
+            </Link>
 
             <p className="text-[10px] text-white/40 text-center leading-relaxed">
               {t("paymentMethods")}

@@ -46,7 +46,7 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[#FDFCFB] relative overflow-hidden">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-primary relative overflow-hidden">
       {/* Mobile Top Header */}
       <header className="lg:hidden flex items-center justify-between px-6 py-4 bg-primary text-white sticky top-0 z-40 shadow-md">
         <button

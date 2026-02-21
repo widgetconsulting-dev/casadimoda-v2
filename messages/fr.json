@@ -201,6 +201,7 @@
     "fullNamePlaceholder": "John Doe",
     "nameRequired": "Name is required",
     "nameMinChars": "Min 2 characters",
+    "forgot": "Mot de passe oublié ?",
     "emailAddress": "Email Address",
     "emailPlaceholder": "alex@example.com",
     "emailRequired": "Email is required",

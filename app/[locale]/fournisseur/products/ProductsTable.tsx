@@ -52,7 +52,9 @@ export default function SupplierProductsTable({
   const [sizes, setSizes] = useState<string[]>([]);
   const [sizeInput, setSizeInput] = useState("");
   const [colors, setColors] = useState<string[]>([]);
-  const [colorInput, setColorInput] = useState("");
+  const [colorImages, setColorImages] = useState<Record<string, string>>({});
+  const [dbColors, setDbColors] = useState<{ _id: string; name: string; hex: string }[]>([]);
+  const [selectedDbColor, setSelectedDbColor] = useState("");
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<Product>();
   const productImage = watch("image");
@@ -101,6 +103,10 @@ export default function SupplierProductsTable({
     fetchProducts(1, searchQuery, statusFilter);
   }, [statusFilter]);
 
+  useEffect(() => {
+    fetch("/api/colors").then((r) => r.json()).then(setDbColors).catch(() => {});
+  }, []);
+
   // Handle search with debounce
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -131,6 +137,9 @@ export default function SupplierProductsTable({
       });
       setSizes(product.sizes || []);
       setColors(product.colors || []);
+      const ci: Record<string, string> = {};
+      (product.colorImages || []).forEach(({ color, image }) => { ci[color] = image; });
+      setColorImages(ci);
     } else {
       setEditingProduct(null);
       reset({
@@ -153,9 +162,10 @@ export default function SupplierProductsTable({
       });
       setSizes([]);
       setColors([]);
+      setColorImages({});
     }
     setSizeInput("");
-    setColorInput("");
+    setSelectedDbColor("");
     setShowModal(true);
   };
 
@@ -173,9 +183,12 @@ export default function SupplierProductsTable({
   const onSubmit = async (data: Product) => {
     const url = "/api/supplier/products";
     const method = editingProduct ? "PUT" : "POST";
+    const colorImagesArray = Object.entries(colorImages)
+      .filter(([, img]) => img)
+      .map(([color, image]) => ({ color, image }));
     const body = editingProduct
-      ? { ...data, _id: editingProduct._id, sizes, colors }
-      : { ...data, sizes, colors };
+      ? { ...data, _id: editingProduct._id, sizes, colors, colorImages: colorImagesArray }
+      : { ...data, sizes, colors, colorImages: colorImagesArray };
 
     // Auto-generate slug if empty
     if (!data.slug) {
@@ -677,27 +690,24 @@ export default function SupplierProductsTable({
                         Colors
                       </label>
                       <div className="flex gap-2">
-                        <input
-                          value={colorInput}
-                          onChange={(e) => setColorInput(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              if (colorInput.trim() && !colors.includes(colorInput.trim())) {
-                                setColors([...colors, colorInput.trim()]);
-                                setColorInput("");
-                              }
-                            }
-                          }}
-                          className="flex-1 bg-secondary border-none p-4 outline-none font-bold text-primary"
-                          placeholder="e.g. Black, White, Red"
-                        />
+                        <select
+                          value={selectedDbColor}
+                          onChange={(e) => setSelectedDbColor(e.target.value)}
+                          className="flex-1 bg-secondary border-none p-4 outline-none font-bold text-primary appearance-none"
+                        >
+                          <option value="">— Select a color —</option>
+                          {dbColors
+                            .filter((c) => !colors.includes(c.name))
+                            .map((c) => (
+                              <option key={c._id} value={c.name}>{c.name} ({c.hex})</option>
+                            ))}
+                        </select>
                         <button
                           type="button"
                           onClick={() => {
-                            if (colorInput.trim() && !colors.includes(colorInput.trim())) {
-                              setColors([...colors, colorInput.trim()]);
-                              setColorInput("");
+                            if (selectedDbColor && !colors.includes(selectedDbColor)) {
+                              setColors([...colors, selectedDbColor]);
+                              setSelectedDbColor("");
                             }
                           }}
                           className="bg-accent/10 text-accent font-black uppercase text-[10px] tracking-widest px-4 hover:bg-accent/20 transition-all cursor-pointer"
@@ -706,21 +716,47 @@ export default function SupplierProductsTable({
                         </button>
                       </div>
                       {colors.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
+                        <div className="space-y-2 mt-2">
                           {colors.map((color) => (
-                            <span
-                              key={color}
-                              className="bg-secondary text-primary font-bold text-xs px-3 py-1 flex items-center gap-1"
-                            >
-                              {color}
+                            <div key={color} className="flex items-center gap-2 bg-secondary px-3 py-2">
+                              <span className="flex-1 text-primary font-bold text-xs">{color}</span>
+                              {colorImages[color] ? (
+                                <div className="relative w-10 h-10 overflow-hidden bg-white border border-gray-100 flex-shrink-0">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={colorImages[color]} alt={color} className="w-full h-full object-cover" />
+                                </div>
+                              ) : null}
+                              <CldUploadWidget
+                                uploadPreset="iqsmn6rq"
+                                onSuccess={(result: CloudinaryUploadWidgetResults) => {
+                                  if (result.event !== "success") return;
+                                  const info = result.info;
+                                  if (info && typeof info === "object" && "secure_url" in info) {
+                                    setColorImages((prev) => ({ ...prev, [color]: info.secure_url as string }));
+                                  }
+                                }}
+                              >
+                                {({ open }) => (
+                                  <button
+                                    type="button"
+                                    onClick={() => open()}
+                                    className="text-[9px] font-black uppercase tracking-widest text-accent border border-accent/30 px-2 py-1 hover:bg-accent/10 transition-all cursor-pointer flex-shrink-0"
+                                  >
+                                    {colorImages[color] ? "Changer" : "Image"}
+                                  </button>
+                                )}
+                              </CldUploadWidget>
                               <button
                                 type="button"
-                                onClick={() => setColors(colors.filter((c) => c !== color))}
-                                className="text-text-dark/30 hover:text-red-500 cursor-pointer"
+                                onClick={() => {
+                                  setColors(colors.filter((c) => c !== color));
+                                  setColorImages((prev) => { const n = { ...prev }; delete n[color]; return n; });
+                                }}
+                                className="text-text-dark/30 hover:text-red-500 cursor-pointer flex-shrink-0"
                               >
                                 <X size={12} />
                               </button>
-                            </span>
+                            </div>
                           ))}
                         </div>
                       )}

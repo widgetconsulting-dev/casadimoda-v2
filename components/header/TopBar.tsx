@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useStore } from "@/utils/context/Store";
 import { useSession, signOut } from "next-auth/react";
-import { Search, ShoppingCart, Heart, User } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Bell } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types";
@@ -25,6 +25,28 @@ export default function TopBar() {
   const [bump, setBump] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
+  const [orderCount, setOrderCount] = useState(0);
+  const sessionUser = session?.user as { role?: string; isAdmin?: boolean } | null;
+  const isAdminOrSupplier = sessionUser?.isAdmin || sessionUser?.role === "supplier";
+
+  useEffect(() => {
+    if (!isAdminOrSupplier) return;
+    const fetchOrderCount = async () => {
+      try {
+        const endpoint = sessionUser?.isAdmin
+          ? "/api/admin/orders?status=active&pageSize=1"
+          : "/api/supplier/orders?status=active&pageSize=1";
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        setOrderCount(data.activeCount || 0);
+      } catch {
+        // silently ignore
+      }
+    };
+    fetchOrderCount();
+    const interval = setInterval(fetchOrderCount, 60000);
+    return () => clearInterval(interval);
+  }, [isAdminOrSupplier, sessionUser?.isAdmin]);
 
   const cartQuantity = cart.cartItems.reduce(
     (a: number, c: { quantity: number }) => a + c.quantity,
@@ -253,27 +275,46 @@ export default function TopBar() {
                 <span className="text-xs font-medium">{t("favorites")}</span>
               </Link>
 
-              {/* Cart */}
-              <Link
-                href="/cart"
-                className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"
-              >
-                <div className="relative">
-                  <ShoppingCart className="w-4 h-4 md:w-[18px] md:h-[18px]" />
-                  {cartQuantity > 0 && (
-                    <span
-                      className={`absolute -top-1.5 -right-1.5 bg-accent text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center transition-transform duration-300 ${
-                        bump ? "scale-150" : "scale-100"
-                      }`}
-                    >
-                      {cartQuantity}
-                    </span>
-                  )}
-                </div>
-                <span className="hidden md:inline text-xs font-medium">
-                  {t("cart")}
-                </span>
-              </Link>
+              {/* Cart (customers) / Notifications (admin & supplier) */}
+              {isAdminOrSupplier ? (
+                <Link
+                  href={sessionUser?.isAdmin ? "/admin/orders" : "/fournisseur/orders"}
+                  className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"
+                >
+                  <div className="relative">
+                    <Bell className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+                    {orderCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                        {orderCount > 99 ? "99+" : orderCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden md:inline text-xs font-medium">
+                    Orders
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  href="/cart"
+                  className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"
+                >
+                  <div className="relative">
+                    <ShoppingCart className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+                    {cartQuantity > 0 && (
+                      <span
+                        className={`absolute -top-1.5 -right-1.5 bg-accent text-white text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                          bump ? "scale-150" : "scale-100"
+                        }`}
+                      >
+                        {cartQuantity}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden md:inline text-xs font-medium">
+                    {t("cart")}
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
         </div>

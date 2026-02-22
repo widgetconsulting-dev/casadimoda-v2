@@ -4,8 +4,30 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useStore } from "@/utils/context/Store";
-import { Product, Supplier } from "@/types";
+import { Product } from "@/types";
 import { Heart, Star } from "lucide-react";
+
+const COLOR_MAP: Record<string, string> = {
+  Noir: "#111111",
+  Blanc: "#f5f5f5",
+  "Blanc Total": "#f5f5f5",
+  "Blanc / Gris": "#e5e7eb",
+  "Blanc / Bleu": "#dbeafe",
+  Rouge: "#dc2626",
+  "Rouge Bordeaux": "#881337",
+  "Rouge Carmin": "#9f1239",
+  "Noir / Rouge": "#1f2937",
+  Gris: "#9ca3af",
+  "Gris Chiné": "#d1d5db",
+  Bleu: "#2563eb",
+  "Bleu Nuit": "#1e3a5f",
+  Vert: "#16a34a",
+  "Vert Émeraude": "#059669",
+  Or: "#c9a96e",
+  Marine: "#1e3a5f",
+  Marron: "#78350f",
+  Argent: "#c0c0c0",
+};
 
 interface ProductItemProps {
   product: Product;
@@ -45,101 +67,135 @@ export default function ProductItem({ product }: ProductItemProps) {
   const displayPrice = hasDiscount ? product.discountPrice : product.price;
 
   return (
-    <div className="group relative bg-[#1a1a1a]/90 border border-white/[0.08] overflow-hidden flex flex-col">
-      {/* Top bar: logo + heart */}
-      <div className="flex items-center justify-between px-3 py-2">
-        <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
+    <div
+      className="
+        group relative flex flex-col overflow-hidden
+        bg-gradient-to-b from-[#1c1c1c] to-[#141414]
+        border border-white/[0.06]
+        shadow-lg
+        transition-all duration-300
+        hover:-translate-y-2 hover:shadow-2xl
+      "
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3">
+        <Star className="w-4 h-4 text-white/25 hover:text-accent cursor-pointer transition" />
 
-        <span className="font-serif text-[9px] sm:text-[11px] text-accent/60 tracking-widest uppercase">
+        <span className="font-serif text-[10px] tracking-[0.25em] text-accent/70 uppercase">
           {tc("brand")}
         </span>
-        <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30 hover:text-accent cursor-pointer transition-colors" />
+
+        <Heart className="w-4 h-4 text-white/25 hover:text-accent cursor-pointer transition" />
       </div>
 
-      {/* Gold accent line */}
-      <div className="h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent" />
+      {/* Gold line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
 
-      {/* Product Image */}
+      {/* Image */}
       <Link
         href={`/product/${product.slug}`}
-        className="relative aspect-square w-full overflow-hidden bg-[#222]"
+        className="relative aspect-square bg-[#202020] overflow-hidden"
       >
-        {/* Badge */}
         {product.isFeatured && (
-          <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-accent/90 text-[6px] sm:text-[8px] font-bold uppercase tracking-widest text-white px-2 py-0.5 sm:px-2.5 sm:py-1">
+          <span className="absolute top-3 left-3 z-10 bg-accent px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-white shadow">
             {t("newBadge")}
           </span>
         )}
+
         <Image
           src={product.image || "/images/placeholder.jpg"}
           alt={product.name}
           fill
-          className="object-contain p-4 sm:p-6 transition-transform duration-700 group-hover:scale-110"
-          sizes="(max-width: 640px) 50vw, (max-width: 1200px) 33vw, 20vw"
-          unoptimized={true}
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            const fallbacks: Record<string, string> = {
-              Jackets: "1551006917-0624bb7c3cfd",
-              Accessories: "1523275335684-37898b6baf30",
-              Shoes: "1549298916-b41d501d3772",
-              Pants: "1541099649105-f69ad21f3246",
-              Home: "1513519245088-0e12902e5a38",
-              Electronics: "1498050108023-c5249f4df085",
-              Shirts: "1523381235312-3c1a403824ae",
-            };
-            const photoId =
-              fallbacks[product.category as string] ||
-              "1515886657613-9f3515b0c78f";
-            target.src = `https://images.unsplash.com/photo-${photoId}?q=80&w=1020&auto=format&fit=crop`;
-          }}
+          unoptimized
+          className="object-contain p-8 transition-all duration-700 group-hover:scale-110 group-hover:opacity-95"
         />
       </Link>
 
-      {/* Product Info */}
-      <div className="flex flex-col items-center text-center px-3 py-3 sm:px-4 sm:py-4 flex-grow">
-        <Link href={`/product/${product.slug}`} className="flex-grow w-full">
-          <h3 className="text-white font-bold uppercase tracking-wider text-[9px] sm:text-xs leading-tight line-clamp-2 mb-1">
+      {/* Content */}
+      <div className="flex flex-col flex-grow px-4 py-4 text-center">
+        <Link href={`/product/${product.slug}`} className="flex-grow">
+          {/* Title */}
+          <h3 className="text-white font-semibold text-sm tracking-wide line-clamp-2 mb-1">
             {product.name}
           </h3>
-          <p className="text-white/30 uppercase tracking-wider text-[7px] sm:text-[10px] mb-2">
+
+          <p className="text-white/30 text-xs uppercase tracking-widest mb-3">
             {product.brand}
           </p>
-          <div className="mb-2 sm:mb-3">
+
+          {/* Price */}
+          <div className="mb-3">
             {hasDiscount ? (
               <div className="flex items-center justify-center gap-2">
-                <span
-                  suppressHydrationWarning
-                  className="text-white font-bold text-sm sm:text-lg"
-                >
+                <span className="text-xl font-bold text-white">
                   {displayPrice.toLocaleString("en-US")}
                 </span>
-                <span className="text-white/30 text-[9px] sm:text-xs">{tc("currency")}</span>
-                <span
-                  suppressHydrationWarning
-                  className="text-white/25 line-through text-[9px] sm:text-xs"
-                >
+                <span className="text-xs text-white/40">{tc("currency")}</span>
+                <span className="text-xs line-through text-white/25">
                   {product.price.toLocaleString("en-US")}
                 </span>
               </div>
             ) : (
-              <div className="flex items-center justify-center gap-1.5">
-                <span
-                  suppressHydrationWarning
-                  className="text-white font-bold text-sm sm:text-lg"
-                >
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-xl font-bold text-white">
                   {displayPrice.toLocaleString("en-US")}
                 </span>
-                <span className="text-white/30 text-[9px] sm:text-xs">{tc("currency")}</span>
+                <span className="text-xs text-white/40">{tc("currency")}</span>
               </div>
             )}
           </div>
         </Link>
 
-        {/* Add to Cart */}
+        {/* Colors */}
+        {product.colors?.length > 0 && (
+          <div className="flex justify-center gap-2 mb-2 flex-wrap">
+            {product.colors.slice(0, 5).map((color) => {
+              const hex = COLOR_MAP[color] || "#888";
+              return (
+                <span
+                  key={color}
+                  title={color}
+                  className="h-4 w-4 rounded-full border border-white/15 shadow-inner"
+                  style={{ backgroundColor: hex }}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* Sizes */}
+        {product.sizes?.length > 0 && (
+          <div className="flex justify-center gap-2 mb-4 flex-wrap">
+            {product.sizes.slice(0, 4).map((size) => (
+              <span
+                key={size}
+                className="
+                  px-2 py-1
+                  text-[10px]
+                  bg-white/5
+                  rounded-md
+                  border border-white/10
+                  text-white/50
+                  font-semibold
+                "
+              >
+                {size}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* CTA */}
         <button
           onClick={addToCartHandler}
-          className="w-full border border-white/20 hover:border-accent hover:bg-accent/10 text-white/80 hover:text-accent py-1.5 sm:py-2 text-[7px] sm:text-[9px] font-bold uppercase tracking-[0.2em] transition-all duration-300 cursor-pointer"
+          className="
+            w-full 
+            bg-accent text-white
+            py-2
+            text-xs font-bold uppercase tracking-[0.2em]
+            transition-all duration-300
+            hover:bg-accent/90 hover:scale-[1.02]
+          "
         >
           {t("addToCart")}
         </button>

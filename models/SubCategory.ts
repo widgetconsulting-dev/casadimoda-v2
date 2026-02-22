@@ -5,6 +5,7 @@ const subCategorySchema = new mongoose.Schema({
     slug: { type: String, required: true, unique: true },
     parentCategory: { type: String, required: true },
     description: { type: String },
+    image: { type: String },
 });
 
 const SubCategory =

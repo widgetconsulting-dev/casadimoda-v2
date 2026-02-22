@@ -60,9 +60,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
 
   return (
     <div className="flex items-center gap-4">
-      <span className="text-xs font-bold text-text-dark/70">
-        {t("sortBy")}:
-      </span>
+      <span className="text-xs font-bold text-white">{t("sortBy")}:</span>
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}

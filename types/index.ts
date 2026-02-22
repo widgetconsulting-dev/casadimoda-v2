@@ -44,6 +44,8 @@ export interface CartItem {
   discountPrice?: number;
   quantity: number;
   countInStock: number;
+  selectedSize?: string;
+  selectedColor?: string;
 }
 
 export interface Product {
@@ -56,6 +58,7 @@ export interface Product {
   discountPrice: number;
   sizes: string[];
   colors: string[];
+  colorImages?: { color: string; image: string }[];
   parentCategory: "detail" | "gros";
   countInStock: number;
   image: string;

@@ -48,11 +48,7 @@ export interface MongoDocument {
 }
 
 function convertDocToObj<T extends MongoDocument>(doc: T): T {
-  const convertedDoc = { ...doc };
-  convertedDoc._id = doc._id.toString();
-  if (doc.createdAt) convertedDoc.createdAt = doc.createdAt.toString();
-  if (doc.updatedAt) convertedDoc.updatedAt = doc.updatedAt.toString();
-  return convertedDoc;
+  return JSON.parse(JSON.stringify(doc));
 }
 
 const db = { connect, disconnect, convertDocToObj };

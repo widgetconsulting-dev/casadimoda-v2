@@ -148,6 +148,9 @@ export async function POST(req: NextRequest) {
       weight: body.weight,
       cbm: body.cbm,
       hsCode: body.hsCode,
+      sizes: body.sizes || [],
+      colors: body.colors || [],
+      colorImages: body.colorImages || [],
       isFeatured: false, // Suppliers cannot set featured
       supplier: supplier._id,
       approvalStatus: "pending", // Requires admin approval
@@ -235,6 +238,9 @@ export async function PUT(req: NextRequest) {
       weight: body.weight,
       cbm: body.cbm,
       hsCode: body.hsCode,
+      sizes: body.sizes || [],
+      colors: body.colors || [],
+      colorImages: body.colorImages || [],
       // Reset approval if significant changes made
       ...(needsReapproval && { approvalStatus: "pending", approvalNote: "" }),
     };

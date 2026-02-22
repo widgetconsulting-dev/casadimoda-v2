@@ -19,6 +19,9 @@ import {
   DollarSign,
   ArrowUpRight,
   ArrowDownRight,
+  Clock,
+  Truck,
+  CheckCircle,
 } from "lucide-react";
 
 interface SummaryData {
@@ -29,16 +32,34 @@ interface SummaryData {
   salesData: { _id: string; totalSales: number }[];
 }
 
+interface ActiveOrder {
+  _id: string;
+  user: { name?: string; email?: string } | null;
+  shippingAddress: { fullName: string; city: string };
+  totalPrice: number;
+  isPaid: boolean;
+  isDelivered: boolean;
+  createdAt: string;
+}
+
 export default function AdminDashboard() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeOrders, setActiveOrders] = useState<ActiveOrder[]>([]);
+  const [activeCount, setActiveCount] = useState(0);
 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const res = await fetch("/api/admin/summary");
-        const data = await res.json();
-        setSummary(data);
+        const [summaryRes, ordersRes] = await Promise.all([
+          fetch("/api/admin/summary"),
+          fetch("/api/admin/orders?status=active&pageSize=5"),
+        ]);
+        const summaryData = await summaryRes.json();
+        const ordersData = await ordersRes.json();
+        setSummary(summaryData);
+        setActiveOrders(ordersData.orders || []);
+        setActiveCount(ordersData.activeCount || 0);
       } catch (err) {
         console.error("Failed to fetch dashboard summary", err);
       } finally {
@@ -132,6 +153,71 @@ export default function AdminDashboard() {
             <p className="text-2xl font-black text-white">{stat.value}</p>
           </div>
         ))}
+      </div>
+
+      {/* Active Orders Panel */}
+      <div className="bg-white/5 border border-white/10">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+            <h3 className="text-sm font-black text-white">Active Orders</h3>
+            {activeCount > 0 && (
+              <span className="bg-blue-500/20 text-blue-400 text-[9px] font-black px-2 py-0.5 border border-blue-500/30">
+                {activeCount} pending
+              </span>
+            )}
+          </div>
+          <Link
+            href="/admin/orders"
+            className="text-[9px] font-black uppercase tracking-widest text-accent hover:text-white transition-colors"
+          >
+            View All →
+          </Link>
+        </div>
+
+        {activeOrders.length === 0 ? (
+          <div className="px-6 py-8 text-center">
+            <CheckCircle size={24} className="text-green-400/40 mx-auto mb-2" />
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/20">All orders delivered</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-white/5">
+            {activeOrders.map((order) => (
+              <div key={order._id} className="grid grid-cols-12 gap-3 px-6 py-3 hover:bg-white/5 transition-colors items-center">
+                <div className="col-span-3">
+                  <p className="text-xs font-bold text-white/80 font-mono">#{order._id.slice(-6).toUpperCase()}</p>
+                  <p className="text-[10px] text-white/30 mt-0.5">
+                    {new Date(order.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" })}
+                  </p>
+                </div>
+                <div className="col-span-4">
+                  <p className="text-xs font-bold text-white truncate">{order.user?.name || order.shippingAddress.fullName}</p>
+                  <p className="text-[10px] text-white/30 truncate">{order.shippingAddress.city}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs font-black text-accent">{order.totalPrice.toLocaleString()} TND</p>
+                </div>
+                <div className="col-span-3 flex flex-col gap-1">
+                  <span className={`flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 w-fit ${order.isPaid ? "text-green-400 bg-green-500/10" : "text-yellow-400 bg-yellow-500/10"}`}>
+                    {order.isPaid ? <CheckCircle size={8} /> : <Clock size={8} />}
+                    {order.isPaid ? "Paid" : "Unpaid"}
+                  </span>
+                  <span className="flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 w-fit text-blue-400 bg-blue-500/10">
+                    <Truck size={8} /> Pending
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeCount > 5 && (
+          <div className="px-6 py-3 border-t border-white/10">
+            <Link href="/admin/orders" className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-accent transition-colors">
+              + {activeCount - 5} more active orders →
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Charts Section */}

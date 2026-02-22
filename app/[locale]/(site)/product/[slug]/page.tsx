@@ -20,13 +20,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  // Convert mongoose document to plain object and fix _id serialization if needed
-  const serializedProduct = {
-    ...product,
-    _id: product._id.toString(),
-    createdAt: product.createdAt?.toString(),
-    updatedAt: product.updatedAt?.toString(),
-  };
+  const serializedProduct = JSON.parse(JSON.stringify(product));
 
-  return <ProductDetailsContent product={serializedProduct as any} />;
+  return <ProductDetailsContent product={serializedProduct} />;
 }

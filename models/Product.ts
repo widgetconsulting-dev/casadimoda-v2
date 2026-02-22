@@ -21,6 +21,12 @@ const productSchema = new mongoose.Schema(
     discountPrice: { type: Number, default: 0 },
     sizes: [{ type: String }],
     colors: [{ type: String }],
+    colorImages: [
+      {
+        color: { type: String },
+        image: { type: String },
+      },
+    ],
     parentCategory: {
       type: String,
       enum: ["detail", "gros"],

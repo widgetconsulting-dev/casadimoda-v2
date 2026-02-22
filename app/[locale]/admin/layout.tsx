@@ -19,14 +19,18 @@ import {
   X,
   Store,
   Clock,
+  ShoppingBag,
+  Palette,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const sidebarLinks = [
   { name: "dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "orders", href: "/admin/orders", icon: ShoppingBag },
   { name: "products", href: "/admin/products", icon: Package },
   { name: "suppliers", href: "/admin/suppliers", icon: Store },
   { name: "approvals", href: "/admin/approvals", icon: Clock },
+  { name: "colors", href: "/admin/colors", icon: Palette },
   { name: "brands", href: "/admin/brands", icon: Tag },
   { name: "categories", href: "/admin/categories", icon: Tag },
   { name: "subcategories", href: "/admin/subcategories", icon: Layers },

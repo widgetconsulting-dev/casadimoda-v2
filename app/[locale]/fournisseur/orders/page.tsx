@@ -11,6 +11,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface OrderItem {
   name: string;
@@ -39,14 +40,16 @@ interface Order {
   createdAt: string;
 }
 
-const STATUS_TABS = [
-  { key: "active", label: "Active", color: "text-blue-400" },
-  { key: "paid", label: "Paid / Pending", color: "text-yellow-400" },
-  { key: "delivered", label: "Delivered", color: "text-green-400" },
-  { key: "all", label: "All", color: "text-white/60" },
-];
-
 export default function SupplierOrdersPage() {
+  const t = useTranslations("supplierOrders");
+
+  const STATUS_TABS = [
+    { key: "active", label: t("active"), color: "text-blue-400" },
+    { key: "paid", label: t("paidPending"), color: "text-yellow-400" },
+    { key: "delivered", label: t("delivered"), color: "text-green-400" },
+    { key: "all", label: t("all"), color: "text-white/60" },
+  ];
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalOrders, setTotalOrders] = useState(0);
   const [activeCount, setActiveCount] = useState(0);
@@ -86,10 +89,10 @@ export default function SupplierOrdersPage() {
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-3xl font-black text-white tracking-tight">
-            Mes <span className="text-accent">Commandes</span>
+            {t("title").split(" ")[0]} <span className="text-accent">{t("title").split(" ").slice(1).join(" ")}</span>
           </h1>
           <p className="text-white/30 font-bold uppercase tracking-widest text-[10px] mt-1">
-            {activeCount} commande{activeCount !== 1 ? "s" : ""} active{activeCount !== 1 ? "s" : ""}
+            {activeCount} {activeCount !== 1 ? t("orders") : t("order")} {activeCount !== 1 ? t("activeOrdersPlural") : t("activeOrders")}
           </p>
         </div>
         <button
@@ -97,24 +100,24 @@ export default function SupplierOrdersPage() {
           className="flex items-center gap-2 bg-white/5 border border-white/10 hover:border-accent/40 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-accent transition-all cursor-pointer"
         >
           <RefreshCw size={12} />
-          Actualiser
+          {t("refresh")}
         </button>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 border-b border-white/10">
-        {STATUS_TABS.map((t) => (
+        {STATUS_TABS.map((tabItem) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
+            key={tabItem.key}
+            onClick={() => setTab(tabItem.key)}
             className={`px-5 py-3 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer border-b-2 -mb-px ${
-              tab === t.key
-                ? `border-accent ${t.color}`
+              tab === tabItem.key
+                ? `border-accent ${tabItem.color}`
                 : "border-transparent text-white/30 hover:text-white/60"
             }`}
           >
-            {t.label}
-            {t.key === "active" && activeCount > 0 && (
+            {tabItem.label}
+            {tabItem.key === "active" && activeCount > 0 && (
               <span className="ml-2 bg-accent text-primary text-[8px] font-black px-1.5 py-0.5">
                 {activeCount}
               </span>
@@ -132,7 +135,7 @@ export default function SupplierOrdersPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Package size={40} className="text-white/10 mb-4" />
           <p className="text-white/30 text-sm font-bold uppercase tracking-widest">
-            Aucune commande trouvée
+            {t("noOrders")}
           </p>
         </div>
       ) : (
@@ -145,31 +148,31 @@ export default function SupplierOrdersPage() {
                 onClick={() => setExpandedId(expandedId === order._id ? null : order._id)}
               >
                 <div className="col-span-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Commande</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("order")}</p>
                   <p className="text-xs font-bold text-white/70 font-mono">#{order._id.slice(-8).toUpperCase()}</p>
                 </div>
                 <div className="col-span-3">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Client</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("client")}</p>
                   <p className="text-xs font-bold text-white truncate">{order.user?.name || order.shippingAddress.fullName}</p>
                 </div>
                 <div className="col-span-2 hidden md:block">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Date</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("date")}</p>
                   <p className="text-xs text-white/60">
                     {new Date(order.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })}
                   </p>
                 </div>
                 <div className="col-span-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Total</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("total")}</p>
                   <p className="text-xs font-black text-accent">{order.totalPrice.toLocaleString()} TND</p>
                 </div>
                 <div className="col-span-2 flex flex-col gap-1">
                   <span className={`flex items-center gap-1 text-[8px] font-black px-2 py-1 w-fit ${order.isPaid ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}>
                     {order.isPaid ? <CheckCircle size={9} /> : <Clock size={9} />}
-                    {order.isPaid ? "Payée" : "En attente"}
+                    {order.isPaid ? t("paid") : t("waiting")}
                   </span>
                   <span className={`flex items-center gap-1 text-[8px] font-black px-2 py-1 w-fit ${order.isDelivered ? "bg-green-500/10 text-green-400" : "bg-blue-500/10 text-blue-400"}`}>
                     {order.isDelivered ? <CheckCircle size={9} /> : <Truck size={9} />}
-                    {order.isDelivered ? "Livrée" : "En cours"}
+                    {order.isDelivered ? t("delivered") : t("inProgress")}
                   </span>
                 </div>
                 <div className="col-span-1 flex justify-end">
@@ -181,7 +184,7 @@ export default function SupplierOrdersPage() {
               {expandedId === order._id && (
                 <div className="border-t border-white/10 px-5 py-5 space-y-4">
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-3">Vos Articles</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-3">{t("yourItems")}</p>
                     <div className="space-y-2">
                       {order.orderItems.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-3">
@@ -190,7 +193,7 @@ export default function SupplierOrdersPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-bold text-white truncate">{item.name}</p>
-                            <p className="text-[10px] text-white/30">Qté: {item.quantity} × {item.price.toLocaleString()} TND</p>
+                            <p className="text-[10px] text-white/30">{t("qty")}: {item.quantity} × {item.price.toLocaleString()} TND</p>
                           </div>
                           <p className="text-xs font-black text-accent">{(item.price * item.quantity).toLocaleString()} TND</p>
                         </div>
@@ -198,7 +201,7 @@ export default function SupplierOrdersPage() {
                     </div>
                   </div>
                   <div className="pt-3 border-t border-white/10">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Livraison</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">{t("delivery")}</p>
                     <p className="text-xs text-white/60">
                       {order.shippingAddress.fullName} — {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                     </p>
@@ -214,14 +217,14 @@ export default function SupplierOrdersPage() {
       {pages > 1 && (
         <div className="flex items-center justify-between pt-4 border-t border-white/10">
           <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">
-            Page {page} / {pages} — {totalOrders} commandes
+            {t("page")} {page} / {pages} — {totalOrders} {t("orders")}
           </p>
           <div className="flex gap-2">
             <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="px-4 py-2 bg-white/5 border border-white/10 text-xs font-bold text-white/60 hover:border-accent/40 hover:text-accent disabled:opacity-30 cursor-pointer transition-all">
-              Préc
+              {t("prev")}
             </button>
             <button disabled={page >= pages} onClick={() => setPage((p) => p + 1)} className="px-4 py-2 bg-white/5 border border-white/10 text-xs font-bold text-white/60 hover:border-accent/40 hover:text-accent disabled:opacity-30 cursor-pointer transition-all">
-              Suiv
+              {t("next")}
             </button>
           </div>
         </div>

@@ -5,8 +5,11 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { User, Lock, Save, CheckCircle, AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
+  const t = useTranslations("profile");
+  const tn = useTranslations("nav");
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -33,11 +36,11 @@ export default function ProfilePage() {
     setMessage(null);
 
     if (newPassword && newPassword !== confirmPassword) {
-      setMessage({ type: "error", text: "Les mots de passe ne correspondent pas" });
+      setMessage({ type: "error", text: t("passwordMismatch") });
       return;
     }
     if (newPassword && newPassword.length < 6) {
-      setMessage({ type: "error", text: "Le mot de passe doit contenir au moins 6 caractères" });
+      setMessage({ type: "error", text: t("passwordTooShort") });
       return;
     }
 
@@ -57,15 +60,15 @@ export default function ProfilePage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setMessage({ type: "error", text: data.message || "Erreur lors de la mise à jour" });
+        setMessage({ type: "error", text: data.message || t("updateError") });
       } else {
-        setMessage({ type: "success", text: "Profil mis à jour avec succès" });
+        setMessage({ type: "success", text: t("updateSuccess") });
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       }
     } catch {
-      setMessage({ type: "error", text: "Une erreur s'est produite" });
+      setMessage({ type: "error", text: t("unknownError") });
     } finally {
       setLoading(false);
     }
@@ -87,14 +90,14 @@ export default function ProfilePage() {
       {/* Breadcrumb */}
       <div className="px-8 md:px-16 pt-8">
         <p className="text-white/40 text-xs">
-          <Link href="/" className="hover:text-accent transition-colors">Accueil</Link>
+          <Link href="/" className="hover:text-accent transition-colors">{tn("home")}</Link>
           <span className="mx-2">&gt;</span>
-          <span className="text-white/60">Mon Profil</span>
+          <span className="text-white/60">{t("title")}</span>
         </p>
       </div>
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 py-10">
-        <h1 className="font-serif text-5xl md:text-6xl font-bold italic text-white mb-10">Mon Profil</h1>
+        <h1 className="font-serif text-5xl md:text-6xl font-bold italic text-white mb-10">{t("title")}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
@@ -117,7 +120,7 @@ export default function ProfilePage() {
                   href="/orders"
                   className="block px-4 py-2.5 text-xs font-medium text-white/60 hover:text-accent hover:bg-white/5 transition-colors"
                 >
-                  Mes Commandes
+                  {t("myOrders")}
                 </Link>
               </div>
             </div>
@@ -140,12 +143,12 @@ export default function ProfilePage() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <User className="w-4 h-4 text-accent" />
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50">Informations Personnelles</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50">{t("personalInfo")}</p>
                   </div>
 
                   <div className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Nom Complet</label>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">{t("fullName")}</label>
                       <input
                         type="text"
                         value={name}
@@ -155,14 +158,14 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Email</label>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">{t("emailLabel")}</label>
                       <input
                         type="email"
                         value={email}
                         disabled
                         className="w-full bg-white/5 border border-white/10 py-3 px-4 text-sm text-white/40 outline-none cursor-not-allowed"
                       />
-                      <p className="text-[10px] text-white/20">L&apos;adresse email ne peut pas être modifiée</p>
+                      <p className="text-[10px] text-white/20">{t("emailNote")}</p>
                     </div>
                   </div>
                 </div>
@@ -171,12 +174,12 @@ export default function ProfilePage() {
                 <div className="pt-6 border-t border-white/10">
                   <div className="flex items-center gap-2 mb-4">
                     <Lock className="w-4 h-4 text-accent" />
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50">Changer le Mot de Passe</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/50">{t("changePassword")}</p>
                   </div>
 
                   <div className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Mot de Passe Actuel</label>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">{t("currentPassword")}</label>
                       <input
                         type="password"
                         value={currentPassword}
@@ -188,7 +191,7 @@ export default function ProfilePage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Nouveau Mot de Passe</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">{t("newPassword")}</label>
                         <input
                           type="password"
                           value={newPassword}
@@ -198,7 +201,7 @@ export default function ProfilePage() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">Confirmer</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-white/40">{t("confirm")}</label>
                         <input
                           type="password"
                           value={confirmPassword}
@@ -221,7 +224,7 @@ export default function ProfilePage() {
                   ) : (
                     <Save className="w-4 h-4" />
                   )}
-                  SAUVEGARDER
+                  {loading ? t("saving") : t("save")}
                 </button>
               </form>
             </div>

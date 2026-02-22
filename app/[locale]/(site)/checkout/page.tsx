@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 
 export default function CheckoutPage() {
   const tc = useTranslations("common");
+  const t = useTranslations("checkout");
   const { state, dispatch } = useStore();
   const { cart: { cartItems } } = state;
 
@@ -54,9 +55,9 @@ export default function CheckoutPage() {
         <div className="w-20 h-20 border border-white/10 bg-white/5 flex items-center justify-center mb-6">
           <ShoppingBag className="w-8 h-8 text-accent/40" />
         </div>
-        <h1 className="font-serif text-4xl font-bold italic text-white mb-4">Panier Vide</h1>
+        <h1 className="font-serif text-4xl font-bold italic text-white mb-4">{t("emptyCart")}</h1>
         <Link href="/" className="bg-accent text-primary px-10 py-4 font-black uppercase text-xs tracking-[0.2em] hover:bg-accent/80 transition-all mt-4">
-          Explorer la Collection
+          {t("exploreCollection")}
         </Link>
       </div>
     );
@@ -70,7 +71,7 @@ export default function CheckoutPage() {
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-10">
 
         {/* Title */}
-        <h1 className="font-serif text-5xl md:text-6xl font-bold italic text-white mb-10">Checkout</h1>
+        <h1 className="font-serif text-5xl md:text-6xl font-bold italic text-white mb-10">{t("title")}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -79,7 +80,7 @@ export default function CheckoutPage() {
 
             {/* Order Summary label */}
             <p className="text-[10px] font-black uppercase tracking-widest text-white/50">
-              Order Summaire
+              {t("orderSummary")}
             </p>
 
             {/* Items */}
@@ -96,13 +97,13 @@ export default function CheckoutPage() {
                       <div>
                         <p className="text-xs font-black text-white/50 uppercase tracking-widest">{item.name}</p>
                         <p className="text-sm font-black text-white mt-0.5">CASA DI MODA</p>
-                        <p className="text-[10px] text-white/30 mt-1">Size M/L</p>
+                        <p className="text-[10px] text-white/30 mt-1">{t("size")} M/L</p>
                       </div>
                       <div className="text-right">
                         {item.discountPrice && item.discountPrice < item.price ? (
-                          <p className="text-sm font-black text-accent">{item.discountPrice.toLocaleString()} TND</p>
+                          <p className="text-sm font-black text-accent">{item.discountPrice.toLocaleString()} {t("currency")}</p>
                         ) : (
-                          <p className="text-sm font-black text-white">{item.price.toLocaleString()} TND</p>
+                          <p className="text-sm font-black text-white">{item.price.toLocaleString()} {t("currency")}</p>
                         )}
                       </div>
                     </div>
@@ -118,7 +119,7 @@ export default function CheckoutPage() {
                         </button>
                       </div>
                       <button onClick={() => removeItemHandler(item)} className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-red-400 transition-colors cursor-pointer">
-                        Retirer
+                        {t("remove")}
                       </button>
                     </div>
                   </div>
@@ -128,51 +129,51 @@ export default function CheckoutPage() {
 
             {/* Promo Code */}
             <div className="bg-black/30 border border-white/10 p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Code Promo</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">{t("promoCode")}</p>
               <div className="flex gap-3">
                 <input
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Entrez votre code promo"
+                  placeholder={t("promoPlaceholder")}
                   className="flex-1 bg-white/5 border border-white/10 focus:border-accent py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all"
                 />
                 <button className="bg-accent hover:bg-accent/80 text-primary font-black px-5 text-[10px] tracking-widest uppercase transition-all cursor-pointer">
-                  APPLIQUER
+                  {t("apply")}
                 </button>
               </div>
             </div>
 
-            {/* Livraison Rapide */}
+            {/* Fast Delivery */}
             <div className="bg-black/30 border border-white/10 p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Livraison Rapide</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">{t("fastDelivery")}</p>
               <textarea
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder={"Rue de Jardin, La Marsa 2040\nTunis, Tunisia"}
+                placeholder={t("addressPlaceholder")}
                 rows={3}
                 className="w-full bg-white/5 border border-white/10 focus:border-accent py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all resize-none"
               />
             </div>
           </div>
 
-          {/* RIGHT — VOIR SUMMAIRE */}
+          {/* RIGHT — VIEW SUMMARY */}
           <div className="lg:col-span-5">
             <div className="sticky top-8 bg-black/50 border border-white/10 p-6">
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/50">VOIR SUMMAIRE</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/50">{t("viewSummary")}</p>
                 <span className="text-white/30 text-lg">›</span>
               </div>
 
               {/* Price breakdown */}
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-sm">
-                  <span className="text-white/50">Soustotal</span>
-                  <span className="text-white font-bold">{originalTotal.toLocaleString()} TND</span>
+                  <span className="text-white/50">{t("subtotal")}</span>
+                  <span className="text-white font-bold">{originalTotal.toLocaleString()} {t("currency")}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-white/50">Diamonds</span>
+                  <span className="text-white/50">{t("diamonds")}</span>
                   <span className={totalDiscount > 0 ? "text-accent font-bold" : "text-white/50"}>
-                    {totalDiscount > 0 ? `-${totalDiscount.toLocaleString()} TND` : "Supérieur"}
+                    {totalDiscount > 0 ? `-${totalDiscount.toLocaleString()} ${t("currency")}` : t("superior")}
                   </span>
                 </div>
               </div>
@@ -180,10 +181,10 @@ export default function CheckoutPage() {
               {/* Total */}
               <div className="border-t border-white/10 pt-5 mb-8">
                 <div className="flex justify-between items-end">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Total</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{t("total")}</span>
                   <div className="text-right">
                     <span className="text-4xl font-black text-white">{subtotal.toLocaleString()}</span>
-                    <span className="text-lg font-bold text-white/40 ml-1">TND</span>
+                    <span className="text-lg font-bold text-white/40 ml-1">{t("currency")}</span>
                   </div>
                 </div>
               </div>
@@ -194,22 +195,22 @@ export default function CheckoutPage() {
                   <div className={`w-4 h-4 border-2 flex items-center justify-center transition-colors ${paymentMethod === "delivery" ? "border-accent bg-accent" : "border-white/30"}`}>
                     {paymentMethod === "delivery" && <div className="w-1.5 h-1.5 bg-primary rounded-full" />}
                   </div>
-                  <span className={`text-sm font-medium ${paymentMethod === "delivery" ? "text-white" : "text-white/40"}`}>Paiement à la livraison</span>
+                  <span className={`text-sm font-medium ${paymentMethod === "delivery" ? "text-white" : "text-white/40"}`}>{t("paymentOnDelivery")}</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer" onClick={() => setPaymentMethod("card")}>
                   <div className={`w-4 h-4 border-2 flex items-center justify-center transition-colors ${paymentMethod === "card" ? "border-accent bg-accent" : "border-white/30"}`}>
                     {paymentMethod === "card" && <div className="w-1.5 h-1.5 bg-primary rounded-full" />}
                   </div>
-                  <span className={`text-sm font-medium ${paymentMethod === "card" ? "text-white" : "text-white/40"}`}>Saved Card</span>
+                  <span className={`text-sm font-medium ${paymentMethod === "card" ? "text-white" : "text-white/40"}`}>{t("paymentSavedCards")}</span>
                 </label>
               </div>
 
               {/* Validate */}
               <button
-                onClick={() => alert("Commande validée!")}
+                onClick={() => alert(t("validateOrder"))}
                 className="w-full bg-accent hover:bg-accent/80 text-primary font-black py-4 uppercase text-xs tracking-[0.3em] transition-all active:scale-[0.98] cursor-pointer shadow-lg"
               >
-                VALIDER LA COMMANDE
+                {t("validateOrder")}
               </button>
 
               {/* Payment icons */}

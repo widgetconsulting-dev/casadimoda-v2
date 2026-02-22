@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useStore } from "@/utils/context/Store";
 import { ChevronLeft, ChevronRight, Truck, RotateCcw, Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Product } from "@/types";
 
@@ -45,6 +46,9 @@ const COLOR_MAP: Record<string, string> = {
 export default function ProductDetailsContent({
   product,
 }: ProductDetailsContentProps) {
+  const t = useTranslations("product");
+  const tn = useTranslations("nav");
+  const tp = useTranslations("products");
   const { data: session } = useSession();
   const { state, dispatch } = useStore();
   const [qty, setQty] = useState(1);
@@ -92,11 +96,11 @@ export default function ProductDetailsContent({
 
   const addToCartHandler = () => {
     if (hasSizes && !selectedSize) {
-      setSelectionError("Veuillez choisir une taille");
+      setSelectionError(t("chooseSize"));
       return;
     }
     if (hasColors && !selectedColor) {
-      setSelectionError("Veuillez choisir une couleur");
+      setSelectionError(t("chooseColor"));
       return;
     }
     setSelectionError("");
@@ -105,7 +109,7 @@ export default function ProductDetailsContent({
     const quantity = existItem ? existItem.quantity + qty : qty;
 
     if (product.countInStock < quantity) {
-      alert("Sorry. Product is out of stock");
+      alert(t("outOfStockAlert"));
       return;
     }
 
@@ -171,7 +175,7 @@ export default function ProductDetailsContent({
         {/* Breadcrumbs */}
         <nav className="flex flex-wrap text-[8px] md:text-[10px] text-primary/40 mb-4 md:mb-8 uppercase tracking-[0.15em] gap-1.5 md:gap-2 items-center">
           <Link href="/" className="hover:text-accent transition-colors">
-            Accueil
+            {tn("home")}
           </Link>
           <span className="text-primary/20">›</span>
           <Link
@@ -239,7 +243,7 @@ export default function ProductDetailsContent({
             {hasColors && (
               <div className="mb-4 md:mb-5">
                 <p className="text-[9px] md:text-[11px] font-bold text-primary/40 uppercase tracking-widest mb-2">
-                  Couleur :{" "}
+                  {t("colorLabel")} :{" "}
                   {selectedColor && (
                     <span className="text-primary/70 font-bold">{selectedColor}</span>
                   )}
@@ -277,7 +281,7 @@ export default function ProductDetailsContent({
             {hasSizes && (
               <div className="mb-4 md:mb-5">
                 <p className="text-[9px] md:text-[11px] font-bold text-primary/40 uppercase tracking-widest mb-2">
-                  Taille :{" "}
+                  {t("sizeLabel")} :{" "}
                   {selectedSize && (
                     <span className="text-primary/70 font-bold">{selectedSize}</span>
                   )}
@@ -310,7 +314,7 @@ export default function ProductDetailsContent({
             {/* Quantity Selector */}
             <div className="mb-4 md:mb-5">
               <p className="text-[9px] md:text-[11px] font-bold text-primary/40 uppercase tracking-widest mb-2">
-                Quantité :
+                {t("quantityLabel")} :
               </p>
               <div className="flex items-center gap-0">
                 <button
@@ -351,7 +355,7 @@ export default function ProductDetailsContent({
                   +10
                 </button>
                 <span className="ml-3 text-[10px] text-primary/30">
-                  {product.countInStock} disponibles
+                  {product.countInStock} {t("available")}
                 </span>
               </div>
             </div>
@@ -366,7 +370,7 @@ export default function ProductDetailsContent({
                   : "bg-primary text-white hover:bg-accent"
               } disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed`}
             >
-              {isAdded ? "Ajouté au Panier ✓" : "Ajouter au Panier"}
+              {isAdded ? t("addedToCart") : tp("addToCart")}
             </button>
 
             {/* Wishlist */}
@@ -380,28 +384,28 @@ export default function ProductDetailsContent({
               }`}
             >
               <Heart className={`w-3.5 h-3.5 ${isWishlisted ? "fill-accent" : ""}`} />
-              {isWishlisted ? "Retiré de la Wishlist" : "Ajouter à la Wishlist"}
+              {isWishlisted ? t("removeFromWishlist") : t("addToWishlist")}
             </button>
 
             {/* Delivery & Returns */}
             <div className="border-t border-gray-200 pt-4 md:pt-6 mb-5 md:mb-8">
               <h3 className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-3">
-                Livraison & Retour
+                {t("deliveryReturns")}
               </h3>
               <div className="space-y-2">
                 <div className="flex items-start gap-2.5">
                   <Truck className="w-4 h-4 text-primary/40 mt-0.5 flex-shrink-0" />
                   <p className="text-[10px] md:text-xs text-primary/60">
-                    Livraison rapide — Prêt en{" "}
+                    {t("fastDelivery")}{" "}
                     <span className="font-semibold text-primary">
-                      {product.deliveryTime || "3-5 jours"}
+                      {product.deliveryTime || t("defaultDelivery")}
                     </span>
                   </p>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <RotateCcw className="w-4 h-4 text-primary/40 mt-0.5 flex-shrink-0" />
                   <p className="text-[10px] md:text-xs text-primary/60">
-                    Retour gratuit sous 7 jours
+                    {t("freeReturn")}
                   </p>
                 </div>
               </div>
@@ -410,7 +414,7 @@ export default function ProductDetailsContent({
             {/* Description */}
             <div className="border-t border-gray-200 pt-4 md:pt-6 mb-5 md:mb-8">
               <h3 className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-3">
-                Description
+                {t("description")}
               </h3>
               <p className="text-[11px] md:text-sm text-primary/60 leading-relaxed">
                 {product.description}
@@ -421,29 +425,29 @@ export default function ProductDetailsContent({
             {(product.dimensions || product.weight || product.cbm) && (
               <div className="border-t border-gray-200 pt-4 md:pt-6">
                 <h3 className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-wider mb-3">
-                  Caractéristiques
+                  {t("characteristics")}
                 </h3>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
                   {product.dimensions && (
                     <p className="text-[10px] md:text-xs text-primary/50">
-                      • Taille:{" "}
+                      • {t("sizeChar")}:{" "}
                       <span className="text-primary/80">{product.dimensions}</span>
                     </p>
                   )}
                   {product.weight && (
                     <p className="text-[10px] md:text-xs text-primary/50">
-                      • Poids:{" "}
+                      • {t("weightChar")}:{" "}
                       <span className="text-primary/80">{product.weight}</span>
                     </p>
                   )}
                   {product.cbm && (
                     <p className="text-[10px] md:text-xs text-primary/50">
-                      • Volume:{" "}
+                      • {t("volumeChar")}:{" "}
                       <span className="text-primary/80">{product.cbm} m³</span>
                     </p>
                   )}
                   <p className="text-[10px] md:text-xs text-primary/50">
-                    • Catégorie:{" "}
+                    • {t("categoryChar")}:{" "}
                     <span className="text-primary/80">{product.subCategory}</span>
                   </p>
                 </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Search, CheckCircle, Clock, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Product {
   _id: string;
@@ -44,20 +45,23 @@ interface SummaryData {
 }
 
 function ProductStatusBadge({ status }: { status: string }) {
+  const t = useTranslations("supplierDashboard");
   if (status === "approved")
-    return <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-green-500/10 text-green-400 border border-green-500/20 inline-flex items-center gap-1"><CheckCircle size={9} />Livré</span>;
+    return <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-green-500/10 text-green-400 border border-green-500/20 inline-flex items-center gap-1"><CheckCircle size={9} />{t("statusDelivered")}</span>;
   if (status === "pending")
-    return <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 inline-flex items-center gap-1"><Clock size={9} />En cours</span>;
-  return <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-red-500/10 text-red-400 border border-red-500/20 inline-flex items-center gap-1"><XCircle size={9} />Rejeté</span>;
+    return <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 inline-flex items-center gap-1"><Clock size={9} />{t("statusInProgress")}</span>;
+  return <span className="text-[9px] font-black uppercase tracking-widest px-2 py-1 bg-red-500/10 text-red-400 border border-red-500/20 inline-flex items-center gap-1"><XCircle size={9} />{t("statusRejected")}</span>;
 }
 
 function OrderStatusBadge({ isPaid, isDelivered }: { isPaid: boolean; isDelivered: boolean }) {
-  if (isDelivered) return <span className="text-[9px] font-black uppercase px-2 py-1 bg-green-500/10 text-green-400 border border-green-500/20">EN COURS</span>;
-  if (isPaid) return <span className="text-[9px] font-black uppercase px-2 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20">Payé</span>;
-  return <span className="text-[9px] font-black uppercase px-2 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">En attente</span>;
+  const t = useTranslations("supplierDashboard");
+  if (isDelivered) return <span className="text-[9px] font-black uppercase px-2 py-1 bg-green-500/10 text-green-400 border border-green-500/20">{t("orderStatusInProgress")}</span>;
+  if (isPaid) return <span className="text-[9px] font-black uppercase px-2 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20">{t("orderStatusPaid")}</span>;
+  return <span className="text-[9px] font-black uppercase px-2 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">{t("orderStatusWaiting")}</span>;
 }
 
 export default function SupplierDashboard() {
+  const t = useTranslations("supplierDashboard");
   const searchParams = useSearchParams();
   const justRegistered = searchParams.get("registered") === "true";
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -106,21 +110,21 @@ export default function SupplierDashboard() {
       {justRegistered && (
         <div className="bg-green-500/10 border border-green-500/20 p-4 flex items-center gap-3">
           <CheckCircle size={16} className="text-green-400 shrink-0" />
-          <p className="text-sm font-bold text-green-400">Application soumise avec succès !</p>
+          <p className="text-sm font-bold text-green-400">{t("successRegistered")}</p>
         </div>
       )}
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-black text-white tracking-tight">
-          Tableau de Bord <span className="text-accent">Fournisseur</span>
+          {t("title")} <span className="text-accent">{t("supplierLabel")}</span>
         </h1>
         {isApproved && (
           <Link
             href="/fournisseur/products"
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent/80 text-primary px-5 py-2.5 font-black text-xs uppercase tracking-widest transition-all whitespace-nowrap"
           >
-            + CAPACITÉ INCORD
+            {t("addProduct")}
           </Link>
         )}
       </div>
@@ -131,7 +135,7 @@ export default function SupplierDashboard() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher un produit..."
+          placeholder={t("searchPlaceholder")}
           className="w-full bg-white/5 border border-white/10 focus:border-accent py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/20 outline-none transition-all"
         />
       </div>
@@ -142,12 +146,12 @@ export default function SupplierDashboard() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/30">Produite</th>
-                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/30 hidden sm:table-cell">Statut</th>
-                <th className="px-5 py-3 text-center text-[9px] font-black uppercase tracking-widest text-white/30 hidden md:table-cell">Nom</th>
-                <th className="px-5 py-3 text-center text-[9px] font-black uppercase tracking-widest text-white/30 hidden md:table-cell">Marq</th>
-                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/30">Prix</th>
-                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/30 hidden lg:table-cell">Tur</th>
+                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/30">{t("productCol")}</th>
+                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/30 hidden sm:table-cell">{t("statusCol")}</th>
+                <th className="px-5 py-3 text-center text-[9px] font-black uppercase tracking-widest text-white/30 hidden md:table-cell">{t("stockCol")}</th>
+                <th className="px-5 py-3 text-center text-[9px] font-black uppercase tracking-widest text-white/30 hidden md:table-cell">{t("brandCol")}</th>
+                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/30">{t("priceCol")}</th>
+                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/30 hidden lg:table-cell">{t("salesCol")}</th>
                 <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/30"></th>
               </tr>
             </thead>
@@ -185,14 +189,14 @@ export default function SupplierDashboard() {
                       href="/fournisseur/products"
                       className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 border border-white/20 text-white/50 hover:border-accent hover:text-accent transition-all"
                     >
-                      VOIR
+                      {t("viewBtn")}
                     </Link>
                   </td>
                 </tr>
               )) : (
                 <tr>
                   <td colSpan={7} className="px-5 py-10 text-center text-white/30 text-sm">
-                    {search ? "Aucun produit trouvé" : "Aucun produit enregistré"}
+                    {search ? t("noProductsFound") : t("noProductsRegistered")}
                   </td>
                 </tr>
               )}
@@ -201,20 +205,20 @@ export default function SupplierDashboard() {
         </div>
       </div>
 
-      {/* Commandes Récentes */}
+      {/* Recent Orders */}
       <div className="bg-white/5 border border-white/10 overflow-hidden">
         <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
-          <h2 className="text-xs font-black text-white uppercase tracking-widest">Commandes Recentes</h2>
-          <Link href="/fournisseur/products" className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-white transition-colors">Voir tout →</Link>
+          <h2 className="text-xs font-black text-white uppercase tracking-widest">{t("recentOrders")}</h2>
+          <Link href="/fournisseur/products" className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-white transition-colors">{t("viewAll")}</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/5">
-                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/20">Commande</th>
-                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/20 hidden sm:table-cell">Produit</th>
-                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/20">Montant</th>
-                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/20">Statut</th>
+                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/20">{t("orderCol")}</th>
+                <th className="px-5 py-3 text-left text-[9px] font-black uppercase tracking-widest text-white/20 hidden sm:table-cell">{t("productOrderCol")}</th>
+                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/20">{t("amountCol")}</th>
+                <th className="px-5 py-3 text-right text-[9px] font-black uppercase tracking-widest text-white/20">{t("statusOrderCol")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -222,7 +226,7 @@ export default function SupplierDashboard() {
                 <tr key={order._id} className="hover:bg-white/5 transition-colors">
                   <td className="px-5 py-4">
                     <p className="text-xs font-bold text-white">#{order._id.slice(-6).toUpperCase()}</p>
-                    <p className="text-[10px] text-white/30 mt-0.5">{order.itemCount} article(s)</p>
+                    <p className="text-[10px] text-white/30 mt-0.5">{order.itemCount} {t("articles")}</p>
                   </td>
                   <td className="px-5 py-4 hidden sm:table-cell">
                     <p className="text-xs text-white/40">{new Date(order.createdAt).toLocaleDateString("fr-TN")}</p>
@@ -236,7 +240,7 @@ export default function SupplierDashboard() {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={4} className="px-5 py-10 text-center text-white/30 text-sm">Aucune commande</td>
+                  <td colSpan={4} className="px-5 py-10 text-center text-white/30 text-sm">{t("noOrders")}</td>
                 </tr>
               )}
             </tbody>

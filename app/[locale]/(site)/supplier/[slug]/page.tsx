@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Store, Star, Package, MapPin } from "lucide-react";
 import ProductItem from "@/components/ProductItem";
+import { getTranslations } from "next-intl/server";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -13,6 +14,7 @@ interface Props {
 
 export default async function SupplierStorefrontPage({ params }: Props) {
   const { slug } = await params;
+  const t = await getTranslations("supplierStore");
 
   await db.connect();
 
@@ -89,12 +91,12 @@ export default async function SupplierStorefrontPage({ params }: Props) {
                     {supplier.rating?.toFixed(1) || "0.0"}
                   </span>
                   <span className="text-white/30">
-                    ({supplier.numReviews || 0} avis)
+                    ({supplier.numReviews || 0} {t("reviews")})
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-white/40">
                   <Package size={14} />
-                  <span>{supplier.totalProducts || 0} produits</span>
+                  <span>{supplier.totalProducts || 0} {t("products")}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-white/40">
                   <MapPin size={14} />
@@ -112,10 +114,10 @@ export default async function SupplierStorefrontPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
         <div className="mb-6 md:mb-8">
           <p className="text-accent font-medium uppercase tracking-[0.4em] text-[10px] md:text-xs mb-2">
-            Collection
+            {t("collection")}
           </p>
           <h2 className="font-serif text-xl md:text-2xl text-white italic">
-            Produits de {supplier.businessName}
+            {t("productsOf")} {supplier.businessName}
           </h2>
         </div>
 
@@ -123,7 +125,7 @@ export default async function SupplierStorefrontPage({ params }: Props) {
           <div className="text-center py-16">
             <Package size={48} className="text-white/10 mx-auto mb-3" />
             <p className="text-white/20 font-bold text-sm">
-              Aucun produit disponible
+              {t("noProducts")}
             </p>
           </div>
         ) : (

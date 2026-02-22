@@ -9,7 +9,11 @@ interface Color {
   hex: string;
 }
 
-export default function ColorsList({ initialColors }: { initialColors: Color[] }) {
+export default function ColorsList({
+  initialColors,
+}: {
+  initialColors: Color[];
+}) {
   const [colors, setColors] = useState<Color[]>(initialColors);
   const [showModal, setShowModal] = useState(false);
   const [editingColor, setEditingColor] = useState<Color | null>(null);
@@ -65,11 +69,12 @@ export default function ColorsList({ initialColors }: { initialColors: Color[] }
     <div className="space-y-10">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter lowercase">
+          <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
             Color Palette<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            {colors.length} couleur{colors.length !== 1 ? "s" : ""} enregistrée{colors.length !== 1 ? "s" : ""}
+            {colors.length} couleur{colors.length !== 1 ? "s" : ""} enregistrée
+            {colors.length !== 1 ? "s" : ""}
           </p>
         </div>
         <button
@@ -91,7 +96,15 @@ export default function ColorsList({ initialColors }: { initialColors: Color[] }
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {colors.map((color) => {
-              const isLight = ["#f5f5f5", "#ffffff", "#e5e7eb", "#d1d5db", "#dbeafe", "#e5e4c2", "#ddc49a"].includes(color.hex.toLowerCase());
+              const isLight = [
+                "#f5f5f5",
+                "#ffffff",
+                "#e5e7eb",
+                "#d1d5db",
+                "#dbeafe",
+                "#e5e4c2",
+                "#ddc49a",
+              ].includes(color.hex.toLowerCase());
               return (
                 <div
                   key={color._id}
@@ -104,8 +117,12 @@ export default function ColorsList({ initialColors }: { initialColors: Color[] }
                   />
                   {/* Info */}
                   <div className="p-3">
-                    <p className="text-xs font-black text-primary truncate">{color.name}</p>
-                    <p className="text-[10px] font-mono text-text-dark/40 uppercase">{color.hex}</p>
+                    <p className="text-xs font-black text-primary truncate">
+                      {color.name}
+                    </p>
+                    <p className="text-[10px] font-mono text-text-dark/40 uppercase">
+                      {color.hex}
+                    </p>
                   </div>
                   {/* Actions overlay */}
                   <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -141,7 +158,10 @@ export default function ColorsList({ initialColors }: { initialColors: Color[] }
               <h2 className="text-xl font-black text-primary tracking-tight">
                 {editingColor ? "Edit Color" : "New Color"}
               </h2>
-              <button onClick={() => setShowModal(false)} className="p-1 hover:bg-secondary cursor-pointer">
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1 hover:bg-secondary cursor-pointer"
+              >
                 <X size={20} />
               </button>
             </div>
@@ -195,7 +215,9 @@ export default function ColorsList({ initialColors }: { initialColors: Color[] }
                   className="w-8 h-8 rounded-full flex-shrink-0 border border-gray-200"
                   style={{ backgroundColor: hex }}
                 />
-                <span className="font-bold text-sm text-primary">{name || "Color preview"}</span>
+                <span className="font-bold text-sm text-primary">
+                  {name || "Color preview"}
+                </span>
               </div>
 
               <div className="flex gap-3 pt-2">

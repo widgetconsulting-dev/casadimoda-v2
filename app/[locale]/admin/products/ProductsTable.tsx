@@ -42,7 +42,9 @@ export default function ProductsTable({
   const [sizeInput, setSizeInput] = useState("");
   const [colors, setColors] = useState<string[]>([]);
   const [colorImages, setColorImages] = useState<Record<string, string>>({});
-  const [dbColors, setDbColors] = useState<{ _id: string; name: string; hex: string }[]>([]);
+  const [dbColors, setDbColors] = useState<
+    { _id: string; name: string; hex: string }[]
+  >([]);
   const [selectedDbColor, setSelectedDbColor] = useState("");
   const { register, handleSubmit, reset, setValue, watch } = useForm<Product>();
   const productImage = watch("image");
@@ -93,7 +95,9 @@ export default function ProductsTable({
       setSizes(product.sizes || []);
       setColors(product.colors || []);
       const ci: Record<string, string> = {};
-      (product.colorImages || []).forEach(({ color, image }) => { ci[color] = image; });
+      (product.colorImages || []).forEach(({ color, image }) => {
+        ci[color] = image;
+      });
       setColorImages(ci);
     } else {
       setEditingProduct(null);
@@ -124,7 +128,10 @@ export default function ProductsTable({
   };
 
   useEffect(() => {
-    fetch("/api/colors").then((r) => r.json()).then(setDbColors).catch(() => {});
+    fetch("/api/colors")
+      .then((r) => r.json())
+      .then(setDbColors)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -153,7 +160,13 @@ export default function ProductsTable({
       .filter(([, img]) => img)
       .map(([color, image]) => ({ color, image }));
     const body = editingProduct
-      ? { ...data, id: editingProduct._id, sizes, colors, colorImages: colorImagesArray }
+      ? {
+          ...data,
+          id: editingProduct._id,
+          sizes,
+          colors,
+          colorImages: colorImagesArray,
+        }
       : { ...data, sizes, colors, colorImages: colorImagesArray };
 
     // Auto-generate slug if empty
@@ -191,7 +204,7 @@ export default function ProductsTable({
     <div className="space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tighter lowercase">
+          <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
             Inventory Registry<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
@@ -483,7 +496,10 @@ export default function ProductsTable({
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
-                              if (sizeInput.trim() && !sizes.includes(sizeInput.trim())) {
+                              if (
+                                sizeInput.trim() &&
+                                !sizes.includes(sizeInput.trim())
+                              ) {
                                 setSizes([...sizes, sizeInput.trim()]);
                                 setSizeInput("");
                               }
@@ -495,7 +511,10 @@ export default function ProductsTable({
                         <button
                           type="button"
                           onClick={() => {
-                            if (sizeInput.trim() && !sizes.includes(sizeInput.trim())) {
+                            if (
+                              sizeInput.trim() &&
+                              !sizes.includes(sizeInput.trim())
+                            ) {
                               setSizes([...sizes, sizeInput.trim()]);
                               setSizeInput("");
                             }
@@ -515,7 +534,9 @@ export default function ProductsTable({
                               {size}
                               <button
                                 type="button"
-                                onClick={() => setSizes(sizes.filter((s) => s !== size))}
+                                onClick={() =>
+                                  setSizes(sizes.filter((s) => s !== size))
+                                }
                                 className="text-text-dark/30 hover:text-red-500 cursor-pointer"
                               >
                                 <X size={12} />
@@ -540,13 +561,18 @@ export default function ProductsTable({
                           {dbColors
                             .filter((c) => !colors.includes(c.name))
                             .map((c) => (
-                              <option key={c._id} value={c.name}>{c.name} ({c.hex})</option>
+                              <option key={c._id} value={c.name}>
+                                {c.name} ({c.hex})
+                              </option>
                             ))}
                         </select>
                         <button
                           type="button"
                           onClick={() => {
-                            if (selectedDbColor && !colors.includes(selectedDbColor)) {
+                            if (
+                              selectedDbColor &&
+                              !colors.includes(selectedDbColor)
+                            ) {
                               setColors([...colors, selectedDbColor]);
                               setSelectedDbColor("");
                             }
@@ -559,21 +585,39 @@ export default function ProductsTable({
                       {colors.length > 0 && (
                         <div className="space-y-2 mt-2">
                           {colors.map((color) => (
-                            <div key={color} className="flex items-center gap-2 bg-secondary px-3 py-2">
-                              <span className="flex-1 text-primary font-bold text-xs">{color}</span>
+                            <div
+                              key={color}
+                              className="flex items-center gap-2 bg-secondary px-3 py-2"
+                            >
+                              <span className="flex-1 text-primary font-bold text-xs">
+                                {color}
+                              </span>
                               {colorImages[color] ? (
                                 <div className="relative w-10 h-10 overflow-hidden bg-white border border-gray-100 flex-shrink-0">
                                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img src={colorImages[color]} alt={color} className="w-full h-full object-cover" />
+                                  <img
+                                    src={colorImages[color]}
+                                    alt={color}
+                                    className="w-full h-full object-cover"
+                                  />
                                 </div>
                               ) : null}
                               <CldUploadWidget
                                 uploadPreset="iqsmn6rq"
-                                onSuccess={(result: CloudinaryUploadWidgetResults) => {
+                                onSuccess={(
+                                  result: CloudinaryUploadWidgetResults,
+                                ) => {
                                   if (result.event !== "success") return;
                                   const info = result.info;
-                                  if (info && typeof info === "object" && "secure_url" in info) {
-                                    setColorImages((prev) => ({ ...prev, [color]: info.secure_url as string }));
+                                  if (
+                                    info &&
+                                    typeof info === "object" &&
+                                    "secure_url" in info
+                                  ) {
+                                    setColorImages((prev) => ({
+                                      ...prev,
+                                      [color]: info.secure_url as string,
+                                    }));
                                   }
                                 }}
                               >
@@ -591,7 +635,11 @@ export default function ProductsTable({
                                 type="button"
                                 onClick={() => {
                                   setColors(colors.filter((c) => c !== color));
-                                  setColorImages((prev) => { const n = { ...prev }; delete n[color]; return n; });
+                                  setColorImages((prev) => {
+                                    const n = { ...prev };
+                                    delete n[color];
+                                    return n;
+                                  });
                                 }}
                                 className="text-text-dark/30 hover:text-red-500 cursor-pointer flex-shrink-0"
                               >

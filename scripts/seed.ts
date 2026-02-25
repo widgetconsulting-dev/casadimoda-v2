@@ -49,21 +49,24 @@ const categories = [
     slug: "vetements",
     description: "Mode et prêt-à-porter de luxe",
     // A rack of elegant clothing in a luxury boutique
-    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&h=600&fit=crop",
   },
   {
     name: "Chaussures",
     slug: "chaussures",
     description: "Chaussures de luxe et sneakers premium",
     // Luxury shoe shelf with heels and sneakers
-    image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&h=600&fit=crop",
   },
   {
     name: "Accessoires",
     slug: "accessoires",
     description: "Sacs, montres, bijoux & accessoires haut de gamme",
     // Luxury handbag flat-lay with watch and jewellery
-    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800&h=600&fit=crop",
   },
 ];
 
@@ -74,7 +77,8 @@ const subCategories = [
     parentCategory: "Vêtements",
     description: "Robes de soirée, tenues cocktail et prêt-à-porter",
     // Elegant evening dresses on mannequins
-    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&h=600&fit=crop",
   },
   {
     name: "Manteaux & Vestes",
@@ -82,7 +86,8 @@ const subCategories = [
     parentCategory: "Vêtements",
     description: "Vestes en cuir, blazers et manteaux de saison",
     // Leather jacket close-up on model
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=600&fit=crop",
   },
   {
     name: "Sneakers",
@@ -90,7 +95,8 @@ const subCategories = [
     parentCategory: "Chaussures",
     description: "Sneakers de luxe et éditions limitées",
     // White sneakers on clean background
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=600&fit=crop",
   },
   {
     name: "Escarpins",
@@ -98,7 +104,8 @@ const subCategories = [
     parentCategory: "Chaussures",
     description: "Escarpins et chaussures de soirée",
     // Elegant heels on studio background
-    image: "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=800&h=600&fit=crop",
   },
   {
     name: "Sacs à Main",
@@ -106,7 +113,8 @@ const subCategories = [
     parentCategory: "Accessoires",
     description: "Sacs de luxe, pochettes et maroquinerie",
     // Luxury handbag on marble surface
-    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=600&fit=crop",
   },
   {
     name: "Montres",
@@ -114,7 +122,8 @@ const subCategories = [
     parentCategory: "Accessoires",
     description: "Montres de prestige et horlogerie fine",
     // Watch on dark background showing dial
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop",
   },
 ];
 
@@ -122,35 +131,40 @@ const brands = [
   {
     name: "Versace",
     slug: "versace",
-    description: "Maison de couture italienne fondée en 1978, symbole d'audace et de luxe baroque.",
+    description:
+      "Maison de couture italienne fondée en 1978, symbole d'audace et de luxe baroque.",
     // Versace-style gold baroque pattern / fashion editorial
     logo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
   },
   {
     name: "Hermès",
     slug: "hermes",
-    description: "Maison française de luxe fondée en 1837, artisanat d'exception et intemporalité.",
+    description:
+      "Maison française de luxe fondée en 1837, artisanat d'exception et intemporalité.",
     // Orange luxury box / leather goods flat-lay
     logo: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=400&fit=crop",
   },
   {
     name: "Balenciaga",
     slug: "balenciaga",
-    description: "Label de mode de luxe espagnol, avant-garde du streetwear haut de gamme.",
+    description:
+      "Label de mode de luxe espagnol, avant-garde du streetwear haut de gamme.",
     // Triple S sneaker white close-up
     logo: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",
   },
   {
     name: "Rolex",
     slug: "rolex",
-    description: "Manufacture horlogère suisse de prestige, référence mondiale du luxe.",
+    description:
+      "Manufacture horlogère suisse de prestige, référence mondiale du luxe.",
     // Submariner dial close-up
     logo: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
   },
   {
     name: "Casa Di Moda Wholesale",
     slug: "casa-di-moda-wholesale",
-    description: "Marque maison pour les collections wholesale B2B Casa Di Moda.",
+    description:
+      "Marque maison pour les collections wholesale B2B Casa Di Moda.",
     // Fashion boutique interior
     logo: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop",
   },
@@ -164,7 +178,8 @@ const brands = [
   {
     name: "SportLine Pro",
     slug: "sportline-pro",
-    description: "Equipementier sport premium pour distributeurs et boutiques spécialisées.",
+    description:
+      "Equipementier sport premium pour distributeurs et boutiques spécialisées.",
     // Running shoes on track
     logo: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400&h=400&fit=crop",
   },
@@ -179,7 +194,8 @@ const adminProducts = [
     category: "Vêtements",
     subCategory: "Robes & Tenues",
     brand: "Versace",
-    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&h=1000&fit=crop",
     price: 3200,
     discountPrice: 2890,
     countInStock: 12,
@@ -190,6 +206,20 @@ const adminProducts = [
     deliveryTime: "3-5 jours",
     sizes: ["XS", "S", "M", "L"],
     colors: ["Noir", "Rouge Bordeaux"],
+    colorImages: [
+      {
+        color: "Noir",
+        // Model in elegant black evening gown
+        image:
+          "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Rouge Bordeaux",
+        // Model in deep red evening dress
+        image:
+          "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "detail",
     isFeatured: true,
     addedBy: "admin",
@@ -201,7 +231,8 @@ const adminProducts = [
     category: "Accessoires",
     subCategory: "Sacs à Main",
     brand: "Hermès",
-    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=1000&fit=crop",
     price: 12500,
     discountPrice: 0,
     countInStock: 4,
@@ -214,6 +245,26 @@ const adminProducts = [
     weight: "1.1 kg",
     sizes: ["30cm"],
     colors: ["Fauve", "Noir", "Étoupe"],
+    colorImages: [
+      {
+        color: "Fauve",
+        // Model carrying tan/caramel Birkin
+        image:
+          "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Noir",
+        // Model with black luxury handbag
+        image:
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Étoupe",
+        // Model with taupe/greige structured bag
+        image:
+          "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "detail",
     isFeatured: true,
     addedBy: "admin",
@@ -227,7 +278,8 @@ const adminProducts = [
     category: "Vêtements",
     subCategory: "Robes & Tenues",
     brand: "Casa Di Moda Wholesale",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=1000&fit=crop",
     price: 1440,
     discountPrice: 1200,
     countInStock: 80,
@@ -241,6 +293,32 @@ const adminProducts = [
     hsCode: "6109.10.00",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Blanc", "Noir", "Gris Chiné", "Marine"],
+    colorImages: [
+      {
+        color: "Blanc",
+        // Model wearing white t-shirt
+        image:
+          "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Noir",
+        // Model wearing black t-shirt
+        image:
+          "https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Gris Chiné",
+        // Model wearing grey marl t-shirt
+        image:
+          "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Marine",
+        // Model wearing navy blue t-shirt
+        image:
+          "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "gros",
     isFeatured: false,
     addedBy: "admin",
@@ -252,7 +330,8 @@ const adminProducts = [
     category: "Accessoires",
     subCategory: "Sacs à Main",
     brand: "Casa Di Moda Wholesale",
-    image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=800&h=1000&fit=crop",
     price: 780,
     discountPrice: 650,
     countInStock: 50,
@@ -267,6 +346,32 @@ const adminProducts = [
     hsCode: "6214.10.00",
     sizes: ["90×90 cm"],
     colors: ["Bleu Nuit", "Rouge Carmin", "Vert Émeraude", "Or & Ivoire"],
+    colorImages: [
+      {
+        color: "Bleu Nuit",
+        // Model wearing navy blue silk scarf
+        image:
+          "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Rouge Carmin",
+        // Model with crimson red silk scarf
+        image:
+          "https://images.unsplash.com/photo-1609803384069-19f3f1d2040b?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Vert Émeraude",
+        // Model with emerald green scarf
+        image:
+          "https://images.unsplash.com/photo-1543087903-1ac2364a7858?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Or & Ivoire",
+        // Model with gold and ivory patterned scarf
+        image:
+          "https://images.unsplash.com/photo-1559582798-678dfc71ccd8?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "gros",
     isFeatured: false,
     addedBy: "admin",
@@ -283,7 +388,8 @@ const supplierProductsData = [
     category: "Chaussures",
     subCategory: "Sneakers",
     brand: "Balenciaga",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=1000&fit=crop",
     price: 950,
     discountPrice: 820,
     countInStock: 20,
@@ -294,6 +400,26 @@ const supplierProductsData = [
     deliveryTime: "2-4 jours",
     sizes: ["38", "39", "40", "41", "42", "43", "44"],
     colors: ["Blanc Total", "Blanc / Gris", "Noir"],
+    colorImages: [
+      {
+        color: "Blanc Total",
+        // Model wearing all-white Triple S
+        image:
+          "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Blanc / Gris",
+        // Model wearing white/grey colorway sneakers
+        image:
+          "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Noir",
+        // Model wearing black chunky sneakers
+        image:
+          "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "detail",
     isFeatured: true,
     addedBy: "supplier",
@@ -305,7 +431,8 @@ const supplierProductsData = [
     category: "Accessoires",
     subCategory: "Montres",
     brand: "Rolex",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=1000&fit=crop",
     price: 18500,
     discountPrice: 0,
     countInStock: 3,
@@ -318,6 +445,14 @@ const supplierProductsData = [
     weight: "155 g",
     sizes: ["41mm"],
     colors: ["Noir / Argent"],
+    colorImages: [
+      {
+        color: "Noir / Argent",
+        // Model wearing Submariner on wrist
+        image:
+          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "detail",
     isFeatured: true,
     addedBy: "supplier",
@@ -331,7 +466,8 @@ const supplierProductsData = [
     category: "Vêtements",
     subCategory: "Manteaux & Vestes",
     brand: "LuxLeather Co.",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=1000&fit=crop",
     price: 4800,
     discountPrice: 4200,
     countInStock: 30,
@@ -345,6 +481,20 @@ const supplierProductsData = [
     hsCode: "4203.10.00",
     sizes: ["S", "M", "L", "XL"],
     colors: ["Noir", "Marron Cognac"],
+    colorImages: [
+      {
+        color: "Noir",
+        // Model wearing black biker leather jacket
+        image:
+          "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Marron Cognac",
+        // Model wearing cognac brown leather jacket
+        image:
+          "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "gros",
     isFeatured: false,
     addedBy: "supplier",
@@ -356,7 +506,8 @@ const supplierProductsData = [
     category: "Chaussures",
     subCategory: "Sneakers",
     brand: "SportLine Pro",
-    image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&h=1000&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&h=1000&fit=crop",
     price: 2880,
     discountPrice: 2400,
     countInStock: 45,
@@ -370,6 +521,26 @@ const supplierProductsData = [
     hsCode: "6404.11.00",
     sizes: ["37", "38", "39", "40", "41", "42", "43", "44"],
     colors: ["Blanc / Bleu", "Noir / Rouge", "Gris / Jaune"],
+    colorImages: [
+      {
+        color: "Blanc / Bleu",
+        // Model wearing white/blue running shoes
+        image:
+          "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Noir / Rouge",
+        // Model wearing black/red sport sneakers
+        image:
+          "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=800&h=1000&fit=crop",
+      },
+      {
+        color: "Gris / Jaune",
+        // Model wearing grey/yellow running shoes
+        image:
+          "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&h=1000&fit=crop",
+      },
+    ],
     parentCategory: "gros",
     isFeatured: false,
     addedBy: "supplier",
@@ -386,7 +557,13 @@ async function seed() {
   console.log("\n👤 Creating users...");
 
   await User.deleteMany({
-    email: { $in: ["admin@casadimoda.com", "supplier@casadimoda.com", "client@casadimoda.com"] },
+    email: {
+      $in: [
+        "admin@casadimoda.com",
+        "supplier@casadimoda.com",
+        "client@casadimoda.com",
+      ],
+    },
   });
 
   const adminUser = await User.create({
@@ -419,7 +596,12 @@ async function seed() {
   // ── 2. Supplier Profile ───────────────────────────────────────────────────
   console.log("\n🏪 Creating supplier profile...");
 
-  await Supplier.deleteMany({ $or: [{ user: supplierUser._id }, { businessSlug: "luxe-mode-international" }] });
+  await Supplier.deleteMany({
+    $or: [
+      { user: supplierUser._id },
+      { businessSlug: "luxe-mode-international" },
+    ],
+  });
 
   const supplierProfile = await Supplier.create({
     user: supplierUser._id,
@@ -427,7 +609,8 @@ async function seed() {
     businessSlug: "luxe-mode-international",
     businessDescription:
       "Fournisseur premium de prêt-à-porter et accessoires de luxe. Spécialisé dans les marques haut de gamme et le wholesale B2B.",
-    businessLogo: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop",
+    businessLogo:
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop",
     contactPhone: "+216 71 000 111",
     contactEmail: "supplier@casadimoda.com",
     address: {
@@ -443,24 +626,35 @@ async function seed() {
   });
 
   // Link supplier to user
-  await User.findByIdAndUpdate(supplierUser._id, { supplierId: supplierProfile._id });
+  await User.findByIdAndUpdate(supplierUser._id, {
+    supplierId: supplierProfile._id,
+  });
   console.log("   Supplier profile:", supplierProfile.businessName);
 
   // ── 3. Categories, SubCategories & Brands ────────────────────────────────
   console.log("\n📂 Creating categories, subcategories & brands...");
 
   for (const cat of categories) {
-    await Category.findOneAndUpdate({ slug: cat.slug }, cat, { upsert: true, new: true });
+    await Category.findOneAndUpdate({ slug: cat.slug }, cat, {
+      upsert: true,
+      new: true,
+    });
   }
   console.log(`   ${categories.length} categories upserted`);
 
   for (const sub of subCategories) {
-    await SubCategory.findOneAndUpdate({ slug: sub.slug }, sub, { upsert: true, new: true });
+    await SubCategory.findOneAndUpdate({ slug: sub.slug }, sub, {
+      upsert: true,
+      new: true,
+    });
   }
   console.log(`   ${subCategories.length} subcategories upserted`);
 
   for (const brand of brands) {
-    await Brand.findOneAndUpdate({ slug: brand.slug }, brand, { upsert: true, new: true });
+    await Brand.findOneAndUpdate({ slug: brand.slug }, brand, {
+      upsert: true,
+      new: true,
+    });
   }
   console.log(`   ${brands.length} brands upserted`);
 
@@ -470,30 +664,36 @@ async function seed() {
   await Product.deleteMany({ slug: { $in: adminProducts.map((p) => p.slug) } });
 
   const createdAdminProducts = await Product.insertMany(
-    adminProducts.map((p) => ({ ...p, supplier: null }))
+    adminProducts.map((p) => ({ ...p, supplier: null })),
   );
   createdAdminProducts.forEach((p) =>
-    console.log(`   [${p.parentCategory.toUpperCase()}] ${p.name}`)
+    console.log(`   [${p.parentCategory.toUpperCase()}] ${p.name}`),
   );
 
   // ── 5. Supplier Products ──────────────────────────────────────────────────
   console.log("\n📦 Creating supplier products...");
 
-  await Product.deleteMany({ slug: { $in: supplierProductsData.map((p) => p.slug) } });
+  await Product.deleteMany({
+    slug: { $in: supplierProductsData.map((p) => p.slug) },
+  });
 
   const createdSupplierProducts = await Product.insertMany(
-    supplierProductsData.map((p) => ({ ...p, supplier: supplierProfile._id }))
+    supplierProductsData.map((p) => ({ ...p, supplier: supplierProfile._id })),
   );
   createdSupplierProducts.forEach((p) =>
-    console.log(`   [${p.parentCategory.toUpperCase()}] ${p.name}`)
+    console.log(`   [${p.parentCategory.toUpperCase()}] ${p.name}`),
   );
 
   // ── 6. Customer Order ─────────────────────────────────────────────────────
   console.log("\n🛒 Creating customer order...");
 
   // Pick 1 detail product + 1 gros product (from admin products for simplicity)
-  const detailProduct = createdAdminProducts.find((p) => p.parentCategory === "detail")!;
-  const grosProduct = createdAdminProducts.find((p) => p.parentCategory === "gros")!;
+  const detailProduct = createdAdminProducts.find(
+    (p) => p.parentCategory === "detail",
+  )!;
+  const grosProduct = createdAdminProducts.find(
+    (p) => p.parentCategory === "gros",
+  )!;
 
   await Order.deleteMany({ user: customerUser._id });
 
@@ -549,7 +749,9 @@ async function seed() {
   console.log("    Customer → client@casadimoda.com    / client123");
   console.log("\n  Products created: 8 total (4 admin + 4 supplier)");
   console.log("    Detail: 4 products  |  Gros: 4 products");
-  console.log(`\n  Categories: ${categories.length}  |  SubCategories: ${subCategories.length}  |  Brands: ${brands.length}`);
+  console.log(
+    `\n  Categories: ${categories.length}  |  SubCategories: ${subCategories.length}  |  Brands: ${brands.length}`,
+  );
   console.log("\n  Orders created: 1 (for Sophie Martin)");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 

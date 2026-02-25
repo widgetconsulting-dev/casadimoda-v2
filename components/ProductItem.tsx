@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useStore } from "@/utils/context/Store";
 import { Product } from "@/types";
 import { Heart, Star } from "lucide-react";
+import { useState } from "react";
 
 const COLOR_MAP: Record<string, string> = {
   Noir: "#111111",
@@ -19,14 +20,20 @@ const COLOR_MAP: Record<string, string> = {
   "Noir / Rouge": "#1f2937",
   Gris: "#9ca3af",
   "Gris Chiné": "#d1d5db",
+  "Gris / Jaune": "#9ca3af",
   Bleu: "#2563eb",
   "Bleu Nuit": "#1e3a5f",
+  Marine: "#1e3a5f",
+  Marron: "#78350f",
+  "Marron Cognac": "#8b4513",
   Vert: "#16a34a",
   "Vert Émeraude": "#059669",
   Or: "#c9a96e",
-  Marine: "#1e3a5f",
-  Marron: "#78350f",
+  "Or & Ivoire": "#c9a96e",
   Argent: "#c0c0c0",
+  "Noir / Argent": "#2d2d2d",
+  Fauve: "#c8860a",
+  Étoupe: "#9e9082",
 };
 
 interface ProductItemProps {
@@ -37,6 +44,21 @@ export default function ProductItem({ product }: ProductItemProps) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const { state, dispatch } = useStore();
+
+  const firstColor = product.colors?.[0] ?? null;
+  const firstImage = firstColor
+    ? (product.colorImages?.find((ci) => ci.color === firstColor)?.image ??
+      product.image)
+    : product.image;
+
+  const [activeImage, setActiveImage] = useState(firstImage);
+  const [activeColor, setActiveColor] = useState<string | null>(firstColor);
+
+  const handleColorClick = (color: string) => {
+    setActiveColor(color);
+    const match = product.colorImages?.find((ci) => ci.color === color);
+    setActiveImage(match?.image ?? product.image);
+  };
 
   const addToCartHandler = () => {
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
@@ -52,11 +74,12 @@ export default function ProductItem({ product }: ProductItemProps) {
       payload: {
         name: product.name,
         slug: product.slug,
-        image: product.image,
+        image: activeImage,
         price: product.price,
         discountPrice: product.discountPrice,
         countInStock: product.countInStock,
         quantity,
+        selectedColor: activeColor ?? undefined,
       },
     });
   };
@@ -103,11 +126,11 @@ export default function ProductItem({ product }: ProductItemProps) {
         )}
 
         <Image
-          src={product.image || "/images/placeholder.jpg"}
-          alt={product.name}
+          src={activeImage || "/images/placeholder.jpg"}
+          alt={activeColor ? `${product.name} — ${activeColor}` : product.name}
           fill
           unoptimized
-          className="object-contain p-8 transition-all duration-700 group-hover:scale-110 group-hover:opacity-95"
+          className="object-contain p-8 transition-all duration-500 group-hover:scale-110 group-hover:opacity-95"
         />
       </Link>
 
@@ -151,16 +174,33 @@ export default function ProductItem({ product }: ProductItemProps) {
           <div className="flex justify-center gap-2 mb-2 flex-wrap">
             {product.colors.slice(0, 5).map((color) => {
               const hex = COLOR_MAP[color] || "#888";
+              const isActive = activeColor === color;
               return (
-                <span
+                <button
                   key={color}
+                  type="button"
                   title={color}
-                  className="h-4 w-4 rounded-full border border-white/15 shadow-inner"
+                  onClick={() => handleColorClick(color)}
+                  className={`
+                   cursor-pointer h-5 w-5 rounded-full border transition-all duration-200 shadow-inner
+                    ${
+                      isActive
+                        ? "border-accent scale-125 ring-2 ring-accent/40"
+                        : "border-white/15 hover:border-white/40 hover:scale-110"
+                    }
+                  `}
                   style={{ backgroundColor: hex }}
                 />
               );
             })}
           </div>
+        )}
+
+        {/* Active color label */}
+        {activeColor && (
+          <p className="text-[10px] text-accent/70 uppercase tracking-widest mb-2">
+            {activeColor}
+          </p>
         )}
 
         {/* Sizes */}
@@ -169,15 +209,7 @@ export default function ProductItem({ product }: ProductItemProps) {
             {product.sizes.slice(0, 4).map((size) => (
               <span
                 key={size}
-                className="
-                  px-2 py-1
-                  text-[10px]
-                  bg-white/5
-                  rounded-md
-                  border border-white/10
-                  text-white/50
-                  font-semibold
-                "
+                className="px-2 py-1 text-[10px] bg-white/5 rounded-md border border-white/10 text-white/50 font-semibold"
               >
                 {size}
               </span>
@@ -188,14 +220,7 @@ export default function ProductItem({ product }: ProductItemProps) {
         {/* CTA */}
         <button
           onClick={addToCartHandler}
-          className="
-            w-full 
-            bg-accent text-white
-            py-2
-            text-xs font-bold uppercase tracking-[0.2em]
-            transition-all duration-300
-            hover:bg-accent/90 hover:scale-[1.02]
-          "
+          className="cursor-pointer w-full bg-accent text-white py-2 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:bg-accent/90 hover:scale-[1.02]"
         >
           {t("addToCart")}
         </button>

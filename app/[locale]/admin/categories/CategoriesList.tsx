@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { Category, CategoryFormData } from "@/types";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 export default function CategoriesList({
   initialCategories,
@@ -19,20 +20,20 @@ export default function CategoriesList({
   const { register, handleSubmit, reset } = useForm<CategoryFormData>();
 
   const fetchCategories = async () => {
-    const res = await fetch("/api/admin/categories");
+    const res = await apiFetch("/api/admin/categories");
     const data = await res.json();
     setCategories(data);
   };
 
   const deleteCategory = async (id: string) => {
     if (!confirm(t("deleteCategoryConfirm"))) return;
-    await fetch(`/api/admin/categories?id=${id}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/categories?id=${id}`, { method: "DELETE" });
     fetchCategories();
   };
 
   const onSubmit = async (data: CategoryFormData) => {
     const slug = data.name.toLowerCase().replace(/ /g, "-");
-    await fetch("/api/admin/categories", {
+    await apiFetch("/api/admin/categories", {
       method: "POST",
       body: JSON.stringify({ ...data, slug }),
       headers: { "Content-Type": "application/json" },
@@ -47,7 +48,8 @@ export default function CategoriesList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("categoriesTitle")}<span className="text-accent text-5xl">.</span>
+            {t("categoriesTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("categoriesSubtitle")}
@@ -72,14 +74,16 @@ export default function CategoriesList({
               <div className="bg-secondary p-4  text-accent">
                 <Tag size={24} />
               </div>
-              <button onClick={() => deleteCategory(cat._id)} className="text-red-200 hover:text-red-500 transition-colors cursor-pointer">
+              <button
+                onClick={() => deleteCategory(cat._id)}
+                className="text-red-200 hover:text-red-500 transition-colors cursor-pointer"
+              >
                 <Trash2 size={18} />
               </button>
             </div>
             <h3 className="text-xl font-black text-primary mb-2">{cat.name}</h3>
             <p className="text-xs text-text-dark/50 leading-relaxed mb-6">
-              {cat.description ||
-                t("noCollectionDescription")}
+              {cat.description || t("noCollectionDescription")}
             </p>
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-accent group-hover:gap-4 transition-all cursor-pointer">
               {t("manageProducts")} <ArrowRight size={14} />

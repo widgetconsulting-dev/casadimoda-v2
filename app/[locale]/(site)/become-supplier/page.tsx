@@ -22,6 +22,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
+import { apiFetch } from "@/utils/api";
 
 type SupplierFormData = {
   // Business Info
@@ -98,9 +99,7 @@ export default function BecomeSupplierPage() {
           <h2 className="text-2xl font-black text-primary mb-4">
             {t("signInFirst")}
           </h2>
-          <p className="text-text-dark/60 mb-6">
-            {t("needAccount")}
-          </p>
+          <p className="text-text-dark/60 mb-6">{t("needAccount")}</p>
           <Link
             href="/register"
             className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3  font-bold hover:bg-black transition-colors"
@@ -124,7 +123,7 @@ export default function BecomeSupplierPage() {
   const onSubmit = async (data: SupplierFormData) => {
     setError("");
     try {
-      const res = await fetch("/api/supplier/register", {
+      const res = await apiFetch("/api/supplier/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

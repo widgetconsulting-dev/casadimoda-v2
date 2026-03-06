@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 type RegisterInput = {
   name: string;
@@ -33,7 +34,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterInput) => {
     setError("");
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await apiFetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

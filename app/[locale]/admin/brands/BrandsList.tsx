@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { Brand } from "@/types";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 export default function BrandsList({
   initialBrands,
@@ -19,14 +20,14 @@ export default function BrandsList({
   const { register, handleSubmit, reset } = useForm();
 
   const fetchBrands = async () => {
-    const res = await fetch("/api/admin/brands");
+    const res = await apiFetch("/api/admin/brands");
     const data = await res.json();
     setBrands(data);
   };
 
   const onSubmit = async (data: Partial<Brand>) => {
     const slug = data.name?.toLowerCase().replace(/ /g, "-") || "";
-    await fetch("/api/admin/brands", {
+    await apiFetch("/api/admin/brands", {
       method: "POST",
       body: JSON.stringify({ ...data, slug }),
       headers: { "Content-Type": "application/json" },
@@ -38,7 +39,7 @@ export default function BrandsList({
 
   const deleteBrand = async (id: string) => {
     if (!confirm(t("deleteBrandConfirm"))) return;
-    await fetch(`/api/admin/brands?id=${id}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/brands?id=${id}`, { method: "DELETE" });
     fetchBrands();
   };
 
@@ -47,7 +48,8 @@ export default function BrandsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("brandsTitle")}<span className="text-accent text-5xl">.</span>
+            {t("brandsTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("brandsSubtitle")}
@@ -82,8 +84,7 @@ export default function BrandsList({
               {brand.name}
             </h3>
             <p className="text-xs text-text-dark/50 leading-relaxed mb-6 line-clamp-2">
-              {brand.description ||
-                t("noBiography")}
+              {brand.description || t("noBiography")}
             </p>
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-accent group-hover:gap-4 transition-all cursor-pointer">
               {t("brandInventory")} <ArrowRight size={14} />

@@ -5,6 +5,7 @@ import { Plus, Gift, Copy, CheckCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { GiftCard, GiftCardFormData } from "@/types";
+import { apiFetch } from "@/utils/api";
 
 export interface GiftCardsListProps {
   initialGiftCards: GiftCard[];
@@ -22,7 +23,7 @@ export default function GiftCardsList({
     useForm<GiftCardFormData>();
 
   const fetchGiftCards = async () => {
-    const res = await fetch("/api/admin/giftcards");
+    const res = await apiFetch("/api/admin/giftcards");
     const data = await res.json();
     setGiftCards(data);
   };
@@ -34,7 +35,7 @@ export default function GiftCardsList({
   };
 
   const onSubmit = async (data: GiftCardFormData) => {
-    await fetch("/api/admin/giftcards", {
+    await apiFetch("/api/admin/giftcards", {
       method: "POST",
       body: JSON.stringify({ ...data, balance: data.amount }),
       headers: { "Content-Type": "application/json" },
@@ -55,7 +56,8 @@ export default function GiftCardsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("giftCardsTitle")}<span className="text-accent text-5xl">.</span>
+            {t("giftCardsTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("giftCardsSubtitle")}

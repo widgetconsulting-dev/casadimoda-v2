@@ -10,6 +10,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Image from "next/image";
+import { apiFetch } from "@/utils/api";
 
 export default function TopBar() {
   const t = useTranslations("nav");
@@ -26,8 +27,12 @@ export default function TopBar() {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const [orderCount, setOrderCount] = useState(0);
-  const sessionUser = session?.user as { role?: string; isAdmin?: boolean } | null;
-  const isAdminOrSupplier = sessionUser?.isAdmin || sessionUser?.role === "supplier";
+  const sessionUser = session?.user as {
+    role?: string;
+    isAdmin?: boolean;
+  } | null;
+  const isAdminOrSupplier =
+    sessionUser?.isAdmin || sessionUser?.role === "supplier";
 
   useEffect(() => {
     if (!isAdminOrSupplier) return;
@@ -36,7 +41,7 @@ export default function TopBar() {
         const endpoint = sessionUser?.isAdmin
           ? "/api/admin/orders?status=active&pageSize=1"
           : "/api/supplier/orders?status=active&pageSize=1";
-        const res = await fetch(endpoint);
+        const res = await apiFetch(endpoint);
         const data = await res.json();
         setOrderCount(data.activeCount || 0);
       } catch {
@@ -67,7 +72,7 @@ export default function TopBar() {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.trim().length > 1) {
         try {
-          const res = await fetch(
+          const res = await apiFetch(
             `/api/search?q=${encodeURIComponent(searchQuery)}&pageSize=5`,
           );
           const data = await res.json();
@@ -278,7 +283,11 @@ export default function TopBar() {
               {/* Cart (customers) / Notifications (admin & supplier) */}
               {isAdminOrSupplier ? (
                 <Link
-                  href={sessionUser?.isAdmin ? "/admin/orders" : "/fournisseur/orders"}
+                  href={
+                    sessionUser?.isAdmin
+                      ? "/admin/orders"
+                      : "/fournisseur/orders"
+                  }
                   className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"
                 >
                   <div className="relative">

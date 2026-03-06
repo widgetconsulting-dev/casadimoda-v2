@@ -9,10 +9,10 @@ import {
   Clock,
   Ban,
   Eye,
-  MoreVertical,
 } from "lucide-react";
 import { Supplier } from "@/types";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 interface SuppliersResponse {
   suppliers: (Supplier & { user?: { name: string; email: string } })[];
@@ -46,7 +46,7 @@ export default function AdminSuppliersPage() {
         ...(search && { search }),
         ...(status !== "all" && { status }),
       });
-      const res = await fetch(`/api/admin/suppliers?${params}`);
+      const res = await apiFetch(`/api/admin/suppliers?${params}`);
       if (res.ok) {
         const data: SuppliersResponse = await res.json();
         setSuppliers(data.suppliers);
@@ -85,7 +85,7 @@ export default function AdminSuppliersPage() {
         body.rejectionReason = rejectionReason;
       }
 
-      const res = await fetch("/api/admin/suppliers", {
+      const res = await apiFetch("/api/admin/suppliers", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -146,7 +146,8 @@ export default function AdminSuppliersPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("suppliersTitle")}<span className="text-accent text-5xl">.</span>
+            {t("suppliersTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("suppliersSubtitle")}
@@ -441,7 +442,9 @@ export default function AdminSuppliersPage() {
                   {t("rejectSupplier")}
                 </h3>
                 <p className="text-text-dark/60 mb-4">
-                  {t("rejectSupplierConfirm", { name: actionModal.supplier.businessName })}
+                  {t("rejectSupplierConfirm", {
+                    name: actionModal.supplier.businessName,
+                  })}
                 </p>
                 <textarea
                   value={rejectionReason}
@@ -474,15 +477,22 @@ export default function AdminSuppliersPage() {
                 <h3 className="text-2xl font-black text-primary mb-4">
                   {actionModal.action === "approve" && t("approveSupplier")}
                   {actionModal.action === "suspend" && t("suspendSupplier")}
-                  {actionModal.action === "reactivate" && t("reactivateSupplier")}
+                  {actionModal.action === "reactivate" &&
+                    t("reactivateSupplier")}
                 </h3>
                 <p className="text-text-dark/60 mb-6">
                   {actionModal.action === "approve" &&
-                    t("approveSupplierConfirm", { name: actionModal.supplier.businessName })}
+                    t("approveSupplierConfirm", {
+                      name: actionModal.supplier.businessName,
+                    })}
                   {actionModal.action === "suspend" &&
-                    t("suspendSupplierConfirm", { name: actionModal.supplier.businessName })}
+                    t("suspendSupplierConfirm", {
+                      name: actionModal.supplier.businessName,
+                    })}
                   {actionModal.action === "reactivate" &&
-                    t("reactivateSupplierConfirm", { name: actionModal.supplier.businessName })}
+                    t("reactivateSupplierConfirm", {
+                      name: actionModal.supplier.businessName,
+                    })}
                 </p>
                 <div className="flex gap-4">
                   <button

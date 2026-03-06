@@ -5,10 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useStore } from "@/utils/context/Store";
-import { ChevronLeft, ChevronRight, Truck, RotateCcw, Heart } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Truck,
+  RotateCcw,
+  Heart,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Product } from "@/types";
+import { apiFetch } from "@/utils/api";
 
 interface ProductDetailsContentProps {
   product: Product;
@@ -16,30 +23,30 @@ interface ProductDetailsContentProps {
 
 // Map French color names to CSS hex values for swatches
 const COLOR_MAP: Record<string, string> = {
-  "Noir": "#111111",
-  "Blanc": "#f5f5f5",
+  Noir: "#111111",
+  Blanc: "#f5f5f5",
   "Blanc Total": "#f5f5f5",
   "Blanc / Gris": "#e5e7eb",
   "Blanc / Bleu": "#dbeafe",
-  "Rouge": "#dc2626",
+  Rouge: "#dc2626",
   "Rouge Bordeaux": "#881337",
   "Rouge Carmin": "#9f1239",
   "Noir / Rouge": "#1f2937",
-  "Gris": "#9ca3af",
+  Gris: "#9ca3af",
   "Gris Chiné": "#d1d5db",
   "Gris / Jaune": "#e5e4c2",
-  "Bleu": "#2563eb",
+  Bleu: "#2563eb",
   "Bleu Nuit": "#1e3a5f",
-  "Vert": "#16a34a",
+  Vert: "#16a34a",
   "Vert Émeraude": "#059669",
-  "Or": "#c9a96e",
+  Or: "#c9a96e",
   "Or & Ivoire": "#ddc49a",
-  "Marine": "#1e3a5f",
-  "Fauve": "#a0522d",
-  "Étoupe": "#9e8e7e",
-  "Marron": "#78350f",
+  Marine: "#1e3a5f",
+  Fauve: "#a0522d",
+  Étoupe: "#9e8e7e",
+  Marron: "#78350f",
   "Marron Cognac": "#92400e",
-  "Argent": "#c0c0c0",
+  Argent: "#c0c0c0",
   "Noir / Argent": "#2d2d2d",
 };
 
@@ -63,7 +70,7 @@ export default function ProductDetailsContent({
   // Check wishlist status on mount
   useEffect(() => {
     if (!session || !product._id) return;
-    fetch(`/api/wishlist?productId=${product._id}`)
+    apiFetch(`/api/wishlist?productId=${product._id}`)
       .then((r) => r.json())
       .then((data) => setIsWishlisted(data.isWishlisted))
       .catch(() => {});
@@ -77,7 +84,7 @@ export default function ProductDetailsContent({
     setWishlistLoading(true);
     try {
       const method = isWishlisted ? "DELETE" : "POST";
-      const res = await fetch("/api/wishlist", {
+      const res = await apiFetch("/api/wishlist", {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: product._id }),
@@ -224,7 +231,9 @@ export default function ProductDetailsContent({
                   <span className="text-xl md:text-3xl font-bold text-primary">
                     {displayPrice.toLocaleString("en-US")}
                   </span>
-                  <span className="text-sm md:text-base text-primary/40">TND</span>
+                  <span className="text-sm md:text-base text-primary/40">
+                    TND
+                  </span>
                   <span className="text-sm text-primary/30 line-through ml-2">
                     {product.price.toLocaleString("en-US")} TND
                   </span>
@@ -234,7 +243,9 @@ export default function ProductDetailsContent({
                   <span className="text-xl md:text-3xl font-bold text-primary">
                     {displayPrice.toLocaleString("en-US")}
                   </span>
-                  <span className="text-sm md:text-base text-primary/40">TND</span>
+                  <span className="text-sm md:text-base text-primary/40">
+                    TND
+                  </span>
                 </>
               )}
             </div>
@@ -245,13 +256,20 @@ export default function ProductDetailsContent({
                 <p className="text-[9px] md:text-[11px] font-bold text-primary/40 uppercase tracking-widest mb-2">
                   {t("colorLabel")} :{" "}
                   {selectedColor && (
-                    <span className="text-primary/70 font-bold">{selectedColor}</span>
+                    <span className="text-primary/70 font-bold">
+                      {selectedColor}
+                    </span>
                   )}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {product.colors.map((color) => {
                     const hex = COLOR_MAP[color] || "#888";
-                    const isLight = ["Blanc", "Blanc Total", "Blanc / Gris", "Gris Chiné"].includes(color);
+                    const isLight = [
+                      "Blanc",
+                      "Blanc Total",
+                      "Blanc / Gris",
+                      "Gris Chiné",
+                    ].includes(color);
                     return (
                       <button
                         key={color}
@@ -259,15 +277,17 @@ export default function ProductDetailsContent({
                         onClick={() => {
                           setSelectedColor(color);
                           setSelectionError("");
-                          const colorImg = product.colorImages?.find((ci) => ci.color === color);
+                          const colorImg = product.colorImages?.find(
+                            (ci) => ci.color === color,
+                          );
                           setDisplayImage(colorImg?.image || product.image);
                         }}
                         className={`w-7 h-7 rounded-full border-2 transition-all cursor-pointer ${
                           selectedColor === color
                             ? "border-accent scale-110 shadow-md"
                             : isLight
-                            ? "border-gray-300 hover:border-accent"
-                            : "border-transparent hover:border-accent"
+                              ? "border-gray-300 hover:border-accent"
+                              : "border-transparent hover:border-accent"
                         }`}
                         style={{ backgroundColor: hex }}
                       />
@@ -283,14 +303,19 @@ export default function ProductDetailsContent({
                 <p className="text-[9px] md:text-[11px] font-bold text-primary/40 uppercase tracking-widest mb-2">
                   {t("sizeLabel")} :{" "}
                   {selectedSize && (
-                    <span className="text-primary/70 font-bold">{selectedSize}</span>
+                    <span className="text-primary/70 font-bold">
+                      {selectedSize}
+                    </span>
                   )}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {product.sizes.map((size) => (
                     <button
                       key={size}
-                      onClick={() => { setSelectedSize(size); setSelectionError(""); }}
+                      onClick={() => {
+                        setSelectedSize(size);
+                        setSelectionError("");
+                      }}
                       className={`min-w-[2.25rem] h-9 px-2.5 border text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
                         selectedSize === size
                           ? "border-primary bg-primary text-white"
@@ -383,7 +408,9 @@ export default function ProductDetailsContent({
                   : "border-gray-200 hover:border-primary text-primary/60 hover:text-primary"
               }`}
             >
-              <Heart className={`w-3.5 h-3.5 ${isWishlisted ? "fill-accent" : ""}`} />
+              <Heart
+                className={`w-3.5 h-3.5 ${isWishlisted ? "fill-accent" : ""}`}
+              />
               {isWishlisted ? t("removeFromWishlist") : t("addToWishlist")}
             </button>
 
@@ -431,7 +458,9 @@ export default function ProductDetailsContent({
                   {product.dimensions && (
                     <p className="text-[10px] md:text-xs text-primary/50">
                       • {t("sizeChar")}:{" "}
-                      <span className="text-primary/80">{product.dimensions}</span>
+                      <span className="text-primary/80">
+                        {product.dimensions}
+                      </span>
                     </p>
                   )}
                   {product.weight && (
@@ -448,7 +477,9 @@ export default function ProductDetailsContent({
                   )}
                   <p className="text-[10px] md:text-xs text-primary/50">
                     • {t("categoryChar")}:{" "}
-                    <span className="text-primary/80">{product.subCategory}</span>
+                    <span className="text-primary/80">
+                      {product.subCategory}
+                    </span>
                   </p>
                 </div>
               </div>

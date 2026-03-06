@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 
 import { Coupon } from "@/types";
+import { apiFetch } from "@/utils/api";
 
 export default function CouponsList({
   initialCoupons,
@@ -20,19 +21,19 @@ export default function CouponsList({
   const { register, handleSubmit, reset } = useForm<CouponInput>();
 
   const fetchCoupons = async () => {
-    const res = await fetch("/api/admin/coupons");
+    const res = await apiFetch("/api/admin/coupons");
     const data = await res.json();
     setCoupons(data);
   };
 
   const terminateCoupon = async (id: string) => {
     if (!confirm(t("terminate") + "?")) return;
-    await fetch(`/api/admin/coupons?id=${id}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/coupons?id=${id}`, { method: "DELETE" });
     fetchCoupons();
   };
 
   const onSubmit = async (data: CouponInput) => {
-    await fetch("/api/admin/coupons", {
+    await apiFetch("/api/admin/coupons", {
       method: "POST",
       body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" },
@@ -47,7 +48,8 @@ export default function CouponsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("couponsTitle")}<span className="text-accent text-5xl">.</span>
+            {t("couponsTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("couponsSubtitle")}
@@ -97,7 +99,10 @@ export default function CouponsList({
               >
                 {coupon.isActive ? t("liveNow") : t("inactive")}
               </span>
-              <button onClick={() => terminateCoupon(coupon._id)} className="text-[9px] font-black uppercase tracking-widest text-primary hover:text-accent transition-colors cursor-pointer">
+              <button
+                onClick={() => terminateCoupon(coupon._id)}
+                className="text-[9px] font-black uppercase tracking-widest text-primary hover:text-accent transition-colors cursor-pointer"
+              >
                 {t("terminate")}
               </button>
             </div>

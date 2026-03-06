@@ -21,7 +21,7 @@ import {
   CloudinaryUploadWidgetResults,
 } from "next-cloudinary";
 import { Product, SubCategory, Category, Brand } from "@/types";
-import Pagination from "@/components/Pagination";
+import { apiFetch } from "@/utils/api";
 
 interface ProductsResponse {
   products: Product[];
@@ -66,7 +66,7 @@ export default function SupplierProductsTable({
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const res = await fetch("/api/supplier/profile");
+        const res = await apiFetch("/api/supplier/profile");
         if (res.ok) {
           const data = await res.json();
           setSupplierStatus(data.status);
@@ -87,7 +87,7 @@ export default function SupplierProductsTable({
         ...(search && { search }),
         ...(status !== "all" && { status }),
       });
-      const res = await fetch(`/api/supplier/products?${params}`);
+      const res = await apiFetch(`/api/supplier/products?${params}`);
       if (res.ok) {
         const data: ProductsResponse = await res.json();
         setProducts(data.products);
@@ -106,7 +106,7 @@ export default function SupplierProductsTable({
   }, [statusFilter]);
 
   useEffect(() => {
-    fetch("/api/colors")
+    apiFetch("/api/colors")
       .then((r) => r.json())
       .then(setDbColors)
       .catch(() => {});
@@ -213,7 +213,7 @@ export default function SupplierProductsTable({
 
     setSaving(true);
     try {
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
@@ -237,7 +237,7 @@ export default function SupplierProductsTable({
   const deleteProduct = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`/api/supplier/products?id=${id}`, {
+      const res = await apiFetch(`/api/supplier/products?id=${id}`, {
         method: "DELETE",
       });
       if (res.ok) {

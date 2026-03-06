@@ -21,6 +21,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Product, SubCategory, Category, Brand } from "@/types";
 import Pagination from "@/components/Pagination";
+import { apiFetch } from "@/utils/api";
 
 export default function ProductsTable({
   initialProducts,
@@ -130,7 +131,7 @@ export default function ProductsTable({
   };
 
   useEffect(() => {
-    fetch("/api/colors")
+    apiFetch("/api/colors")
       .then((r) => r.json())
       .then(setDbColors)
       .catch(() => {});
@@ -180,7 +181,7 @@ export default function ProductsTable({
     }
 
     setSaving(true);
-    const res = await fetch(url, {
+    const res = await apiFetch(url, {
       method,
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
@@ -198,7 +199,7 @@ export default function ProductsTable({
 
   const deleteProduct = async (id: string) => {
     if (!confirm(t("removeConfirm"))) return;
-    await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
     router.refresh();
   };
 
@@ -207,7 +208,8 @@ export default function ProductsTable({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("inventoryRegistry")}<span className="text-accent text-5xl">.</span>
+            {t("inventoryRegistry")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("inventorySubtitle")}
@@ -387,7 +389,9 @@ export default function ProductsTable({
           <div className="bg-white w-full max-w-4xl  shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="p-10 pb-4 flex justify-between items-center bg-white z-10">
               <h2 className="text-3xl font-black text-primary tracking-tight">
-                {editingProduct ? t("refineMasterpiece") : t("enlistNewCreation")}
+                {editingProduct
+                  ? t("refineMasterpiece")
+                  : t("enlistNewCreation")}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -629,7 +633,9 @@ export default function ProductsTable({
                                     onClick={() => open()}
                                     className="text-[9px] font-black uppercase tracking-widest text-accent border border-accent/30 px-2 py-1 hover:bg-accent/10 transition-all cursor-pointer flex-shrink-0"
                                   >
-                                    {colorImages[color] ? t("changeImage") : t("addImage")}
+                                    {colorImages[color]
+                                      ? t("changeImage")
+                                      : t("addImage")}
                                   </button>
                                 )}
                               </CldUploadWidget>

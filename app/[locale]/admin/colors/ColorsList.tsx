@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Trash2, Edit, Palette, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 interface Color {
   _id: string;
@@ -24,7 +25,7 @@ export default function ColorsList({
   const [saving, setSaving] = useState(false);
 
   const fetchColors = async () => {
-    const res = await fetch("/api/admin/colors");
+    const res = await apiFetch("/api/admin/colors");
     const data = await res.json();
     setColors(data);
   };
@@ -51,7 +52,7 @@ export default function ColorsList({
     const body = editingColor
       ? { id: editingColor._id, name, hex }
       : { name, hex };
-    await fetch("/api/admin/colors", {
+    await apiFetch("/api/admin/colors", {
       method,
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
@@ -63,7 +64,7 @@ export default function ColorsList({
 
   const deleteColor = async (id: string) => {
     if (!confirm(t("deleteColorConfirm"))) return;
-    await fetch(`/api/admin/colors?id=${id}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/colors?id=${id}`, { method: "DELETE" });
     fetchColors();
   };
 
@@ -72,7 +73,8 @@ export default function ColorsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("colorsTitle")}<span className="text-accent text-5xl">.</span>
+            {t("colorsTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("colorsRegistered", { count: colors.length })}
@@ -234,7 +236,11 @@ export default function ColorsList({
                   disabled={saving}
                   className="flex-1 py-4 bg-accent text-primary font-black uppercase text-[10px] tracking-widest hover:bg-accent/80 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  {saving ? t("saving") : editingColor ? t("update") : t("addColor")}
+                  {saving
+                    ? t("saving")
+                    : editingColor
+                      ? t("update")
+                      : t("addColor")}
                 </button>
               </div>
             </form>

@@ -24,6 +24,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 interface SummaryData {
   ordersCount: number;
@@ -54,8 +55,8 @@ export default function AdminDashboard() {
     const fetchSummary = async () => {
       try {
         const [summaryRes, ordersRes] = await Promise.all([
-          fetch("/api/admin/summary"),
-          fetch("/api/admin/orders?status=active&pageSize=5"),
+          apiFetch("/api/admin/summary"),
+          apiFetch("/api/admin/orders?status=active&pageSize=5"),
         ]);
         const summaryData = await summaryRes.json();
         const ordersData = await ordersRes.json();
@@ -175,7 +176,9 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-            <h3 className="text-sm font-black text-white">{t("activeOrders")}</h3>
+            <h3 className="text-sm font-black text-white">
+              {t("activeOrders")}
+            </h3>
             {activeCount > 0 && (
               <span className="bg-blue-500/20 text-blue-400 text-[9px] font-black px-2 py-0.5 border border-blue-500/30">
                 {t("activeOrdersPending", { count: activeCount })}
@@ -329,7 +332,9 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div className="bg-white/5 border border-white/10 p-6 flex flex-col">
           <div className="mb-6">
-            <h3 className="text-base font-black text-white">{t("quickActions")}</h3>
+            <h3 className="text-base font-black text-white">
+              {t("quickActions")}
+            </h3>
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/30 mt-1">
               {t("managementGateways")}
             </p>
@@ -364,7 +369,9 @@ export default function AdminDashboard() {
               </span>
             </div>
             <p className="text-xs text-white/40 leading-relaxed">
-              {t("growthMessagePre")}{" "}<span className="text-accent font-black">24%</span>{" "}{t("growthMessagePost")}
+              {t("growthMessagePre")}{" "}
+              <span className="text-accent font-black">24%</span>{" "}
+              {t("growthMessagePost")}
             </p>
           </div>
         </div>

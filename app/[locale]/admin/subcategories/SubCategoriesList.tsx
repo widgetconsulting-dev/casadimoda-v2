@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { SubCategory, SubCategoryFormData, Category } from "@/types";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 export default function SubCategoriesList({
   initialSubCategories,
@@ -26,7 +27,7 @@ export default function SubCategoriesList({
     useForm<SubCategoryFormData>();
 
   const fetchSubCategories = async () => {
-    const res = await fetch("/api/admin/subcategories");
+    const res = await apiFetch("/api/admin/subcategories");
     const data = await res.json();
     setSubcategories(data);
   };
@@ -57,7 +58,7 @@ export default function SubCategoriesList({
       ? { ...data, id: editingSub._id, slug }
       : { ...data, slug };
 
-    await fetch(url, {
+    await apiFetch(url, {
       method,
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
@@ -71,7 +72,7 @@ export default function SubCategoriesList({
 
   const deleteSub = async (id: string) => {
     if (!confirm(t("deleteSubcategoryConfirm"))) return;
-    await fetch(`/api/admin/subcategories?id=${id}`, { method: "DELETE" });
+    await apiFetch(`/api/admin/subcategories?id=${id}`, { method: "DELETE" });
     fetchSubCategories();
     router.refresh();
   };
@@ -81,7 +82,8 @@ export default function SubCategoriesList({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("subcategoriesTitle")}<span className="text-accent text-5xl">.</span>
+            {t("subcategoriesTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("subcategoriesSubtitle")}

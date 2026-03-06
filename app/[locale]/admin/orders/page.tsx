@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 interface OrderItem {
   name: string;
@@ -63,7 +64,9 @@ export default function AdminOrdersPage() {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/orders?status=${tab}&page=${page}&pageSize=15`);
+      const res = await apiFetch(
+        `/api/admin/orders?status=${tab}&page=${page}&pageSize=15`,
+      );
       const data = await res.json();
       setOrders(data.orders || []);
       setTotalOrders(data.totalOrders || 0);
@@ -85,10 +88,13 @@ export default function AdminOrdersPage() {
     setPage(1);
   }, [tab]);
 
-  const updateOrder = async (orderId: string, update: { isPaid?: boolean; isDelivered?: boolean }) => {
+  const updateOrder = async (
+    orderId: string,
+    update: { isPaid?: boolean; isDelivered?: boolean },
+  ) => {
     setUpdatingId(orderId);
     try {
-      await fetch("/api/admin/orders", {
+      await apiFetch("/api/admin/orders", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId, ...update }),
@@ -150,52 +156,91 @@ export default function AdminOrdersPage() {
       ) : orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Package size={40} className="text-white/10 mb-4" />
-          <p className="text-white/30 text-sm font-bold uppercase tracking-widest">{t("noOrders")}</p>
+          <p className="text-white/30 text-sm font-bold uppercase tracking-widest">
+            {t("noOrders")}
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+            <div
+              key={order._id}
+              className="bg-white/5 border border-white/10 hover:border-white/20 transition-colors"
+            >
               {/* Row Summary */}
               <div
                 className="grid grid-cols-12 gap-4 px-5 py-4 cursor-pointer items-center"
-                onClick={() => setExpandedId(expandedId === order._id ? null : order._id)}
+                onClick={() =>
+                  setExpandedId(expandedId === order._id ? null : order._id)
+                }
               >
                 {/* ID */}
                 <div className="col-span-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("order")}</p>
-                  <p className="text-xs font-bold text-white/70 font-mono">#{order._id.slice(-8).toUpperCase()}</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">
+                    {t("order")}
+                  </p>
+                  <p className="text-xs font-bold text-white/70 font-mono">
+                    #{order._id.slice(-8).toUpperCase()}
+                  </p>
                 </div>
 
                 {/* Customer */}
                 <div className="col-span-3">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("customer")}</p>
-                  <p className="text-xs font-bold text-white truncate">{order.user?.name || order.shippingAddress.fullName}</p>
-                  <p className="text-[10px] text-white/30 truncate">{order.user?.email || "—"}</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">
+                    {t("customer")}
+                  </p>
+                  <p className="text-xs font-bold text-white truncate">
+                    {order.user?.name || order.shippingAddress.fullName}
+                  </p>
+                  <p className="text-[10px] text-white/30 truncate">
+                    {order.user?.email || "—"}
+                  </p>
                 </div>
 
                 {/* Date */}
                 <div className="col-span-2 hidden md:block">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("date")}</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">
+                    {t("date")}
+                  </p>
                   <p className="text-xs text-white/60">
-                    {new Date(order.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })}
+                    {new Date(order.createdAt).toLocaleDateString("fr-FR", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
 
                 {/* Total */}
                 <div className="col-span-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("total")}</p>
-                  <p className="text-xs font-black text-accent">{order.totalPrice.toLocaleString()} TND</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">
+                    {t("total")}
+                  </p>
+                  <p className="text-xs font-black text-accent">
+                    {order.totalPrice.toLocaleString()} TND
+                  </p>
                 </div>
 
                 {/* Status badges */}
                 <div className="col-span-2 flex flex-col gap-1">
-                  <span className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isPaid ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}>
-                    {order.isPaid ? <CheckCircle size={9} /> : <Clock size={9} />}
+                  <span
+                    className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isPaid ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}
+                  >
+                    {order.isPaid ? (
+                      <CheckCircle size={9} />
+                    ) : (
+                      <Clock size={9} />
+                    )}
                     {order.isPaid ? t("paid") : t("unpaid")}
                   </span>
-                  <span className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isDelivered ? "bg-green-500/10 text-green-400" : "bg-blue-500/10 text-blue-400"}`}>
-                    {order.isDelivered ? <CheckCircle size={9} /> : <Truck size={9} />}
+                  <span
+                    className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isDelivered ? "bg-green-500/10 text-green-400" : "bg-blue-500/10 text-blue-400"}`}
+                  >
+                    {order.isDelivered ? (
+                      <CheckCircle size={9} />
+                    ) : (
+                      <Truck size={9} />
+                    )}
                     {order.isDelivered ? t("delivered") : t("pending")}
                   </span>
                 </div>
@@ -215,18 +260,33 @@ export default function AdminOrdersPage() {
                 <div className="border-t border-white/10 px-5 py-5 space-y-5">
                   {/* Items */}
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-3">{t("items")}</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-3">
+                      {t("items")}
+                    </p>
                     <div className="space-y-2">
                       {order.orderItems.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-3">
                           <div className="relative w-10 h-12 shrink-0 bg-white/5 overflow-hidden">
-                            <Image src={item.image} alt={item.name} fill className="object-cover" unoptimized />
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white truncate">{item.name}</p>
-                            <p className="text-[10px] text-white/30">{t("qty")} {item.quantity} × {item.price.toLocaleString()} TND</p>
+                            <p className="text-xs font-bold text-white truncate">
+                              {item.name}
+                            </p>
+                            <p className="text-[10px] text-white/30">
+                              {t("qty")} {item.quantity} ×{" "}
+                              {item.price.toLocaleString()} TND
+                            </p>
                           </div>
-                          <p className="text-xs font-black text-accent">{(item.price * item.quantity).toLocaleString()} TND</p>
+                          <p className="text-xs font-black text-accent">
+                            {(item.price * item.quantity).toLocaleString()} TND
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -234,11 +294,19 @@ export default function AdminOrdersPage() {
 
                   {/* Shipping */}
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">{t("shippingAddress")}</p>
-                    <p className="text-xs text-white/60">
-                      {order.shippingAddress.fullName} — {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">
+                      {t("shippingAddress")}
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">{t("paymentMethod")} {order.paymentMethod}</p>
+                    <p className="text-xs text-white/60">
+                      {order.shippingAddress.fullName} —{" "}
+                      {order.shippingAddress.address},{" "}
+                      {order.shippingAddress.city}{" "}
+                      {order.shippingAddress.postalCode},{" "}
+                      {order.shippingAddress.country}
+                    </p>
+                    <p className="text-[10px] text-white/30 mt-1">
+                      {t("paymentMethod")} {order.paymentMethod}
+                    </p>
                   </div>
 
                   {/* Actions */}
@@ -255,7 +323,9 @@ export default function AdminOrdersPage() {
                     {order.isPaid && !order.isDelivered && (
                       <button
                         disabled={updatingId === order._id}
-                        onClick={() => updateOrder(order._id, { isDelivered: true })}
+                        onClick={() =>
+                          updateOrder(order._id, { isDelivered: true })
+                        }
                         className="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
                       >
                         <Truck size={11} /> {t("markAsDelivered")}
@@ -264,7 +334,9 @@ export default function AdminOrdersPage() {
                     {order.isPaid && (
                       <button
                         disabled={updatingId === order._id}
-                        onClick={() => updateOrder(order._id, { isPaid: false })}
+                        onClick={() =>
+                          updateOrder(order._id, { isPaid: false })
+                        }
                         className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
                       >
                         {t("revertPayment")}

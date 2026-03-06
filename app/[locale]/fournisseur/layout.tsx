@@ -18,6 +18,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import { apiFetch } from "@/utils/api";
 
 export default function SupplierLayout({
   children,
@@ -44,7 +45,7 @@ export default function SupplierLayout({
     // Fetch supplier status
     const fetchStatus = async () => {
       try {
-        const res = await fetch("/api/supplier/profile");
+        const res = await apiFetch("/api/supplier/profile");
         if (res.ok) {
           const data = await res.json();
           setSupplierStatus(data.status);
@@ -81,9 +82,7 @@ export default function SupplierLayout({
           <h2 className="text-2xl font-black text-primary mb-2">
             {t("accessDenied")}
           </h2>
-          <p className="text-text-dark/60 mb-6">
-            {t("needSupplierAccount")}
-          </p>
+          <p className="text-text-dark/60 mb-6">{t("needSupplierAccount")}</p>
           <Link
             href="/become-supplier"
             className="inline-flex items-center gap-2 bg-accent text-white px-6 py-3  font-bold hover:bg-accent/90 transition-colors"

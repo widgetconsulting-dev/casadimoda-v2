@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Package, Store, CheckCircle, XCircle, Eye } from "lucide-react";
 import { SupplierAddress } from "@/types";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 interface PendingProduct {
   _id: string;
@@ -61,8 +62,8 @@ export default function AdminApprovalsPage() {
     setLoading(true);
     try {
       const [productsRes, suppliersRes] = await Promise.all([
-        fetch("/api/admin/products/approve?status=pending"),
-        fetch("/api/admin/suppliers?status=pending"),
+        apiFetch("/api/admin/products/approve?status=pending"),
+        apiFetch("/api/admin/suppliers?status=pending"),
       ]);
 
       if (productsRes.ok) {
@@ -90,7 +91,7 @@ export default function AdminApprovalsPage() {
     setProcessing(true);
 
     try {
-      const res = await fetch("/api/admin/products/approve", {
+      const res = await apiFetch("/api/admin/products/approve", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -120,7 +121,7 @@ export default function AdminApprovalsPage() {
     setProcessing(true);
 
     try {
-      const res = await fetch("/api/admin/suppliers", {
+      const res = await apiFetch("/api/admin/suppliers", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -149,7 +150,8 @@ export default function AdminApprovalsPage() {
     <div className="space-y-10">
       <div>
         <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-          {t("approvalsTitle")}<span className="text-accent text-5xl">.</span>
+          {t("approvalsTitle")}
+          <span className="text-accent text-5xl">.</span>
         </h1>
         <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
           {t("approvalsSubtitle")}

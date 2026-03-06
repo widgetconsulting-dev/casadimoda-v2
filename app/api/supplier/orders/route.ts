@@ -60,12 +60,12 @@ export async function GET(req: NextRequest) {
         }
       : null,
     // Only include items that belong to this supplier
-    orderItems: o.orderItems.filter((item) => productNames.includes(item.name)),
+    orderItems: o.orderItems.filter((item: { name: string }) => productNames.includes(item.name)),
     shippingAddress: o.shippingAddress,
     paymentMethod: o.paymentMethod,
     totalPrice: o.orderItems
-      .filter((item) => productNames.includes(item.name))
-      .reduce((sum, item) => sum + item.price * item.quantity, 0),
+      .filter((item: { name: string; price: number; quantity: number }) => productNames.includes(item.name))
+      .reduce((sum: number, item: { price: number; quantity: number }) => sum + item.price * item.quantity, 0),
     isPaid: o.isPaid,
     isDelivered: o.isDelivered,
     paidAt: o.paidAt?.toString() || null,

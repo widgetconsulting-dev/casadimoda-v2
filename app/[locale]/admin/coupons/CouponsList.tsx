@@ -25,6 +25,12 @@ export default function CouponsList({
     setCoupons(data);
   };
 
+  const terminateCoupon = async (id: string) => {
+    if (!confirm(t("terminate") + "?")) return;
+    await fetch(`/api/admin/coupons?id=${id}`, { method: "DELETE" });
+    fetchCoupons();
+  };
+
   const onSubmit = async (data: CouponInput) => {
     await fetch("/api/admin/coupons", {
       method: "POST",
@@ -91,7 +97,7 @@ export default function CouponsList({
               >
                 {coupon.isActive ? t("liveNow") : t("inactive")}
               </span>
-              <button className="text-[9px] font-black uppercase tracking-widest text-primary hover:text-accent transition-colors cursor-pointer">
+              <button onClick={() => terminateCoupon(coupon._id)} className="text-[9px] font-black uppercase tracking-widest text-primary hover:text-accent transition-colors cursor-pointer">
                 {t("terminate")}
               </button>
             </div>

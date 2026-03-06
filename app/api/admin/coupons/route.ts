@@ -16,3 +16,13 @@ export async function POST(req: NextRequest) {
   await db.disconnect();
   return NextResponse.json(coupon, { status: 201 });
 }
+
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
+  await db.connect();
+  await Coupon.findByIdAndDelete(id);
+  await db.disconnect();
+  return NextResponse.json({ message: "Coupon deleted" });
+}

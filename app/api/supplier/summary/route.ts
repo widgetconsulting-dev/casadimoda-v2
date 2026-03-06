@@ -49,10 +49,14 @@ export async function GET() {
       approvalStatus: "rejected",
     });
 
+    // Get supplier's product names for order matching
+    const supplierProducts = await Product.find({ supplier: supplier._id }).select("name").lean();
+    const productNames = supplierProducts.map((p) => p.name);
+
     // Get orders containing supplier's products
-    const orders = await Order.find({
-      "orderItems.supplier": supplier._id,
-    });
+    const orders = productNames.length > 0
+      ? await Order.find({ "orderItems.name": { $in: productNames } })
+      : [];
 
     // Calculate revenue from supplier's products
     let totalRevenue = 0;
@@ -62,7 +66,7 @@ export async function GET() {
     for (const order of orders) {
       if (order.isPaid) {
         for (const item of order.orderItems) {
-          if (item.supplier?.toString() === supplier._id.toString()) {
+          if (productNames.includes(item.name)) {
             totalRevenue += item.price * item.quantity;
           }
         }
@@ -74,12 +78,12 @@ export async function GET() {
     }
 
     // Get recent orders
-    const recentOrders = await Order.find({
-      "orderItems.supplier": supplier._id,
-    })
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .lean();
+    const recentOrders = productNames.length > 0
+      ? await Order.find({ "orderItems.name": { $in: productNames } })
+          .sort({ createdAt: -1 })
+          .limit(5)
+          .lean()
+      : [];
 
     // Calculate commissions
     const commissionRate = supplier.commissionRate || 15;
@@ -107,8 +111,7 @@ export async function GET() {
         isPaid: order.isPaid,
         isDelivered: order.isDelivered,
         itemCount: order.orderItems.filter(
-          (item: { supplier?: { toString: () => string } }) =>
-            item.supplier?.toString() === supplier._id.toString(),
+          (item: { name: string }) => productNames.includes(item.name),
         ).length,
       })),
     });

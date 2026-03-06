@@ -426,6 +426,7 @@
     "cancel": "Cancel",
     "authorizeEnlistment": "Authorize Enlistment",
     "deleteBrandConfirm": "Are you sure you want to remove this partner brand?",
+    "deleteCategoryConfirm": "Are you sure you want to delete this category?",
     "categoriesTitle": "Collections & Tags",
     "categoriesSubtitle": "Organize your luxury catalog",
     "createCategory": "Create Category",

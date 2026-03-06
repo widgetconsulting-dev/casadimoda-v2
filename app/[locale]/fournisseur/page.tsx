@@ -15,7 +15,7 @@ interface Product {
   price: number;
   countInStock: number;
   numSales: number;
-  status: string;
+  approvalStatus: string;
 }
 
 interface Order {
@@ -170,7 +170,7 @@ export default function SupplierDashboard() {
                     </div>
                   </td>
                   <td className="px-5 py-3 hidden sm:table-cell">
-                    <ProductStatusBadge status={product.status} />
+                    <ProductStatusBadge status={product.approvalStatus} />
                   </td>
                   <td className="px-5 py-3 text-center hidden md:table-cell">
                     <span className="text-sm font-bold text-white/60">{product.countInStock}</span>

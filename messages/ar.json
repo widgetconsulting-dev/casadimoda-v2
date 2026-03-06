@@ -426,6 +426,7 @@
     "cancel": "إلغاء",
     "authorizeEnlistment": "تأكيد التسجيل",
     "deleteBrandConfirm": "هل أنت متأكد من حذف هذه العلامة التجارية الشريكة؟",
+    "deleteCategoryConfirm": "هل أنت متأكد من حذف هذه الفئة؟",
     "categoriesTitle": "المجموعات والتصنيفات",
     "categoriesSubtitle": "نظّم كتالوج الفخامة الخاص بك",
     "createCategory": "إنشاء فئة",

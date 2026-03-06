@@ -24,6 +24,12 @@ export default function CategoriesList({
     setCategories(data);
   };
 
+  const deleteCategory = async (id: string) => {
+    if (!confirm(t("deleteCategoryConfirm"))) return;
+    await fetch(`/api/admin/categories?id=${id}`, { method: "DELETE" });
+    fetchCategories();
+  };
+
   const onSubmit = async (data: CategoryFormData) => {
     const slug = data.name.toLowerCase().replace(/ /g, "-");
     await fetch("/api/admin/categories", {
@@ -66,7 +72,7 @@ export default function CategoriesList({
               <div className="bg-secondary p-4  text-accent">
                 <Tag size={24} />
               </div>
-              <button className="text-red-200 hover:text-red-500 transition-colors cursor-pointer">
+              <button onClick={() => deleteCategory(cat._id)} className="text-red-200 hover:text-red-500 transition-colors cursor-pointer">
                 <Trash2 size={18} />
               </button>
             </div>

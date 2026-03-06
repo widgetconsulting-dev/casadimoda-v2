@@ -103,7 +103,7 @@ function WholesaleContent({
               href="/vip-store"
               className="border border-white/20 text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-primary transition-all"
             >
-              VIP Store
+              {t("vipStore")}
             </Link>
           </div>
         </div>

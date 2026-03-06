@@ -69,7 +69,7 @@ export default function RegisterPage() {
           {/* LEFT — Form */}
           <div className="py-8">
             <h1 className="font-serif text-5xl md:text-6xl text-white mb-10">
-              Créer un Compte
+              {t("createAccount")}
             </h1>
 
             {error && (
@@ -165,7 +165,7 @@ export default function RegisterPage() {
                 {isSubmitting ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
                 ) : (
-                  "CONNEXION"
+                  t("submit")
                 )}
               </button>
             </form>
@@ -211,7 +211,7 @@ export default function RegisterPage() {
             </div>
 
             <p className="mt-6 text-sm text-white/40 max-w-sm">
-              Vous avez un compte ?{" "}
+              {t("alreadyHaveAccount")}{" "}
               <Link
                 href="/login"
                 className="font-black text-accent hover:text-white uppercase tracking-widest transition-colors"
@@ -224,7 +224,7 @@ export default function RegisterPage() {
           {/* RIGHT — Récachres actualités */}
           <div className="hidden lg:block py-8">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-5">
-              Récachres actualités
+              {t("latestNews")}
             </p>
             <div className="grid grid-cols-2 gap-4">
               {/* Sneakers */}

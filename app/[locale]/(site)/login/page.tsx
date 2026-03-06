@@ -124,7 +124,7 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
               <div className="h-px flex-1 bg-gray-200" />
-              <span className="text-[10px] text-primary/30">ou</span>
+              <span className="text-[10px] text-primary/30">{t("or")}</span>
               <div className="h-px flex-1 bg-gray-200" />
             </div>
 

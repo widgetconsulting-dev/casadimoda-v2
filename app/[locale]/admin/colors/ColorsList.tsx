@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus, Trash2, Edit, Palette, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Color {
   _id: string;
@@ -14,6 +15,7 @@ export default function ColorsList({
 }: {
   initialColors: Color[];
 }) {
+  const t = useTranslations("admin");
   const [colors, setColors] = useState<Color[]>(initialColors);
   const [showModal, setShowModal] = useState(false);
   const [editingColor, setEditingColor] = useState<Color | null>(null);
@@ -60,7 +62,7 @@ export default function ColorsList({
   };
 
   const deleteColor = async (id: string) => {
-    if (!confirm("Supprimer cette couleur ?")) return;
+    if (!confirm(t("deleteColorConfirm"))) return;
     await fetch(`/api/admin/colors?id=${id}`, { method: "DELETE" });
     fetchColors();
   };
@@ -70,18 +72,17 @@ export default function ColorsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Color Palette<span className="text-accent text-5xl">.</span>
+            {t("colorsTitle")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            {colors.length} couleur{colors.length !== 1 ? "s" : ""} enregistrée
-            {colors.length !== 1 ? "s" : ""}
+            {t("colorsRegistered", { count: colors.length })}
           </p>
         </div>
         <button
           onClick={openCreate}
           className="bg-primary hover:bg-black text-white px-8 py-4 font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
-          <Plus size={16} /> Add Color
+          <Plus size={16} /> {t("addColor")}
         </button>
       </div>
 
@@ -90,7 +91,7 @@ export default function ColorsList({
           <div className="py-20 flex flex-col items-center gap-4 text-center">
             <Palette size={48} className="text-gray-100" />
             <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
-              No colors defined yet
+              {t("noColors")}
             </p>
           </div>
         ) : (
@@ -156,7 +157,7 @@ export default function ColorsList({
           <div className="bg-white w-full max-w-sm shadow-2xl p-8 animate-in zoom-in duration-300">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-black text-primary tracking-tight">
-                {editingColor ? "Edit Color" : "New Color"}
+                {editingColor ? t("editColor") : t("newColor")}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -169,20 +170,20 @@ export default function ColorsList({
             <form onSubmit={onSubmit} className="space-y-5">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/40 ml-1">
-                  Color Name
+                  {t("colorName")}
                 </label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                   className="w-full bg-secondary border-none p-4 outline-none font-bold text-primary"
-                  placeholder="e.g. Noir, Rouge Bordeaux"
+                  placeholder={t("colorNamePlaceholder")}
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/40 ml-1">
-                  Hex Value
+                  {t("hexValue")}
                 </label>
                 <div className="flex gap-3 items-center">
                   {/* Color picker */}
@@ -216,7 +217,7 @@ export default function ColorsList({
                   style={{ backgroundColor: hex }}
                 />
                 <span className="font-bold text-sm text-primary">
-                  {name || "Color preview"}
+                  {name || t("colorPreview")}
                 </span>
               </div>
 
@@ -226,14 +227,14 @@ export default function ColorsList({
                   onClick={() => setShowModal(false)}
                   className="flex-1 py-4 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-secondary transition-all cursor-pointer"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 py-4 bg-accent text-primary font-black uppercase text-[10px] tracking-widest hover:bg-accent/80 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  {saving ? "Saving..." : editingColor ? "Update" : "Add Color"}
+                  {saving ? t("saving") : editingColor ? t("update") : t("addColor")}
                 </button>
               </div>
             </form>

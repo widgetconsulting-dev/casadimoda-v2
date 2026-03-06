@@ -241,7 +241,7 @@ export default function TopBar() {
                             onClick={() => setShowAccountMenu(false)}
                             className="text-accent font-bold hover:underline"
                           >
-                            Créer un compte
+                            {t("createAccount")}
                           </Link>
                         </p>
                       </div>
@@ -251,14 +251,14 @@ export default function TopBar() {
                           onClick={() => setShowAccountMenu(false)}
                           className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                         >
-                          Commandes
+                          {t("orders")}
                         </Link>
                         <Link
                           href="/become-supplier"
                           onClick={() => setShowAccountMenu(false)}
                           className="px-4 py-2.5 text-xs font-medium text-primary hover:bg-accent hover:text-secondary transition-colors"
                         >
-                          Devenir Fournisseur
+                          {t("becomeSupplier")}
                         </Link>
                       </div>
                     </>
@@ -290,7 +290,7 @@ export default function TopBar() {
                     )}
                   </div>
                   <span className="hidden md:inline text-xs font-medium">
-                    Orders
+                    {t("orders")}
                   </span>
                 </Link>
               ) : (
@@ -331,7 +331,7 @@ export default function TopBar() {
               <input
                 type="text"
                 className="flex-grow px-4 text-primary text-sm outline-none placeholder:text-gray-400"
-                placeholder="Rechercher..."
+                placeholder={t("searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -393,7 +393,7 @@ export default function TopBar() {
                     onClick={handleSearchSubmit}
                     className="w-full p-2.5 bg-secondary/50 text-[10px] font-bold uppercase tracking-widest text-primary hover:bg-accent hover:text-white transition-colors cursor-pointer"
                   >
-                    Voir tous les résultats
+                    {t("viewAllResults")}
                   </button>
                 </div>
               </div>

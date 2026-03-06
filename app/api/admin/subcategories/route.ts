@@ -32,3 +32,44 @@ export async function POST(req: Request) {
         );
     }
 }
+
+export async function PUT(req: Request) {
+    try {
+        await db.connect();
+        const body = await req.json();
+        const { id, name, slug, parentCategory, description } = body;
+        if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
+
+        const updated = await SubCategory.findByIdAndUpdate(
+            id,
+            { name, slug: slug || slugify(name, { lower: true }), parentCategory, description },
+            { new: true }
+        );
+
+        await db.disconnect();
+        return NextResponse.json(updated);
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Error updating subcategory", error },
+            { status: 500 }
+        );
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get("id");
+        if (!id) return NextResponse.json({ message: "ID required" }, { status: 400 });
+
+        await db.connect();
+        await SubCategory.findByIdAndDelete(id);
+        await db.disconnect();
+        return NextResponse.json({ message: "SubCategory deleted" });
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Error deleting subcategory", error },
+            { status: 500 }
+        );
+    }
+}

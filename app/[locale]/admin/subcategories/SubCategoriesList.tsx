@@ -5,6 +5,7 @@ import { Plus, Trash2, Edit, Layers, ArrowRight, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { SubCategory, SubCategoryFormData, Category } from "@/types";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function SubCategoriesList({
   initialSubCategories,
@@ -13,6 +14,7 @@ export default function SubCategoriesList({
   initialSubCategories: SubCategory[];
   categories: Category[];
 }) {
+  const t = useTranslations("admin");
   const [subcategories, setSubcategories] =
     useState<SubCategory[]>(initialSubCategories);
   const [showModal, setShowModal] = useState(false);
@@ -68,7 +70,7 @@ export default function SubCategoriesList({
   };
 
   const deleteSub = async (id: string) => {
-    if (!confirm("Remove this boutique line?")) return;
+    if (!confirm(t("deleteSubcategoryConfirm"))) return;
     await fetch(`/api/admin/subcategories?id=${id}`, { method: "DELETE" });
     fetchSubCategories();
     router.refresh();
@@ -79,17 +81,17 @@ export default function SubCategoriesList({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Subcategory Registry<span className="text-accent text-5xl">.</span>
+            {t("subcategoriesTitle")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Control your hierarchical boutique lines
+            {t("subcategoriesSubtitle")}
           </p>
         </div>
         <button
           onClick={() => openModal()}
           className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
-          <Plus size={16} /> Establish New Line
+          <Plus size={16} /> {t("establishNewLine")}
         </button>
       </div>
 
@@ -98,7 +100,7 @@ export default function SubCategoriesList({
           <div className="col-span-full bg-white p-20  border border-gray-100 flex flex-col items-center gap-4">
             <Layers size={48} className="text-gray-100" />
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-dark/30">
-              No subcategories registered.
+              {t("noSubcategories")}
             </p>
           </div>
         ) : (
@@ -138,11 +140,11 @@ export default function SubCategoriesList({
               </div>
 
               <p className="text-xs text-text-dark/50 leading-relaxed mb-6">
-                {sub.description || "A localized selection of luxury assets."}
+                {sub.description || t("noSubcategoryDescription")}
               </p>
 
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary group-hover:text-accent transition-colors">
-                View Collection <ArrowRight size={14} />
+                {t("viewCollection")} <ArrowRight size={14} />
               </div>
             </div>
           ))
@@ -162,31 +164,31 @@ export default function SubCategoriesList({
 
             <div className="p-10">
               <h2 className="text-2xl font-black text-primary mb-8 tracking-tight">
-                {editingSub ? "Refine Boutique Line" : "Establish New Line"}
+                {editingSub ? t("refineBoutiqueLine") : t("establishNewLine")}
               </h2>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                    Line Name
+                    {t("lineName")}
                   </label>
                   <input
                     {...register("name", { required: true })}
                     className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
-                    placeholder="e.g. Vintage Watches"
+                    placeholder={t("lineNamePlaceholder")}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                    Parent Collection
+                    {t("parentCollection")}
                   </label>
                   <select
                     {...register("parentCategory", { required: true })}
                     className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                   >
                     <option value="" disabled>
-                      Select parent collection...
+                      {t("selectParentCollection")}
                     </option>
                     {categories.map((cat) => (
                       <option key={cat._id} value={cat.name}>
@@ -198,12 +200,12 @@ export default function SubCategoriesList({
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                    Line Description (Optional)
+                    {t("lineDescription")}
                   </label>
                   <textarea
                     {...register("description")}
                     className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[100px]"
-                    placeholder="Briefly describe this specific line..."
+                    placeholder={t("lineDescriptionPlaceholder")}
                   />
                 </div>
 
@@ -213,14 +215,14 @@ export default function SubCategoriesList({
                     onClick={() => setShowModal(false)}
                     className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                   >
-                    Abort
+                    {t("abort")}
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
                     className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-5  shadow-lg hover:bg-black transition-all cursor-pointer disabled:opacity-50"
                   >
-                    {saving ? "Signing..." : "Establish Line"}
+                    {saving ? t("signing") : t("establishLine")}
                   </button>
                 </div>
               </form>

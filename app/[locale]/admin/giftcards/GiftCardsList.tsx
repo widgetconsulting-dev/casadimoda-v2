@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Gift, Copy, CheckCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { GiftCard, GiftCardFormData } from "@/types";
 
 export interface GiftCardsListProps {
@@ -12,6 +13,7 @@ export interface GiftCardsListProps {
 export default function GiftCardsList({
   initialGiftCards,
 }: GiftCardsListProps) {
+  const t = useTranslations("admin");
   const [giftCards, setGiftCards] = useState<GiftCard[]>(initialGiftCards);
   const [showModal, setShowModal] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -53,10 +55,10 @@ export default function GiftCardsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Vouchers & Gifts<span className="text-accent text-5xl">.</span>
+            {t("giftCardsTitle")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Store credit and digital assets
+            {t("giftCardsSubtitle")}
           </p>
         </div>
         <button
@@ -66,7 +68,7 @@ export default function GiftCardsList({
           }}
           className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
-          <Plus size={16} /> Mint Gift Card
+          <Plus size={16} /> {t("mintGiftCard")}
         </button>
       </div>
 
@@ -75,19 +77,19 @@ export default function GiftCardsList({
           <thead className="bg-secondary/50 border-b border-gray-100">
             <tr>
               <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-dark/40">
-                Reference Code
+                {t("referenceCode")}
               </th>
               <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-dark/40">
-                Initial Faith
+                {t("initialFaith")}
               </th>
               <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-dark/40">
-                Current Soul
+                {t("currentSoul")}
               </th>
               <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-dark/40">
-                Visibility
+                {t("visibility")}
               </th>
               <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-text-dark/40 text-right">
-                Action
+                {t("action")}
               </th>
             </tr>
           </thead>
@@ -117,7 +119,7 @@ export default function GiftCardsList({
                         : "bg-red-100 text-red-600"
                     }`}
                   >
-                    {card.isActive ? "Operational" : "Depleted"}
+                    {card.isActive ? t("operational") : t("depleted")}
                   </span>
                 </td>
                 <td className="px-8 py-6 text-right">
@@ -140,7 +142,7 @@ export default function GiftCardsList({
                   <div className="flex flex-col items-center gap-4">
                     <Gift size={48} className="text-gray-100" />
                     <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
-                      No digital assets currently minted.
+                      {t("noGiftCards")}
                     </p>
                   </div>
                 </td>
@@ -154,12 +156,12 @@ export default function GiftCardsList({
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-lg  p-10 shadow-2xl animate-in zoom-in duration-300">
             <h2 className="text-2xl font-black text-primary mb-8 tracking-tight italic">
-              Mint Private Asset
+              {t("mintPrivateAsset")}
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                  Unique Identifier
+                  {t("uniqueIdentifier")}
                 </label>
                 <div className="relative">
                   <input
@@ -172,19 +174,19 @@ export default function GiftCardsList({
                     onClick={generateCode}
                     className="absolute right-2 top-2 bottom-2 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-4  hover:bg-black transition-all cursor-pointer"
                   >
-                    Regen
+                    {t("regen")}
                   </button>
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                  Monetary Value ($)
+                  {t("monetaryValue")}
                 </label>
                 <input
                   type="number"
                   {...register("amount", { required: true })}
                   className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
-                  placeholder="e.g. 500"
+                  placeholder={t("amountPlaceholder")}
                 />
               </div>
               <div className="flex gap-4 pt-4">
@@ -193,13 +195,13 @@ export default function GiftCardsList({
                   onClick={() => setShowModal(false)}
                   className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 bg-accent text-primary font-black uppercase text-[10px] tracking-widest py-5  shadow-lg border-2 border-transparent hover:border-primary transition-all cursor-pointer"
                 >
-                  Confirm Minting
+                  {t("confirmMinting")}
                 </button>
               </div>
             </form>

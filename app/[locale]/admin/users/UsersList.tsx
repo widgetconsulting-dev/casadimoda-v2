@@ -10,17 +10,19 @@ import {
   Calendar,
 } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
+  const t = useTranslations("admin");
   return (
     <div className="space-y-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Member Registry<span className="text-accent text-5xl">.</span>
+            {t("usersTitle")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Manage your exclusive clientele
+            {t("usersSubtitle")}
           </p>
         </div>
       </div>
@@ -35,11 +37,11 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
             />
             <input
               className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
-              placeholder="Search members..."
+              placeholder={t("searchMembers")}
             />
           </div>
           <button className="bg-secondary px-6 py-4  flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
-            <Filter size={16} /> Filters
+            <Filter size={16} /> {t("filters")}
           </button>
         </div>
 
@@ -49,16 +51,16 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
             <thead>
               <tr className="border-b border-gray-50">
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Member Details
+                  {t("memberDetails")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Contact
+                  {t("contact")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Status
+                  {t("status")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Joined Date
+                  {t("joinedDate")}
                 </th>
               </tr>
             </thead>
@@ -92,11 +94,11 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
                   <td className="py-6">
                     {user.isAdmin ? (
                       <span className="inline-flex items-center gap-2 text-[10px] font-black text-accent bg-accent/5 px-4 py-2  uppercase tracking-widest border border-accent/10">
-                        <Shield size={12} /> Administrator
+                        <Shield size={12} /> {t("administrator")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-2 text-[10px] font-bold text-text-dark/40 bg-secondary px-4 py-2  uppercase tracking-widest">
-                        Member
+                        {t("member")}
                       </span>
                     )}
                   </td>

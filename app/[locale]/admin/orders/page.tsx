@@ -11,6 +11,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface OrderItem {
   name: string;
@@ -39,14 +40,16 @@ interface Order {
   createdAt: string;
 }
 
-const STATUS_TABS = [
-  { key: "active", label: "Active", color: "text-blue-400" },
-  { key: "paid", label: "Paid / Pending Delivery", color: "text-yellow-400" },
-  { key: "delivered", label: "Delivered", color: "text-green-400" },
-  { key: "all", label: "All Orders", color: "text-white/60" },
-];
-
 export default function AdminOrdersPage() {
+  const t = useTranslations("admin");
+
+  const STATUS_TABS = [
+    { key: "active", label: t("tabActive"), color: "text-blue-400" },
+    { key: "paid", label: t("tabPaidPending"), color: "text-yellow-400" },
+    { key: "delivered", label: t("tabDelivered"), color: "text-green-400" },
+    { key: "all", label: t("tabAllOrders"), color: "text-white/60" },
+  ];
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalOrders, setTotalOrders] = useState(0);
   const [activeCount, setActiveCount] = useState(0);
@@ -102,10 +105,10 @@ export default function AdminOrdersPage() {
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-3xl font-black text-white tracking-tight">
-            Orders <span className="text-accent">Management</span>
+            {t("ordersTitle")}
           </h1>
           <p className="text-white/30 font-bold uppercase tracking-widest text-[10px] mt-1">
-            {activeCount} active order{activeCount !== 1 ? "s" : ""} pending
+            {t("activeOrdersPending", { count: activeCount })}
           </p>
         </div>
         <button
@@ -113,7 +116,7 @@ export default function AdminOrdersPage() {
           className="flex items-center gap-2 bg-white/5 border border-white/10 hover:border-accent/40 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-accent transition-all cursor-pointer"
         >
           <RefreshCw size={12} />
-          Refresh
+          {t("refresh")}
         </button>
       </div>
 
@@ -147,7 +150,7 @@ export default function AdminOrdersPage() {
       ) : orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <Package size={40} className="text-white/10 mb-4" />
-          <p className="text-white/30 text-sm font-bold uppercase tracking-widest">No orders found</p>
+          <p className="text-white/30 text-sm font-bold uppercase tracking-widest">{t("noOrders")}</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -160,20 +163,20 @@ export default function AdminOrdersPage() {
               >
                 {/* ID */}
                 <div className="col-span-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Order</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("order")}</p>
                   <p className="text-xs font-bold text-white/70 font-mono">#{order._id.slice(-8).toUpperCase()}</p>
                 </div>
 
                 {/* Customer */}
                 <div className="col-span-3">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Customer</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("customer")}</p>
                   <p className="text-xs font-bold text-white truncate">{order.user?.name || order.shippingAddress.fullName}</p>
                   <p className="text-[10px] text-white/30 truncate">{order.user?.email || "—"}</p>
                 </div>
 
                 {/* Date */}
                 <div className="col-span-2 hidden md:block">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Date</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("date")}</p>
                   <p className="text-xs text-white/60">
                     {new Date(order.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" })}
                   </p>
@@ -181,7 +184,7 @@ export default function AdminOrdersPage() {
 
                 {/* Total */}
                 <div className="col-span-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">Total</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-0.5">{t("total")}</p>
                   <p className="text-xs font-black text-accent">{order.totalPrice.toLocaleString()} TND</p>
                 </div>
 
@@ -189,11 +192,11 @@ export default function AdminOrdersPage() {
                 <div className="col-span-2 flex flex-col gap-1">
                   <span className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isPaid ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}>
                     {order.isPaid ? <CheckCircle size={9} /> : <Clock size={9} />}
-                    {order.isPaid ? "Paid" : "Unpaid"}
+                    {order.isPaid ? t("paid") : t("unpaid")}
                   </span>
                   <span className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isDelivered ? "bg-green-500/10 text-green-400" : "bg-blue-500/10 text-blue-400"}`}>
                     {order.isDelivered ? <CheckCircle size={9} /> : <Truck size={9} />}
-                    {order.isDelivered ? "Delivered" : "Pending"}
+                    {order.isDelivered ? t("delivered") : t("pending")}
                   </span>
                 </div>
 
@@ -212,7 +215,7 @@ export default function AdminOrdersPage() {
                 <div className="border-t border-white/10 px-5 py-5 space-y-5">
                   {/* Items */}
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-3">Items</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-3">{t("items")}</p>
                     <div className="space-y-2">
                       {order.orderItems.map((item, idx) => (
                         <div key={idx} className="flex items-center gap-3">
@@ -221,7 +224,7 @@ export default function AdminOrdersPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-bold text-white truncate">{item.name}</p>
-                            <p className="text-[10px] text-white/30">Qté: {item.quantity} × {item.price.toLocaleString()} TND</p>
+                            <p className="text-[10px] text-white/30">{t("qty")} {item.quantity} × {item.price.toLocaleString()} TND</p>
                           </div>
                           <p className="text-xs font-black text-accent">{(item.price * item.quantity).toLocaleString()} TND</p>
                         </div>
@@ -231,11 +234,11 @@ export default function AdminOrdersPage() {
 
                   {/* Shipping */}
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Shipping Address</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">{t("shippingAddress")}</p>
                     <p className="text-xs text-white/60">
                       {order.shippingAddress.fullName} — {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                     </p>
-                    <p className="text-[10px] text-white/30 mt-1">Payment: {order.paymentMethod}</p>
+                    <p className="text-[10px] text-white/30 mt-1">{t("paymentMethod")} {order.paymentMethod}</p>
                   </div>
 
                   {/* Actions */}
@@ -246,7 +249,7 @@ export default function AdminOrdersPage() {
                         onClick={() => updateOrder(order._id, { isPaid: true })}
                         className="flex items-center gap-1.5 bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 text-green-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
                       >
-                        <CheckCircle size={11} /> Mark as Paid
+                        <CheckCircle size={11} /> {t("markAsPaid")}
                       </button>
                     )}
                     {order.isPaid && !order.isDelivered && (
@@ -255,7 +258,7 @@ export default function AdminOrdersPage() {
                         onClick={() => updateOrder(order._id, { isDelivered: true })}
                         className="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
                       >
-                        <Truck size={11} /> Mark as Delivered
+                        <Truck size={11} /> {t("markAsDelivered")}
                       </button>
                     )}
                     {order.isPaid && (
@@ -264,13 +267,13 @@ export default function AdminOrdersPage() {
                         onClick={() => updateOrder(order._id, { isPaid: false })}
                         className="flex items-center gap-1.5 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
                       >
-                        Revert Payment
+                        {t("revertPayment")}
                       </button>
                     )}
                     {updatingId === order._id && (
                       <div className="flex items-center gap-2 text-white/30 text-[9px] font-black uppercase tracking-widest">
                         <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                        Updating...
+                        {t("updating")}
                       </div>
                     )}
                   </div>
@@ -293,14 +296,14 @@ export default function AdminOrdersPage() {
               onClick={() => setPage((p) => p - 1)}
               className="px-4 py-2 bg-white/5 border border-white/10 text-xs font-bold text-white/60 hover:border-accent/40 hover:text-accent disabled:opacity-30 cursor-pointer transition-all"
             >
-              Prev
+              {t("prev")}
             </button>
             <button
               disabled={page >= pages}
               onClick={() => setPage((p) => p + 1)}
               className="px-4 py-2 bg-white/5 border border-white/10 text-xs font-bold text-white/60 hover:border-accent/40 hover:text-accent disabled:opacity-30 cursor-pointer transition-all"
             >
-              Next
+              {t("next")}
             </button>
           </div>
         </div>

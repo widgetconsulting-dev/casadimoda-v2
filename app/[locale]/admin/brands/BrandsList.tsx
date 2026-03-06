@@ -5,12 +5,14 @@ import { Plus, Trash2, ShieldCheck, ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import { Brand } from "@/types";
+import { useTranslations } from "next-intl";
 
 export default function BrandsList({
   initialBrands,
 }: {
   initialBrands: Brand[];
 }) {
+  const t = useTranslations("admin");
   const [brands, setBrands] = useState<Brand[]>(initialBrands);
   const [showModal, setShowModal] = useState(false);
 
@@ -35,7 +37,7 @@ export default function BrandsList({
   };
 
   const deleteBrand = async (id: string) => {
-    if (!confirm("Are you sure you want to remove this partner brand?")) return;
+    if (!confirm(t("deleteBrandConfirm"))) return;
     await fetch(`/api/admin/brands?id=${id}`, { method: "DELETE" });
     fetchBrands();
   };
@@ -45,17 +47,17 @@ export default function BrandsList({
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Partner Houses<span className="text-accent text-5xl">.</span>
+            {t("brandsTitle")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Manage your luxury labels
+            {t("brandsSubtitle")}
           </p>
         </div>
         <button
           onClick={() => setShowModal(true)}
           className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
-          <Plus size={16} /> Enlist Brand
+          <Plus size={16} /> {t("enlistBrand")}
         </button>
       </div>
 
@@ -81,10 +83,10 @@ export default function BrandsList({
             </h3>
             <p className="text-xs text-text-dark/50 leading-relaxed mb-6 line-clamp-2">
               {brand.description ||
-                "No biography provided for this luxury house."}
+                t("noBiography")}
             </p>
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-accent group-hover:gap-4 transition-all cursor-pointer">
-              Brand Inventory <ArrowRight size={14} />
+              {t("brandInventory")} <ArrowRight size={14} />
             </div>
           </div>
         ))}
@@ -92,7 +94,7 @@ export default function BrandsList({
           <div className="col-span-full py-20 bg-secondary/20 border-2 border-dashed border-gray-100  flex flex-col items-center justify-center gap-4 text-center p-10">
             <ShieldCheck size={64} className="text-gray-100" />
             <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
-              No brands registered in the registry.
+              {t("noBrands")}
             </p>
           </div>
         )}
@@ -102,27 +104,27 @@ export default function BrandsList({
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-lg  p-10 shadow-2xl animate-in zoom-in duration-300">
             <h2 className="text-2xl font-black text-primary mb-8 tracking-tight italic">
-              Enlist New Luxury House
+              {t("enlistNewBrand")}
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                  Brand Identity
+                  {t("brandIdentity")}
                 </label>
                 <input
                   {...register("name", { required: true })}
                   className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
-                  placeholder="e.g. Rolex or Gucci"
+                  placeholder={t("brandNamePlaceholder")}
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-text-dark/30 ml-2">
-                  Biographic Summary
+                  {t("biographicSummary")}
                 </label>
                 <textarea
                   {...register("description")}
                   className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[100px]"
-                  placeholder="A brief history of the house..."
+                  placeholder={t("biographyPlaceholder")}
                 />
               </div>
               <div className="flex gap-4 pt-4">
@@ -131,13 +133,13 @@ export default function BrandsList({
                   onClick={() => setShowModal(false)}
                   className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-5 hover:bg-secondary  transition-all cursor-pointer"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 bg-accent text-primary font-black uppercase text-[10px] tracking-widest py-5  shadow-lg border-2 border-transparent hover:border-primary transition-all cursor-pointer"
                 >
-                  Authorize Enlistment
+                  {t("authorizeEnlistment")}
                 </button>
               </div>
             </form>

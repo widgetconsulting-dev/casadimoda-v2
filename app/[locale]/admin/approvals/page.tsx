@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Package, Store, CheckCircle, XCircle, Eye } from "lucide-react";
 import { SupplierAddress } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface PendingProduct {
   _id: string;
@@ -39,6 +40,7 @@ interface PendingSupplier {
 }
 
 export default function AdminApprovalsPage() {
+  const t = useTranslations("admin");
   const [activeTab, setActiveTab] = useState<"products" | "suppliers">(
     "products",
   );
@@ -147,10 +149,10 @@ export default function AdminApprovalsPage() {
     <div className="space-y-10">
       <div>
         <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-          Pending Approvals<span className="text-accent text-5xl">.</span>
+          {t("approvalsTitle")}<span className="text-accent text-5xl">.</span>
         </h1>
         <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-          Review and approve suppliers and products
+          {t("approvalsSubtitle")}
         </p>
       </div>
 
@@ -167,7 +169,7 @@ export default function AdminApprovalsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                Pending Products
+                {t("pendingProducts")}
               </p>
               <p className="text-3xl md:text-4xl font-black text-primary mt-2">
                 {pendingProducts.length}
@@ -190,7 +192,7 @@ export default function AdminApprovalsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                Pending Suppliers
+                {t("pendingSuppliers")}
               </p>
               <p className="text-3xl md:text-4xl font-black text-primary mt-2">
                 {pendingSuppliers.length}
@@ -212,7 +214,7 @@ export default function AdminApprovalsPage() {
         ) : activeTab === "products" ? (
           <>
             <h2 className="text-xl font-black text-primary mb-6">
-              Products Awaiting Approval
+              {t("productsAwaitingApproval")}
             </h2>
             {pendingProducts.length === 0 ? (
               <div className="text-center py-12">
@@ -221,7 +223,7 @@ export default function AdminApprovalsPage() {
                   className="text-green-200 mx-auto mb-4"
                 />
                 <p className="text-text-dark/40 font-bold">
-                  No pending products
+                  {t("noPendingProducts")}
                 </p>
               </div>
             ) : (
@@ -305,7 +307,7 @@ export default function AdminApprovalsPage() {
         ) : (
           <>
             <h2 className="text-xl font-black text-primary mb-6">
-              Suppliers Awaiting Approval
+              {t("suppliersAwaitingApproval")}
             </h2>
             {pendingSuppliers.length === 0 ? (
               <div className="text-center py-12">
@@ -314,7 +316,7 @@ export default function AdminApprovalsPage() {
                   className="text-green-200 mx-auto mb-4"
                 />
                 <p className="text-text-dark/40 font-bold">
-                  No pending suppliers
+                  {t("noPendingSuppliers")}
                 </p>
               </div>
             ) : (
@@ -405,8 +407,8 @@ export default function AdminApprovalsPage() {
               <>
                 <h3 className="text-2xl font-black text-primary mb-6">
                   {actionModal.type === "product"
-                    ? "Product Details"
-                    : "Supplier Details"}
+                    ? t("productDetails")
+                    : t("supplierDetails")}
                 </h3>
                 {actionModal.type === "product" ? (
                   <div className="space-y-4">
@@ -424,7 +426,7 @@ export default function AdminApprovalsPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Name
+                        {t("name")}
                       </p>
                       <p className="font-bold text-primary">
                         {(actionModal.item as PendingProduct).name}
@@ -432,7 +434,7 @@ export default function AdminApprovalsPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Description
+                        {t("description")}
                       </p>
                       <p className="text-sm text-text-dark/70">
                         {(actionModal.item as PendingProduct).description}
@@ -441,7 +443,7 @@ export default function AdminApprovalsPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                          Price
+                          {t("price")}
                         </p>
                         <p className="font-bold text-primary">
                           ${(actionModal.item as PendingProduct).price}
@@ -449,11 +451,11 @@ export default function AdminApprovalsPage() {
                       </div>
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                          Stock
+                          {t("stock")}
                         </p>
                         <p className="font-bold text-primary">
                           {(actionModal.item as PendingProduct).countInStock}{" "}
-                          units
+                          {t("units")}
                         </p>
                       </div>
                     </div>
@@ -462,7 +464,7 @@ export default function AdminApprovalsPage() {
                   <div className="space-y-4">
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Business Name
+                        {t("businessName")}
                       </p>
                       <p className="font-bold text-primary">
                         {(actionModal.item as PendingSupplier).businessName}
@@ -470,16 +472,16 @@ export default function AdminApprovalsPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Description
+                        {t("description")}
                       </p>
                       <p className="text-sm text-text-dark/70">
                         {(actionModal.item as PendingSupplier)
-                          .businessDescription || "No description provided"}
+                          .businessDescription || t("noDescription")}
                       </p>
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Contact
+                        {t("contact")}
                       </p>
                       <p className="font-bold text-primary">
                         {(actionModal.item as PendingSupplier).contactEmail}
@@ -490,7 +492,7 @@ export default function AdminApprovalsPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Address
+                        {t("address")}
                       </p>
                       <p className="text-sm text-text-dark/70">
                         {(actionModal.item as PendingSupplier).address.street},{" "}
@@ -506,7 +508,7 @@ export default function AdminApprovalsPage() {
                     {(actionModal.item as PendingSupplier).taxId && (
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                          Tax ID
+                          {t("taxId")}
                         </p>
                         <p className="font-bold text-primary">
                           {(actionModal.item as PendingSupplier).taxId}
@@ -519,22 +521,23 @@ export default function AdminApprovalsPage() {
                   onClick={() => setActionModal(null)}
                   className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                 >
-                  Close
+                  {t("close")}
                 </button>
               </>
             ) : actionModal.action === "reject" ? (
               <>
                 <h3 className="text-2xl font-black text-primary mb-4">
-                  Reject{" "}
-                  {actionModal.type === "product" ? "Product" : "Supplier"}
+                  {actionModal.type === "product"
+                    ? t("rejectProduct")
+                    : t("rejectSupplier")}
                 </h3>
                 <p className="text-text-dark/60 mb-4">
-                  Please provide a reason for rejection:
+                  {t("rejectionReasonPrompt")}
                 </p>
                 <textarea
                   value={rejectionNote}
                   onChange={(e) => setRejectionNote(e.target.value)}
-                  placeholder="Reason for rejection"
+                  placeholder={t("rejectionReasonPlaceholder")}
                   className="w-full bg-secondary  p-4 outline-none font-bold text-primary mb-4"
                   rows={3}
                 />
@@ -546,7 +549,7 @@ export default function AdminApprovalsPage() {
                     }}
                     className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                   <button
                     onClick={() =>
@@ -557,29 +560,28 @@ export default function AdminApprovalsPage() {
                     disabled={processing}
                     className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3  transition-colors disabled:opacity-50"
                   >
-                    {processing ? "Processing..." : "Reject"}
+                    {processing ? t("processing") : t("reject")}
                   </button>
                 </div>
               </>
             ) : (
               <>
                 <h3 className="text-2xl font-black text-primary mb-4">
-                  Approve{" "}
-                  {actionModal.type === "product" ? "Product" : "Supplier"}
+                  {actionModal.type === "product"
+                    ? t("approveProduct")
+                    : t("approveSupplier")}
                 </h3>
                 <p className="text-text-dark/60 mb-6">
-                  Are you sure you want to approve this{" "}
-                  {actionModal.type === "product" ? "product" : "supplier"}?
                   {actionModal.type === "product"
-                    ? " It will be visible on the marketplace."
-                    : " They will be able to add products to the marketplace."}
+                    ? t("approveProductConfirm")
+                    : t("approveSupplierConfirmGeneral")}
                 </p>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setActionModal(null)}
                     className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                   <button
                     onClick={() =>
@@ -590,7 +592,7 @@ export default function AdminApprovalsPage() {
                     disabled={processing}
                     className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3  transition-colors disabled:opacity-50"
                   >
-                    {processing ? "Processing..." : "Approve"}
+                    {processing ? t("processing") : t("approve")}
                   </button>
                 </div>
               </>

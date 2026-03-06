@@ -18,6 +18,7 @@ import {
   CldUploadWidget,
   CloudinaryUploadWidgetResults,
 } from "next-cloudinary";
+import { useTranslations } from "next-intl";
 import { Product, SubCategory, Category, Brand } from "@/types";
 import Pagination from "@/components/Pagination";
 
@@ -34,6 +35,7 @@ export default function ProductsTable({
   categories: Category[];
   brands: Brand[];
 }) {
+  const t = useTranslations("admin");
   const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -190,12 +192,12 @@ export default function ProductsTable({
       router.refresh();
     } else {
       const err = await res.json();
-      alert(err.message || "Failed to save product");
+      alert(err.message || t("failedToSave"));
     }
   };
 
   const deleteProduct = async (id: string) => {
-    if (!confirm("Remove this item from the boutique registry?")) return;
+    if (!confirm(t("removeConfirm"))) return;
     await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
     router.refresh();
   };
@@ -205,17 +207,17 @@ export default function ProductsTable({
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Inventory Registry<span className="text-accent text-5xl">.</span>
+            {t("inventoryRegistry")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Control your luxury high-end stock
+            {t("inventorySubtitle")}
           </p>
         </div>
         <button
           onClick={() => openModal()}
           className="bg-primary hover:bg-black text-white px-8 py-4  font-black uppercase text-[10px] tracking-widest shadow-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
         >
-          <Plus size={16} /> Enlist New Item
+          <Plus size={16} /> {t("enlistNewItem")}
         </button>
       </div>
 
@@ -229,13 +231,13 @@ export default function ProductsTable({
             />
             <input
               className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
-              placeholder="Search registry..."
+              placeholder={t("searchRegistry")}
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
           <button className="bg-secondary px-6 py-4  flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest hover:bg-gray-100 transition-all cursor-pointer">
-            <Filter size={16} /> Filters
+            <Filter size={16} /> {t("filters")}
           </button>
         </div>
 
@@ -245,22 +247,22 @@ export default function ProductsTable({
             <thead>
               <tr className="border-b border-gray-50">
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Product Details
+                  {t("productDetails")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Category
+                  {t("category")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Subcategory
+                  {t("subcategory")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Inventory
+                  {t("inventory")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                  Retail Value
+                  {t("retailValue")}
                 </th>
                 <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary text-right">
-                  Actions
+                  {t("actions")}
                 </th>
               </tr>
             </thead>
@@ -311,7 +313,7 @@ export default function ProductsTable({
                         }`}
                       />
                       <span className="text-xs font-black text-primary">
-                        {product.countInStock} Units
+                        {product.countInStock} {t("units")}
                       </span>
                     </div>
                   </td>
@@ -364,7 +366,7 @@ export default function ProductsTable({
                     <div className="flex flex-col items-center gap-4">
                       <Package size={48} className="text-gray-100" />
                       <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
-                        Boutique inventory is currently empty.
+                        {t("emptyInventory")}
                       </p>
                     </div>
                   </td>
@@ -385,7 +387,7 @@ export default function ProductsTable({
           <div className="bg-white w-full max-w-4xl  shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="p-10 pb-4 flex justify-between items-center bg-white z-10">
               <h2 className="text-3xl font-black text-primary tracking-tight">
-                {editingProduct ? "Refine Masterpiece" : "Enlist New Creation"}
+                {editingProduct ? t("refineMasterpiece") : t("enlistNewCreation")}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -405,25 +407,25 @@ export default function ProductsTable({
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Creation Name
+                        {t("creationName")}
                       </label>
                       <input
                         {...register("name", { required: true })}
                         className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
-                        placeholder="e.g. Silk Evening Gown"
+                        placeholder={t("namePlaceholder")}
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Category
+                          {t("category")}
                         </label>
                         <select
                           {...register("category", { required: true })}
                           className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                         >
-                          <option value="">Select category...</option>
+                          <option value="">{t("selectCategory")}</option>
                           {categories.map((cat) => (
                             <option key={cat._id} value={cat.name}>
                               {cat.name}
@@ -433,13 +435,13 @@ export default function ProductsTable({
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          SubCategory
+                          {t("subcategory")}
                         </label>
                         <select
                           {...register("subCategory", { required: true })}
                           className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                         >
-                          <option value="">Select subcategory...</option>
+                          <option value="">{t("selectSubcategory")}</option>
                           {subCategories
                             .filter(
                               (sub) =>
@@ -457,13 +459,13 @@ export default function ProductsTable({
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Brand
+                        {t("brand")}
                       </label>
                       <select
                         {...register("brand", { required: true })}
                         className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                       >
-                        <option value="">Select brand...</option>
+                        <option value="">{t("selectBrand")}</option>
                         {brands.map((brand) => (
                           <option key={brand._id} value={brand.name}>
                             {brand.name}
@@ -474,20 +476,20 @@ export default function ProductsTable({
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Parent Category
+                        {t("parentCategory")}
                       </label>
                       <select
                         {...register("parentCategory", { required: true })}
                         className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary appearance-none"
                       >
-                        <option value="detail">Detail</option>
-                        <option value="gros">Gros</option>
+                        <option value="detail">{t("detail")}</option>
+                        <option value="gros">{t("gros")}</option>
                       </select>
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Sizes
+                        {t("sizes")}
                       </label>
                       <div className="flex gap-2">
                         <input
@@ -506,7 +508,7 @@ export default function ProductsTable({
                             }
                           }}
                           className="flex-1 bg-secondary border-none p-4 outline-none font-bold text-primary"
-                          placeholder="e.g. S, M, L, XL"
+                          placeholder={t("sizePlaceholder")}
                         />
                         <button
                           type="button"
@@ -549,7 +551,7 @@ export default function ProductsTable({
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Colors
+                        {t("colors")}
                       </label>
                       <div className="flex gap-2">
                         <select
@@ -557,7 +559,7 @@ export default function ProductsTable({
                           onChange={(e) => setSelectedDbColor(e.target.value)}
                           className="flex-1 bg-secondary border-none p-4 outline-none font-bold text-primary appearance-none"
                         >
-                          <option value="">— Select a color —</option>
+                          <option value="">{t("selectColor")}</option>
                           {dbColors
                             .filter((c) => !colors.includes(c.name))
                             .map((c) => (
@@ -627,7 +629,7 @@ export default function ProductsTable({
                                     onClick={() => open()}
                                     className="text-[9px] font-black uppercase tracking-widest text-accent border border-accent/30 px-2 py-1 hover:bg-accent/10 transition-all cursor-pointer flex-shrink-0"
                                   >
-                                    {colorImages[color] ? "Changer" : "Image"}
+                                    {colorImages[color] ? t("changeImage") : t("addImage")}
                                   </button>
                                 )}
                               </CldUploadWidget>
@@ -654,7 +656,7 @@ export default function ProductsTable({
                     <div className="grid grid-cols-3 gap-4">
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Original Price
+                          {t("originalPrice")}
                         </label>
                         <input
                           type="number"
@@ -665,18 +667,18 @@ export default function ProductsTable({
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Discount Price
+                          {t("discountPrice")}
                         </label>
                         <input
                           type="number"
                           {...register("discountPrice")}
                           className="w-full bg-secondary border-none  p-4 outline-none font-bold text-red-500"
-                          placeholder="Optional"
+                          placeholder={t("optional")}
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          In Stock
+                          {t("inStock")}
                         </label>
                         <input
                           type="number"
@@ -692,7 +694,7 @@ export default function ProductsTable({
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Primary Asset (URL)
+                        {t("primaryAsset")}
                       </label>
                       <div className="flex flex-col gap-4">
                         {productImage && (
@@ -715,7 +717,7 @@ export default function ProductsTable({
                           <input
                             {...register("image", { required: true })}
                             className="w-full bg-secondary border-none  p-4 pl-12 outline-none font-bold text-primary"
-                            placeholder="Select or enter URL"
+                            placeholder={t("imageUrlPlaceholder")}
                           />
                           <Upload
                             className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dark/30"
@@ -746,7 +748,7 @@ export default function ProductsTable({
                               onClick={() => open()}
                               className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4  hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
                             >
-                              <Upload size={14} /> Upload to Cloudinary
+                              <Upload size={14} /> {t("uploadCloudinary")}
                             </button>
                           )}
                         </CldUploadWidget>
@@ -755,34 +757,34 @@ export default function ProductsTable({
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Narrative Description
+                        {t("narrativeDescription")}
                       </label>
                       <textarea
                         {...register("description", { required: true })}
                         className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary min-h-[120px]"
-                        placeholder="Tell the story of this masterpiece..."
+                        placeholder={t("descriptionPlaceholder")}
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Delivery Time
+                          {t("deliveryTime")}
                         </label>
                         <input
                           {...register("deliveryTime")}
                           className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
-                          placeholder="e.g. 3-5 days"
+                          placeholder={t("deliveryTimePlaceholder")}
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                          Dimensions
+                          {t("dimensions")}
                         </label>
                         <input
                           {...register("dimensions")}
                           className="w-full bg-secondary border-none  p-4 outline-none font-bold text-primary"
-                          placeholder="e.g. 20x30x10 cm"
+                          placeholder={t("dimensionsPlaceholder")}
                         />
                       </div>
                     </div>
@@ -798,18 +800,18 @@ export default function ProductsTable({
                         htmlFor="isFeatured"
                         className="text-[11px] font-black uppercase tracking-widest text-primary cursor-pointer"
                       >
-                        Featured Creation
+                        {t("featuredCreation")}
                       </label>
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        Registry Slug (Optional)
+                        {t("registrySlug")}
                       </label>
                       <input
                         {...register("slug")}
                         className="w-full bg-secondary border-none  p-4 outline-none font-mono text-xs text-text-dark/50"
-                        placeholder="silk-evening-gown"
+                        placeholder={t("slugPlaceholder")}
                       />
                     </div>
                   </div>
@@ -822,14 +824,14 @@ export default function ProductsTable({
                   onClick={() => setShowModal(false)}
                   className="flex-1 text-primary font-black uppercase text-[10px] tracking-widest py-6 hover:bg-secondary  transition-all cursor-pointer"
                 >
-                  Abort Mission
+                  {t("abortMission")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 bg-primary text-white font-black uppercase text-[10px] tracking-widest py-6  shadow-xl hover:bg-black transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {saving ? "Committing..." : "Commit to Registry"}
+                  {saving ? t("committing") : t("commitToRegistry")}
                 </button>
               </div>
             </form>

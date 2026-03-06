@@ -12,6 +12,7 @@ import {
   MoreVertical,
 } from "lucide-react";
 import { Supplier } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface SuppliersResponse {
   suppliers: (Supplier & { user?: { name: string; email: string } })[];
@@ -21,6 +22,7 @@ interface SuppliersResponse {
 }
 
 export default function AdminSuppliersPage() {
+  const t = useTranslations("admin");
   const [suppliers, setSuppliers] = useState<SuppliersResponse["suppliers"]>(
     [],
   );
@@ -110,28 +112,28 @@ export default function AdminSuppliersPage() {
         return (
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-green-700 bg-green-100 px-3 py-1  uppercase tracking-widest">
             <CheckCircle size={12} />
-            Approved
+            {t("statusApproved")}
           </span>
         );
       case "pending":
         return (
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-yellow-700 bg-yellow-100 px-3 py-1  uppercase tracking-widest">
             <Clock size={12} />
-            Pending
+            {t("statusPending")}
           </span>
         );
       case "rejected":
         return (
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-700 bg-red-100 px-3 py-1  uppercase tracking-widest">
             <XCircle size={12} />
-            Rejected
+            {t("statusRejected")}
           </span>
         );
       case "suspended":
         return (
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-gray-700 bg-gray-100 px-3 py-1  uppercase tracking-widest">
             <Ban size={12} />
-            Suspended
+            {t("statusSuspended")}
           </span>
         );
       default:
@@ -144,10 +146,10 @@ export default function AdminSuppliersPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            Suppliers<span className="text-accent text-5xl">.</span>
+            {t("suppliersTitle")}<span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
-            Manage supplier accounts and approvals
+            {t("suppliersSubtitle")}
           </p>
         </div>
       </div>
@@ -162,7 +164,7 @@ export default function AdminSuppliersPage() {
             />
             <input
               className="w-full bg-secondary border-none  py-4 pl-12 pr-4 outline-none font-bold text-primary placeholder:text-gray-300"
-              placeholder="Search suppliers..."
+              placeholder={t("searchSuppliers")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -172,11 +174,11 @@ export default function AdminSuppliersPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-secondary border-none  px-6 py-4 outline-none font-bold text-primary appearance-none cursor-pointer"
           >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="suspended">Suspended</option>
+            <option value="all">{t("allStatus")}</option>
+            <option value="pending">{t("statusPending")}</option>
+            <option value="approved">{t("statusApproved")}</option>
+            <option value="rejected">{t("statusRejected")}</option>
+            <option value="suspended">{t("statusSuspended")}</option>
           </select>
         </div>
 
@@ -193,22 +195,22 @@ export default function AdminSuppliersPage() {
                 <thead>
                   <tr className="border-b border-gray-50">
                     <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                      Business
+                      {t("business")}
                     </th>
                     <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                      Contact
+                      {t("contact")}
                     </th>
                     <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                      Status
+                      {t("status")}
                     </th>
                     <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                      Products
+                      {t("products")}
                     </th>
                     <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary">
-                      Commission
+                      {t("commission")}
                     </th>
                     <th className="pb-6 text-[11px] font-black uppercase tracking-widest text-primary text-right">
-                      Actions
+                      {t("actions")}
                     </th>
                   </tr>
                 </thead>
@@ -335,7 +337,7 @@ export default function AdminSuppliersPage() {
                           className="text-gray-100 mx-auto mb-4"
                         />
                         <p className="text-xs font-bold text-text-dark/30 uppercase tracking-[0.2em]">
-                          No suppliers found
+                          {t("noSuppliers")}
                         </p>
                       </td>
                     </tr>
@@ -377,12 +379,12 @@ export default function AdminSuppliersPage() {
             {actionModal.action === "view" ? (
               <>
                 <h3 className="text-2xl font-black text-primary mb-6">
-                  Supplier Details
+                  {t("supplierDetails")}
                 </h3>
                 <div className="space-y-4">
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                      Business Name
+                      {t("businessName")}
                     </p>
                     <p className="font-bold text-primary">
                       {actionModal.supplier.businessName}
@@ -390,7 +392,7 @@ export default function AdminSuppliersPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                      Contact Email
+                      {t("contactEmail")}
                     </p>
                     <p className="font-bold text-primary">
                       {actionModal.supplier.contactEmail}
@@ -398,7 +400,7 @@ export default function AdminSuppliersPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                      Phone
+                      {t("phone")}
                     </p>
                     <p className="font-bold text-primary">
                       {actionModal.supplier.contactPhone}
@@ -406,7 +408,7 @@ export default function AdminSuppliersPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                      Address
+                      {t("address")}
                     </p>
                     <p className="font-bold text-primary">
                       {actionModal.supplier.address.street},{" "}
@@ -418,7 +420,7 @@ export default function AdminSuppliersPage() {
                   {actionModal.supplier.taxId && (
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-text-dark/30">
-                        Tax ID
+                        {t("taxId")}
                       </p>
                       <p className="font-bold text-primary">
                         {actionModal.supplier.taxId}
@@ -430,22 +432,21 @@ export default function AdminSuppliersPage() {
                   onClick={() => setActionModal(null)}
                   className="mt-6 w-full bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                 >
-                  Close
+                  {t("close")}
                 </button>
               </>
             ) : actionModal.action === "reject" ? (
               <>
                 <h3 className="text-2xl font-black text-primary mb-4">
-                  Reject Supplier
+                  {t("rejectSupplier")}
                 </h3>
                 <p className="text-text-dark/60 mb-4">
-                  Are you sure you want to reject{" "}
-                  <strong>{actionModal.supplier.businessName}</strong>?
+                  {t("rejectSupplierConfirm", { name: actionModal.supplier.businessName })}
                 </p>
                 <textarea
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="Reason for rejection (optional)"
+                  placeholder={t("rejectionReasonPlaceholder")}
                   className="w-full bg-secondary  p-4 outline-none font-bold text-primary mb-4"
                   rows={3}
                 />
@@ -457,38 +458,38 @@ export default function AdminSuppliersPage() {
                     }}
                     className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                   <button
                     onClick={() => handleAction("rejected")}
                     disabled={processing}
                     className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3  transition-colors disabled:opacity-50"
                   >
-                    {processing ? "Processing..." : "Reject"}
+                    {processing ? t("processing") : t("reject")}
                   </button>
                 </div>
               </>
             ) : (
               <>
                 <h3 className="text-2xl font-black text-primary mb-4">
-                  {actionModal.action === "approve" && "Approve Supplier"}
-                  {actionModal.action === "suspend" && "Suspend Supplier"}
-                  {actionModal.action === "reactivate" && "Reactivate Supplier"}
+                  {actionModal.action === "approve" && t("approveSupplier")}
+                  {actionModal.action === "suspend" && t("suspendSupplier")}
+                  {actionModal.action === "reactivate" && t("reactivateSupplier")}
                 </h3>
                 <p className="text-text-dark/60 mb-6">
                   {actionModal.action === "approve" &&
-                    `Are you sure you want to approve ${actionModal.supplier.businessName}? They will be able to add products to the marketplace.`}
+                    t("approveSupplierConfirm", { name: actionModal.supplier.businessName })}
                   {actionModal.action === "suspend" &&
-                    `Are you sure you want to suspend ${actionModal.supplier.businessName}? Their products will be hidden from the marketplace.`}
+                    t("suspendSupplierConfirm", { name: actionModal.supplier.businessName })}
                   {actionModal.action === "reactivate" &&
-                    `Are you sure you want to reactivate ${actionModal.supplier.businessName}?`}
+                    t("reactivateSupplierConfirm", { name: actionModal.supplier.businessName })}
                 </p>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setActionModal(null)}
                     className="flex-1 bg-secondary hover:bg-gray-200 text-primary font-bold py-3  transition-colors"
                   >
-                    Cancel
+                    {t("cancel")}
                   </button>
                   <button
                     onClick={() =>
@@ -506,7 +507,7 @@ export default function AdminSuppliersPage() {
                         : "bg-green-500 hover:bg-green-600 text-white"
                     }`}
                   >
-                    {processing ? "Processing..." : "Confirm"}
+                    {processing ? t("processing") : t("confirm")}
                   </button>
                 </div>
               </>

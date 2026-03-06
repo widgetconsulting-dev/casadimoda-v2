@@ -105,7 +105,7 @@ export default function AdminLayout({
               <span className="text-white font-black text-lg italic">C</span>
             </div>
             <span className="font-bold tracking-tight uppercase">
-              Admin Panel
+              {t("adminPanel")}
             </span>
           </Link>
           <button onClick={() => setIsSidebarOpen(false)}>
@@ -115,7 +115,7 @@ export default function AdminLayout({
 
         <nav className="flex-grow p-6 space-y-2 mt-4 overflow-y-auto">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-4 ml-4">
-            Management
+            {t("management")}
           </p>
           {sidebarLinks.map((link) => {
             const Icon = link.icon;
@@ -138,7 +138,7 @@ export default function AdminLayout({
                       isActive ? "font-black" : "font-medium"
                     }`}
                   >
-                    {link.name}
+                    {(t as (k: string) => string)(link.name)}
                   </span>
                 </div>
                 {isActive && (
@@ -155,7 +155,7 @@ export default function AdminLayout({
             className="w-full flex items-center gap-4 px-4 py-4 text-white/40 hover:text-red-400 hover:bg-red-400/10  transition-all font-bold text-sm cursor-pointer"
           >
             <LogOut size={20} />
-            Sign Out
+            {t("signOut")}
           </button>
         </div>
       </aside>

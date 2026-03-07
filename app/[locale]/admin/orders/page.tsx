@@ -9,6 +9,7 @@ import {
   ChevronDown,
   ChevronUp,
   RefreshCw,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -36,6 +37,9 @@ interface Order {
   totalPrice: number;
   isPaid: boolean;
   isDelivered: boolean;
+  isCancelled: boolean;
+  cancellationReason?: string | null;
+  cancelledBy?: string | null;
   paidAt?: string | null;
   deliveredAt?: string | null;
   createdAt: string;
@@ -48,6 +52,7 @@ export default function AdminOrdersPage() {
     { key: "active", label: t("tabActive"), color: "text-blue-400" },
     { key: "paid", label: t("tabPaidPending"), color: "text-yellow-400" },
     { key: "delivered", label: t("tabDelivered"), color: "text-green-400" },
+    { key: "cancelled", label: t("tabCancelled"), color: "text-red-400" },
     { key: "all", label: t("tabAllOrders"), color: "text-white/60" },
   ];
 
@@ -60,6 +65,10 @@ export default function AdminOrdersPage() {
   const [pages, setPages] = useState(1);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [cancelForms, setCancelForms] = useState<Record<string, boolean>>({});
+  const [cancelReasons, setCancelReasons] = useState<Record<string, string>>(
+    {},
+  );
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -90,7 +99,12 @@ export default function AdminOrdersPage() {
 
   const updateOrder = async (
     orderId: string,
-    update: { isPaid?: boolean; isDelivered?: boolean },
+    update: {
+      isPaid?: boolean;
+      isDelivered?: boolean;
+      isCancelled?: boolean;
+      cancellationReason?: string;
+    },
   ) => {
     setUpdatingId(orderId);
     try {
@@ -223,26 +237,34 @@ export default function AdminOrdersPage() {
 
                 {/* Status badges */}
                 <div className="col-span-2 flex flex-col gap-1">
-                  <span
-                    className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isPaid ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}
-                  >
-                    {order.isPaid ? (
-                      <CheckCircle size={9} />
-                    ) : (
-                      <Clock size={9} />
-                    )}
-                    {order.isPaid ? t("paid") : t("unpaid")}
-                  </span>
-                  <span
-                    className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isDelivered ? "bg-green-500/10 text-green-400" : "bg-blue-500/10 text-blue-400"}`}
-                  >
-                    {order.isDelivered ? (
-                      <CheckCircle size={9} />
-                    ) : (
-                      <Truck size={9} />
-                    )}
-                    {order.isDelivered ? t("delivered") : t("pending")}
-                  </span>
+                  {order.isCancelled ? (
+                    <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit bg-red-500/10 text-red-400">
+                      <XCircle size={9} /> {t("cancelledBadge")}
+                    </span>
+                  ) : (
+                    <>
+                      <span
+                        className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isPaid ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"}`}
+                      >
+                        {order.isPaid ? (
+                          <CheckCircle size={9} />
+                        ) : (
+                          <Clock size={9} />
+                        )}
+                        {order.isPaid ? t("paid") : t("unpaid")}
+                      </span>
+                      <span
+                        className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit ${order.isDelivered ? "bg-green-500/10 text-green-400" : "bg-blue-500/10 text-blue-400"}`}
+                      >
+                        {order.isDelivered ? (
+                          <CheckCircle size={9} />
+                        ) : (
+                          <Truck size={9} />
+                        )}
+                        {order.isDelivered ? t("delivered") : t("pending")}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Expand */}
@@ -309,9 +331,24 @@ export default function AdminOrdersPage() {
                     </p>
                   </div>
 
+                  {/* Cancellation info */}
+                  {order.isCancelled && (
+                    <div className="p-3 border border-red-500/20 bg-red-500/5">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-red-400/70 mb-1">
+                        {t("cancelledBy")}{" "}
+                        {order.cancelledBy === "admin" ? "admin" : "client"}
+                      </p>
+                      {order.cancellationReason && (
+                        <p className="text-xs text-white/40">
+                          {order.cancellationReason}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Actions */}
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-white/10">
-                    {!order.isPaid && (
+                    {!order.isCancelled && !order.isPaid && (
                       <button
                         disabled={updatingId === order._id}
                         onClick={() => updateOrder(order._id, { isPaid: true })}
@@ -320,18 +357,20 @@ export default function AdminOrdersPage() {
                         <CheckCircle size={11} /> {t("markAsPaid")}
                       </button>
                     )}
-                    {order.isPaid && !order.isDelivered && (
-                      <button
-                        disabled={updatingId === order._id}
-                        onClick={() =>
-                          updateOrder(order._id, { isDelivered: true })
-                        }
-                        className="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
-                      >
-                        <Truck size={11} /> {t("markAsDelivered")}
-                      </button>
-                    )}
-                    {order.isPaid && (
+                    {!order.isCancelled &&
+                      order.isPaid &&
+                      !order.isDelivered && (
+                        <button
+                          disabled={updatingId === order._id}
+                          onClick={() =>
+                            updateOrder(order._id, { isDelivered: true })
+                          }
+                          className="flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
+                        >
+                          <Truck size={11} /> {t("markAsDelivered")}
+                        </button>
+                      )}
+                    {!order.isCancelled && order.isPaid && (
                       <button
                         disabled={updatingId === order._id}
                         onClick={() =>
@@ -342,6 +381,20 @@ export default function AdminOrdersPage() {
                         {t("revertPayment")}
                       </button>
                     )}
+                    {!order.isCancelled && (
+                      <button
+                        disabled={updatingId === order._id}
+                        onClick={() =>
+                          setCancelForms((p) => ({
+                            ...p,
+                            [order._id]: !p[order._id],
+                          }))
+                        }
+                        className="flex items-center ml-auto gap-1.5 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
+                      >
+                        <XCircle size={11} /> {t("cancelOrder")}
+                      </button>
+                    )}
                     {updatingId === order._id && (
                       <div className="flex items-center gap-2 text-white/30 text-[9px] font-black uppercase tracking-widest">
                         <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
@@ -349,6 +402,57 @@ export default function AdminOrdersPage() {
                       </div>
                     )}
                   </div>
+
+                  {/* Cancel form */}
+                  {cancelForms[order._id] && !order.isCancelled && (
+                    <div className="p-4 border border-red-500/20 bg-red-500/5 space-y-3">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-red-400/70">
+                        {t("cancelReason")}
+                      </p>
+                      <textarea
+                        rows={2}
+                        value={cancelReasons[order._id] || ""}
+                        onChange={(e) =>
+                          setCancelReasons((p) => ({
+                            ...p,
+                            [order._id]: e.target.value,
+                          }))
+                        }
+                        placeholder={t("cancelReasonPlaceholder")}
+                        className="w-full bg-white/5 border border-white/10 focus:border-red-500/40 py-2 px-3 text-sm text-white placeholder:text-white/20 outline-none resize-none transition-all"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          disabled={updatingId === order._id}
+                          onClick={() => {
+                            updateOrder(order._id, {
+                              isCancelled: true,
+                              cancellationReason:
+                                cancelReasons[order._id] || "",
+                            });
+                            setCancelForms((p) => ({
+                              ...p,
+                              [order._id]: false,
+                            }));
+                          }}
+                          className="bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 text-red-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
+                        >
+                          {t("confirmCancel")}
+                        </button>
+                        <button
+                          onClick={() =>
+                            setCancelForms((p) => ({
+                              ...p,
+                              [order._id]: false,
+                            }))
+                          }
+                          className="text-white/30 hover:text-white/60 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

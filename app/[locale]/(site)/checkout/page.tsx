@@ -2,48 +2,80 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useStore } from "@/utils/context/Store";
 import { CartItem } from "@/types";
 import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
+import { apiFetch } from "@/utils/api";
 
 export default function CheckoutPage() {
   const tc = useTranslations("common");
   const t = useTranslations("checkout");
   const { state, dispatch } = useStore();
-  const { cart: { cartItems } } = state;
+  const {
+    cart: { cartItems },
+  } = state;
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const [promoCode, setPromoCode] = useState("");
+  const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"delivery" | "card">("delivery");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"delivery" | "card">(
+    "delivery",
+  );
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [attempted, setAttempted] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const updateCartHandler = (item: CartItem, qty: number) => {
-    if (item.countInStock < qty) { alert(tc("outOfStock")); return; }
+    if (item.countInStock < qty) {
+      alert(tc("outOfStock"));
+      return;
+    }
     dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity: qty } });
   };
-  const removeItemHandler = (item: CartItem) => dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+  const removeItemHandler = (item: CartItem) =>
+    dispatch({ type: "CART_REMOVE_ITEM", payload: item });
 
-  const startAdjusting = useCallback((item: CartItem, direction: "up" | "down") => {
-    const adjust = () => {
-      const newQty = direction === "up" ? item.quantity + 1 : item.quantity - 1;
-      if (newQty >= 1 && newQty <= item.countInStock) updateCartHandler(item, newQty);
-    };
-    adjust();
-    timerRef.current = setTimeout(() => { intervalRef.current = setInterval(adjust, 100); }, 500);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const startAdjusting = useCallback(
+    (item: CartItem, direction: "up" | "down") => {
+      const adjust = () => {
+        const newQty =
+          direction === "up" ? item.quantity + 1 : item.quantity - 1;
+        if (newQty >= 1 && newQty <= item.countInStock)
+          updateCartHandler(item, newQty);
+      };
+      adjust();
+      timerRef.current = setTimeout(() => {
+        intervalRef.current = setInterval(adjust, 100);
+      }, 500);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [],
+  );
   const stopAdjusting = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (intervalRef.current) clearInterval(intervalRef.current);
   }, []);
   useEffect(() => () => stopAdjusting(), [stopAdjusting]);
 
-  const subtotal = cartItems.reduce((a, c) => a + (c.quantity || 0) * (c.discountPrice || c.price || 0), 0);
-  const originalTotal = cartItems.reduce((a, c) => a + (c.quantity || 0) * (c.price || 0), 0);
+  const subtotal = cartItems.reduce(
+    (a, c) => a + (c.quantity || 0) * (c.discountPrice || c.price || 0),
+    0,
+  );
+  const originalTotal = cartItems.reduce(
+    (a, c) => a + (c.quantity || 0) * (c.price || 0),
+    0,
+  );
   const totalDiscount = originalTotal - subtotal;
 
   if (cartItems.length === 0) {
@@ -55,8 +87,13 @@ export default function CheckoutPage() {
         <div className="w-20 h-20 border border-white/10 bg-white/5 flex items-center justify-center mb-6">
           <ShoppingBag className="w-8 h-8 text-accent/40" />
         </div>
-        <h1 className="font-serif text-4xl font-bold italic text-white mb-4">{t("emptyCart")}</h1>
-        <Link href="/" className="bg-accent text-primary px-10 py-4 font-black uppercase text-xs tracking-[0.2em] hover:bg-accent/80 transition-all mt-4">
+        <h1 className="font-serif text-4xl font-bold italic text-white mb-4">
+          {t("emptyCart")}
+        </h1>
+        <Link
+          href="/"
+          className="bg-accent text-primary px-10 py-4 font-black uppercase text-xs tracking-[0.2em] hover:bg-accent/80 transition-all mt-4"
+        >
           {t("exploreCollection")}
         </Link>
       </div>
@@ -69,15 +106,14 @@ export default function CheckoutPage() {
       style={{ backgroundImage: "url('/bgg.webp')" }}
     >
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-10">
-
         {/* Title */}
-        <h1 className="font-serif text-5xl md:text-6xl font-bold italic text-white mb-10">{t("title")}</h1>
+        <h1 className="font-serif text-5xl md:text-6xl font-bold italic text-white mb-10">
+          {t("title")}
+        </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
           {/* LEFT — Items + promo + delivery */}
           <div className="lg:col-span-7 space-y-6">
-
             {/* Order Summary label */}
             <p className="text-[10px] font-black uppercase tracking-widest text-white/50">
               {t("orderSummary")}
@@ -86,39 +122,83 @@ export default function CheckoutPage() {
             {/* Items */}
             <div className="space-y-4">
               {cartItems.map((item) => (
-                <div key={item.slug} className="bg-black/30 border border-white/10 p-4 flex gap-4">
+                <div
+                  key={item.slug}
+                  className="bg-black/30 border border-white/10 p-4 flex gap-4"
+                >
                   {/* Thumbnail */}
-                  <Link href={`/product/${item.slug}`} className="relative w-16 h-20 shrink-0 overflow-hidden bg-white/10">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  <Link
+                    href={`/product/${item.slug}`}
+                    className="relative w-16 h-20 shrink-0 overflow-hidden bg-white/10"
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      fill
+                      className="object-cover"
+                    />
                   </Link>
                   {/* Info */}
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-xs font-black text-white/50 uppercase tracking-widest">{item.name}</p>
-                        <p className="text-sm font-black text-white mt-0.5">CASA DI MODA</p>
-                        <p className="text-[10px] text-white/30 mt-1">{t("size")} M/L</p>
+                        <p className="text-xs font-black text-white/50 uppercase tracking-widest">
+                          {item.name}
+                        </p>
+                        <p className="text-sm font-black text-white mt-0.5">
+                          CASA DI MODA
+                        </p>
+                        <p className="text-[10px] text-white/30 mt-1">
+                          {t("size")} M/L
+                        </p>
                       </div>
                       <div className="text-right">
-                        {item.discountPrice && item.discountPrice < item.price ? (
-                          <p className="text-sm font-black text-accent">{item.discountPrice.toLocaleString()} {t("currency")}</p>
+                        {item.discountPrice &&
+                        item.discountPrice < item.price ? (
+                          <p className="text-sm font-black text-accent">
+                            {item.discountPrice.toLocaleString()}{" "}
+                            {t("currency")}
+                          </p>
                         ) : (
-                          <p className="text-sm font-black text-white">{item.price.toLocaleString()} {t("currency")}</p>
+                          <p className="text-sm font-black text-white">
+                            {item.price.toLocaleString()} {t("currency")}
+                          </p>
                         )}
                       </div>
                     </div>
                     {/* Qty + Remove */}
                     <div className="flex items-center justify-between mt-3">
                       <div className="flex items-center border border-white/10 bg-white/5">
-                        <button onMouseDown={() => startAdjusting(item, "down")} onMouseUp={stopAdjusting} onMouseLeave={stopAdjusting} onTouchStart={() => startAdjusting(item, "down")} onTouchEnd={stopAdjusting} disabled={item.quantity <= 1} className="px-3 py-1.5 text-white/60 hover:text-accent disabled:opacity-20 cursor-pointer transition-colors">
+                        <button
+                          onMouseDown={() => startAdjusting(item, "down")}
+                          onMouseUp={stopAdjusting}
+                          onMouseLeave={stopAdjusting}
+                          onTouchStart={() => startAdjusting(item, "down")}
+                          onTouchEnd={stopAdjusting}
+                          disabled={item.quantity <= 1}
+                          className="px-3 py-1.5 text-white/60 hover:text-accent disabled:opacity-20 cursor-pointer transition-colors"
+                        >
                           <Minus size={12} />
                         </button>
-                        <span className="text-xs font-black text-white min-w-[2rem] text-center">{item.quantity}</span>
-                        <button onMouseDown={() => startAdjusting(item, "up")} onMouseUp={stopAdjusting} onMouseLeave={stopAdjusting} onTouchStart={() => startAdjusting(item, "up")} onTouchEnd={stopAdjusting} disabled={item.quantity >= item.countInStock} className="px-3 py-1.5 text-white/60 hover:text-accent disabled:opacity-20 cursor-pointer transition-colors">
+                        <span className="text-xs font-black text-white min-w-[2rem] text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onMouseDown={() => startAdjusting(item, "up")}
+                          onMouseUp={stopAdjusting}
+                          onMouseLeave={stopAdjusting}
+                          onTouchStart={() => startAdjusting(item, "up")}
+                          onTouchEnd={stopAdjusting}
+                          disabled={item.quantity >= item.countInStock}
+                          className="px-3 py-1.5 text-white/60 hover:text-accent disabled:opacity-20 cursor-pointer transition-colors"
+                        >
                           <Plus size={12} />
                         </button>
                       </div>
-                      <button onClick={() => removeItemHandler(item)} className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-red-400 transition-colors cursor-pointer">
+                      <button
+                        onClick={() => removeItemHandler(item)}
+                        className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-red-400 transition-colors cursor-pointer"
+                      >
                         {t("remove")}
                       </button>
                     </div>
@@ -129,7 +209,9 @@ export default function CheckoutPage() {
 
             {/* Promo Code */}
             <div className="bg-black/30 border border-white/10 p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">{t("promoCode")}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">
+                {t("promoCode")}
+              </p>
               <div className="flex gap-3">
                 <input
                   value={promoCode}
@@ -144,15 +226,58 @@ export default function CheckoutPage() {
             </div>
 
             {/* Fast Delivery */}
-            <div className="bg-black/30 border border-white/10 p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">{t("fastDelivery")}</p>
-              <textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder={t("addressPlaceholder")}
-                rows={3}
-                className="w-full bg-white/5 border border-white/10 focus:border-accent py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all resize-none"
-              />
+            <div className="bg-black/30 border border-white/10 p-5 space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">
+                {t("fastDelivery")}
+              </p>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">{t("fullName")} <span className="text-red-500">*</span></p>
+                <input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder={t("fullNamePlaceholder")}
+                  className={`w-full bg-white/5 border py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all ${attempted && !fullName ? "border-red-500" : "border-white/10 focus:border-accent"}`}
+                />
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">{t("deliveryAddress")} <span className="text-red-500">*</span></p>
+                <textarea
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder={t("addressPlaceholder")}
+                  rows={2}
+                  className={`w-full bg-white/5 border py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all resize-none ${attempted && !address ? "border-red-500" : "border-white/10 focus:border-accent"}`}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">{t("city")} <span className="text-red-500">*</span></p>
+                  <input
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder={t("cityPlaceholder")}
+                    className={`w-full bg-white/5 border py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all ${attempted && !city ? "border-red-500" : "border-white/10 focus:border-accent"}`}
+                  />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">{t("postalCode")} <span className="text-red-500">*</span></p>
+                  <input
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    placeholder={t("postalCodePlaceholder")}
+                    className={`w-full bg-white/5 border py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all ${attempted && !postalCode ? "border-red-500" : "border-white/10 focus:border-accent"}`}
+                  />
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">{t("country")} <span className="text-red-500">*</span></p>
+                <input
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  placeholder={t("countryPlaceholder")}
+                  className={`w-full bg-white/5 border py-3 px-4 text-sm text-white placeholder:text-white/20 outline-none transition-all ${attempted && !country ? "border-red-500" : "border-white/10 focus:border-accent"}`}
+                />
+              </div>
             </div>
           </div>
 
@@ -160,7 +285,9 @@ export default function CheckoutPage() {
           <div className="lg:col-span-5">
             <div className="sticky top-8 bg-black/50 border border-white/10 p-6">
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/50">{t("viewSummary")}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/50">
+                  {t("viewSummary")}
+                </p>
                 <span className="text-white/30 text-lg">›</span>
               </div>
 
@@ -168,12 +295,22 @@ export default function CheckoutPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-white/50">{t("subtotal")}</span>
-                  <span className="text-white font-bold">{originalTotal.toLocaleString()} {t("currency")}</span>
+                  <span className="text-white font-bold">
+                    {originalTotal.toLocaleString()} {t("currency")}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-white/50">{t("diamonds")}</span>
-                  <span className={totalDiscount > 0 ? "text-accent font-bold" : "text-white/50"}>
-                    {totalDiscount > 0 ? `-${totalDiscount.toLocaleString()} ${t("currency")}` : t("superior")}
+                  <span
+                    className={
+                      totalDiscount > 0
+                        ? "text-accent font-bold"
+                        : "text-white/50"
+                    }
+                  >
+                    {totalDiscount > 0
+                      ? `-${totalDiscount.toLocaleString()} ${t("currency")}`
+                      : t("superior")}
                   </span>
                 </div>
               </div>
@@ -181,47 +318,138 @@ export default function CheckoutPage() {
               {/* Total */}
               <div className="border-t border-white/10 pt-5 mb-8">
                 <div className="flex justify-between items-end">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{t("total")}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    {t("total")}
+                  </span>
                   <div className="text-right">
-                    <span className="text-4xl font-black text-white">{subtotal.toLocaleString()}</span>
-                    <span className="text-lg font-bold text-white/40 ml-1">{t("currency")}</span>
+                    <span className="text-4xl font-black text-white">
+                      {subtotal.toLocaleString()}
+                    </span>
+                    <span className="text-lg font-bold text-white/40 ml-1">
+                      {t("currency")}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Payment method */}
               <div className="space-y-3 mb-6">
-                <label className="flex items-center gap-3 cursor-pointer" onClick={() => setPaymentMethod("delivery")}>
-                  <div className={`w-4 h-4 border-2 flex items-center justify-center transition-colors ${paymentMethod === "delivery" ? "border-accent bg-accent" : "border-white/30"}`}>
-                    {paymentMethod === "delivery" && <div className="w-1.5 h-1.5 bg-primary rounded-full" />}
+                <label
+                  className="flex items-center gap-3 cursor-pointer"
+                  onClick={() => setPaymentMethod("delivery")}
+                >
+                  <div
+                    className={`w-4 h-4 border-2 flex items-center justify-center transition-colors ${paymentMethod === "delivery" ? "border-accent bg-accent" : "border-white/30"}`}
+                  >
+                    {paymentMethod === "delivery" && (
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                    )}
                   </div>
-                  <span className={`text-sm font-medium ${paymentMethod === "delivery" ? "text-white" : "text-white/40"}`}>{t("paymentOnDelivery")}</span>
+                  <span
+                    className={`text-sm font-medium ${paymentMethod === "delivery" ? "text-white" : "text-white/40"}`}
+                  >
+                    {t("paymentOnDelivery")}
+                  </span>
                 </label>
-                <label className="flex items-center gap-3 cursor-pointer" onClick={() => setPaymentMethod("card")}>
-                  <div className={`w-4 h-4 border-2 flex items-center justify-center transition-colors ${paymentMethod === "card" ? "border-accent bg-accent" : "border-white/30"}`}>
-                    {paymentMethod === "card" && <div className="w-1.5 h-1.5 bg-primary rounded-full" />}
+                <label
+                  className="flex items-center gap-3 cursor-pointer"
+                  onClick={() => setPaymentMethod("card")}
+                >
+                  <div
+                    className={`w-4 h-4 border-2 flex items-center justify-center transition-colors ${paymentMethod === "card" ? "border-accent bg-accent" : "border-white/30"}`}
+                  >
+                    {paymentMethod === "card" && (
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                    )}
                   </div>
-                  <span className={`text-sm font-medium ${paymentMethod === "card" ? "text-white" : "text-white/40"}`}>{t("paymentSavedCards")}</span>
+                  <span
+                    className={`text-sm font-medium ${paymentMethod === "card" ? "text-white" : "text-white/40"}`}
+                  >
+                    {t("paymentSavedCards")}
+                  </span>
                 </label>
               </div>
 
+              {/* Error */}
+              {error && (
+                <p className="text-red-400 text-xs font-bold text-center mb-2">
+                  {error}
+                </p>
+              )}
+
               {/* Validate */}
               <button
-                onClick={() => alert(t("validateOrder"))}
-                className="w-full bg-accent hover:bg-accent/80 text-primary font-black py-4 uppercase text-xs tracking-[0.3em] transition-all active:scale-[0.98] cursor-pointer shadow-lg"
+                disabled={submitting}
+                onClick={async () => {
+                  setAttempted(true);
+                  if (!session) {
+                    router.push("/login");
+                    return;
+                  }
+                  if (
+                    !fullName ||
+                    !address ||
+                    !city ||
+                    !postalCode ||
+                    !country
+                  ) {
+                    setError(t("fillAllFields"));
+                    return;
+                  }
+                  setError("");
+                  setSubmitting(true);
+                  try {
+                    const res = await apiFetch("/api/user/orders", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        orderItems: cartItems.map((item) => ({
+                          name: item.name,
+                          quantity: item.quantity,
+                          image: item.image,
+                          price: item.discountPrice || item.price,
+                        })),
+                        shippingAddress: {
+                          fullName,
+                          address,
+                          city,
+                          postalCode,
+                          country,
+                        },
+                        paymentMethod,
+                        itemsPrice: subtotal,
+                        totalPrice: subtotal,
+                      }),
+                    });
+                    if (!res.ok) {
+                      const d = await res.json();
+                      setError(d.message || "Error");
+                      return;
+                    }
+                    dispatch({ type: "CART_RESET" });
+                    router.push("/orders");
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }}
+                className="w-full bg-accent hover:bg-accent/80 disabled:opacity-60 disabled:cursor-not-allowed text-primary font-black py-4 uppercase text-xs tracking-[0.3em] transition-all active:scale-[0.98] cursor-pointer shadow-lg"
               >
-                {t("validateOrder")}
+                {submitting ? t("submitting") : t("validateOrder")}
               </button>
 
               {/* Payment icons */}
               <div className="mt-5 flex items-center justify-center gap-2 flex-wrap">
                 {["VISA", "MC", "AMEX", "PAYPAL"].map((b) => (
-                  <span key={b} className="text-[9px] font-black text-white/20 border border-white/10 px-2 py-1">{b}</span>
+                  <span
+                    key={b}
+                    className="text-[9px] font-black text-white/20 border border-white/10 px-2 py-1"
+                  >
+                    {b}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

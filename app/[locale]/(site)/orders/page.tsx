@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { ShoppingBag, Package, CheckCircle, Clock, Truck } from "lucide-react";
+import { ShoppingBag, Package, CheckCircle, Clock, Truck, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
 
@@ -30,6 +30,9 @@ interface Order {
   totalPrice: number;
   isPaid: boolean;
   isDelivered: boolean;
+  isCancelled: boolean;
+  cancellationReason?: string;
+  cancelledBy?: string;
   paidAt?: string;
   deliveredAt?: string;
   createdAt: string;
@@ -42,22 +45,44 @@ export default function OrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cancelForms, setCancelForms] = useState<Record<string, boolean>>({});
+  const [cancelReasons, setCancelReasons] = useState<Record<string, string>>({});
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const fetchOrders = () => {
+    apiFetch("/api/user/orders")
+      .then((res) => res.json())
+      .then((data) => {
+        setOrders(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
       return;
     }
-    if (status === "authenticated") {
-      apiFetch("/api/user/orders")
-        .then((res) => res.json())
-        .then((data) => {
-          setOrders(Array.isArray(data) ? data : []);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    }
+    if (status === "authenticated") fetchOrders();
   }, [status, router]);
+
+  const handleCancel = async (orderId: string) => {
+    setCancellingId(orderId);
+    try {
+      const res = await apiFetch("/api/user/orders", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, cancellationReason: cancelReasons[orderId] || "" }),
+      });
+      if (res.ok) {
+        setCancelForms((prev) => ({ ...prev, [orderId]: false }));
+        fetchOrders();
+      }
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   if (status === "loading" || loading) {
     return (
@@ -157,27 +182,33 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Status badges */}
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border ${order.isPaid ? "border-green-500/30 bg-green-500/10 text-green-400" : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"}`}
-                    >
-                      {order.isPaid ? (
-                        <CheckCircle className="w-3 h-3" />
-                      ) : (
-                        <Clock className="w-3 h-3" />
-                      )}
-                      {order.isPaid ? t("paid") : t("pending")}
-                    </span>
-                    <span
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border ${order.isDelivered ? "border-green-500/30 bg-green-500/10 text-green-400" : "border-blue-500/30 bg-blue-500/10 text-blue-400"}`}
-                    >
-                      {order.isDelivered ? (
-                        <CheckCircle className="w-3 h-3" />
-                      ) : (
-                        <Truck className="w-3 h-3" />
-                      )}
-                      {order.isDelivered ? t("delivered") : t("inProgress")}
-                    </span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {order.isCancelled ? (
+                      <span className="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border border-red-500/30 bg-red-500/10 text-red-400">
+                        <XCircle className="w-3 h-3" />
+                        {t("cancelled")}
+                      </span>
+                    ) : (
+                      <>
+                        <span className={`flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border ${order.isPaid ? "border-green-500/30 bg-green-500/10 text-green-400" : "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"}`}>
+                          {order.isPaid ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                          {order.isPaid ? t("paid") : t("pending")}
+                        </span>
+                        <span className={`flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border ${order.isDelivered ? "border-green-500/30 bg-green-500/10 text-green-400" : "border-blue-500/30 bg-blue-500/10 text-blue-400"}`}>
+                          {order.isDelivered ? <CheckCircle className="w-3 h-3" /> : <Truck className="w-3 h-3" />}
+                          {order.isDelivered ? t("delivered") : t("inProgress")}
+                        </span>
+                        {!order.isPaid && !order.isDelivered && (
+                          <button
+                            onClick={() => setCancelForms((p) => ({ ...p, [order._id]: !p[order._id] }))}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border border-red-500/20 bg-red-500/5 text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-all cursor-pointer"
+                          >
+                            <XCircle className="w-3 h-3" />
+                            {t("cancel")}
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -221,6 +252,49 @@ export default function OrdersPage() {
                       {order.shippingAddress.country}
                     </p>
                   </div>
+
+                  {/* Cancellation info */}
+                  {order.isCancelled && (
+                    <div className="mt-3 p-3 border border-red-500/20 bg-red-500/5">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-red-400/70 mb-1">
+                        {order.cancelledBy === "admin" ? t("cancelledByAdmin") : t("cancelledByClient")}
+                      </p>
+                      {order.cancellationReason && (
+                        <p className="text-xs text-white/40">{order.cancellationReason}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Cancel form */}
+                  {cancelForms[order._id] && !order.isCancelled && (
+                    <div className="mt-3 p-4 border border-red-500/20 bg-red-500/5 space-y-3">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-red-400/70">
+                        {t("cancelReason")}
+                      </p>
+                      <textarea
+                        rows={2}
+                        value={cancelReasons[order._id] || ""}
+                        onChange={(e) => setCancelReasons((p) => ({ ...p, [order._id]: e.target.value }))}
+                        placeholder={t("cancelReasonPlaceholder")}
+                        className="w-full bg-white/5 border border-white/10 focus:border-red-500/40 py-2 px-3 text-sm text-white placeholder:text-white/20 outline-none resize-none transition-all"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          disabled={cancellingId === order._id}
+                          onClick={() => handleCancel(order._id)}
+                          className="bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 text-red-400 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
+                        >
+                          {cancellingId === order._id ? "..." : t("confirmCancel")}
+                        </button>
+                        <button
+                          onClick={() => setCancelForms((p) => ({ ...p, [order._id]: false }))}
+                          className="text-white/30 hover:text-white/60 text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

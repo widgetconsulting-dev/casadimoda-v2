@@ -19,15 +19,21 @@ export async function GET(req: NextRequest) {
   const filter: Record<string, unknown> = {};
   if (status === "active") {
     filter.isDelivered = false;
+    filter.isCancelled = { $ne: true };
   } else if (status === "paid") {
     filter.isPaid = true;
     filter.isDelivered = false;
+    filter.isCancelled = { $ne: true };
   } else if (status === "delivered") {
     filter.isDelivered = true;
+    filter.isCancelled = { $ne: true };
+  } else if (status === "cancelled") {
+    filter.isCancelled = true;
   }
 
   const totalOrders = await Order.countDocuments(filter);
-  const activeCount = await Order.countDocuments({ isDelivered: false });
+  const activeCount = await Order.countDocuments({ isDelivered: false, isCancelled: { $ne: true } });
+  const cancelledCount = await Order.countDocuments({ isCancelled: true });
 
   const orders = await Order.find(filter)
     .populate("user", "name email")
@@ -47,8 +53,12 @@ export async function GET(req: NextRequest) {
     totalPrice: o.totalPrice,
     isPaid: o.isPaid,
     isDelivered: o.isDelivered,
+    isCancelled: o.isCancelled || false,
+    cancellationReason: o.cancellationReason || null,
+    cancelledBy: o.cancelledBy || null,
     paidAt: o.paidAt?.toString() || null,
     deliveredAt: o.deliveredAt?.toString() || null,
+    cancelledAt: o.cancelledAt?.toString() || null,
     createdAt: o.createdAt?.toString(),
   }));
 
@@ -56,6 +66,7 @@ export async function GET(req: NextRequest) {
     orders: serialized,
     totalOrders,
     activeCount,
+    cancelledCount,
     pages: Math.ceil(totalOrders / pageSize),
   });
 }
@@ -66,7 +77,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const { orderId, isPaid, isDelivered } = await req.json();
+  const { orderId, isPaid, isDelivered, isCancelled, cancellationReason } = await req.json();
   if (!orderId) {
     return NextResponse.json({ message: "orderId required" }, { status: 400 });
   }
@@ -81,6 +92,14 @@ export async function PUT(req: NextRequest) {
   if (typeof isDelivered === "boolean") {
     update.isDelivered = isDelivered;
     if (isDelivered) update.deliveredAt = new Date();
+  }
+  if (typeof isCancelled === "boolean") {
+    update.isCancelled = isCancelled;
+    if (isCancelled) {
+      update.cancelledAt = new Date();
+      update.cancelledBy = "admin";
+      update.cancellationReason = cancellationReason || "";
+    }
   }
 
   const order = await Order.findByIdAndUpdate(orderId, update, { new: true });

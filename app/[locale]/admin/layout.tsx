@@ -21,12 +21,14 @@ import {
   Clock,
   ShoppingBag,
   Palette,
+  Truck,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const sidebarLinks = [
   { name: "dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "orders", href: "/admin/orders", icon: ShoppingBag },
+  { name: "shipping", href: "/admin/transporters", icon: Truck },
   { name: "products", href: "/admin/products", icon: Package },
   { name: "suppliers", href: "/admin/suppliers", icon: Store },
   { name: "approvals", href: "/admin/approvals", icon: Clock },

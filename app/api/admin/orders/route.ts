@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
 
   const orders = await Order.find(filter)
     .populate("user", "name email")
+    .populate("transporter", "name email")
     .sort({ createdAt: -1 })
     .skip((page - 1) * pageSize)
     .limit(pageSize)
@@ -53,6 +54,9 @@ export async function GET(req: NextRequest) {
     totalPrice: o.totalPrice,
     isPaid: o.isPaid,
     isDelivered: o.isDelivered,
+    transporter: o.transporter
+      ? { _id: (o.transporter as { _id: { toString(): string }; name?: string; email?: string })._id.toString(), name: (o.transporter as { name?: string }).name, email: (o.transporter as { email?: string }).email }
+      : null,
     isCancelled: o.isCancelled || false,
     cancellationReason: o.cancellationReason || null,
     cancelledBy: o.cancelledBy || null,
@@ -77,7 +81,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const { orderId, isPaid, isDelivered, isCancelled, cancellationReason } = await req.json();
+  const { orderId, isPaid, isDelivered, isCancelled, cancellationReason, transporterId } = await req.json();
   if (!orderId) {
     return NextResponse.json({ message: "orderId required" }, { status: 400 });
   }
@@ -92,6 +96,9 @@ export async function PUT(req: NextRequest) {
   if (typeof isDelivered === "boolean") {
     update.isDelivered = isDelivered;
     if (isDelivered) update.deliveredAt = new Date();
+  }
+  if (transporterId !== undefined) {
+    update.transporter = transporterId || null;
   }
   if (typeof isCancelled === "boolean") {
     update.isCancelled = isCancelled;

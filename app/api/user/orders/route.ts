@@ -52,7 +52,7 @@ export async function PUT(req: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const { orderId, cancellationReason } = await req.json();
+    const { orderId, cancellationReason, confirmReception } = await req.json();
     if (!orderId) {
       return NextResponse.json({ message: "orderId required" }, { status: 400 });
     }
@@ -67,6 +67,17 @@ export async function PUT(req: Request) {
     if (!order) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
+
+    if (confirmReception) {
+      if (!order.isDelivered) {
+        return NextResponse.json({ message: "Order not yet delivered" }, { status: 400 });
+      }
+      order.isConfirmedByClient = true;
+      order.confirmedAt = new Date();
+      await order.save();
+      return NextResponse.json({ message: "Reception confirmed" });
+    }
+
     if (order.isPaid || order.isDelivered || order.isCancelled) {
       return NextResponse.json({ message: "Cannot cancel this order" }, { status: 400 });
     }

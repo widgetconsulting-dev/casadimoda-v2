@@ -9,13 +9,17 @@ const userSchema = new mongoose.Schema(
     // Role-based system
     role: {
       type: String,
-      enum: ["customer", "supplier", "admin"],
+      enum: ["customer", "supplier", "admin", "transporter"],
       default: "customer",
     },
     // Reference to supplier profile if user is a supplier
     supplierId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Supplier",
+    },
+    transporterCompanyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TransporterCompany",
     },
   },
   {

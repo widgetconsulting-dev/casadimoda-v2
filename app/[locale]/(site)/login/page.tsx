@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "@/i18n/routing";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -27,7 +27,15 @@ export default function LoginPage() {
         password,
       });
       if (result?.error) alert(result.error);
-      else router.push("/");
+      else {
+        const session = await getSession();
+        const role = (session?.user as { role?: string })?.role;
+        const isAdmin = (session?.user as { isAdmin?: boolean })?.isAdmin;
+        if (isAdmin || role === "admin") router.push("/admin");
+        else if (role === "supplier") router.push("/fournisseur");
+        else if (role === "transporter") router.push("/transporter");
+        else router.push("/");
+      }
     } catch (err: unknown) {
       alert((err as Error).message || "An error occurred");
     }

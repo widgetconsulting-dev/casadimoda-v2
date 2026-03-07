@@ -31,6 +31,7 @@ interface Order {
   isPaid: boolean;
   isDelivered: boolean;
   isCancelled: boolean;
+  isConfirmedByClient?: boolean;
   cancellationReason?: string;
   cancelledBy?: string;
   paidAt?: string;
@@ -48,6 +49,7 @@ export default function OrdersPage() {
   const [cancelForms, setCancelForms] = useState<Record<string, boolean>>({});
   const [cancelReasons, setCancelReasons] = useState<Record<string, string>>({});
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   const fetchOrders = () => {
     apiFetch("/api/user/orders")
@@ -66,6 +68,20 @@ export default function OrdersPage() {
     }
     if (status === "authenticated") fetchOrders();
   }, [status, router]);
+
+  const handleConfirmReception = async (orderId: string) => {
+    setConfirmingId(orderId);
+    try {
+      const res = await apiFetch("/api/user/orders", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, confirmReception: true }),
+      });
+      if (res.ok) fetchOrders();
+    } finally {
+      setConfirmingId(null);
+    }
+  };
 
   const handleCancel = async (orderId: string) => {
     setCancellingId(orderId);
@@ -198,6 +214,21 @@ export default function OrdersPage() {
                           {order.isDelivered ? <CheckCircle className="w-3 h-3" /> : <Truck className="w-3 h-3" />}
                           {order.isDelivered ? t("delivered") : t("inProgress")}
                         </span>
+                        {order.isDelivered && !order.isConfirmedByClient && (
+                          <button
+                            disabled={confirmingId === order._id}
+                            onClick={() => handleConfirmReception(order._id)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 transition-all cursor-pointer disabled:opacity-40"
+                          >
+                            <CheckCircle className="w-3 h-3" />
+                            {t("confirmReception")}
+                          </button>
+                        )}
+                        {order.isDelivered && order.isConfirmedByClient && (
+                          <span className="flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border border-accent/20 bg-accent/5 text-accent/60">
+                            <CheckCircle className="w-3 h-3" /> {t("receptionConfirmed")}
+                          </span>
+                        )}
                         {!order.isPaid && !order.isDelivered && (
                           <button
                             onClick={() => setCancelForms((p) => ({ ...p, [order._id]: !p[order._id] }))}

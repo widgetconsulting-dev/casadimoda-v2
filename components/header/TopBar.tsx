@@ -32,7 +32,7 @@ export default function TopBar() {
     isAdmin?: boolean;
   } | null;
   const isAdminOrSupplier =
-    sessionUser?.isAdmin || sessionUser?.role === "supplier";
+    sessionUser?.isAdmin || sessionUser?.role === "supplier" || sessionUser?.role === "transporter";
 
   useEffect(() => {
     if (!isAdminOrSupplier) return;
@@ -286,6 +286,8 @@ export default function TopBar() {
                   href={
                     sessionUser?.isAdmin
                       ? "/admin/orders"
+                      : sessionUser?.role === "transporter"
+                      ? "/transporter"
                       : "/fournisseur/orders"
                   }
                   className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"

@@ -6,17 +6,17 @@ import db from "@/utils/db";
 import { JWT } from "next-auth/jwt";
 import { Session, User as NextAuthUser } from "next-auth";
 
-interface CustomUser extends NextAuthUser {
+interface CustomUser extends Omit<NextAuthUser, "role"> {
   _id?: string;
   isAdmin?: boolean;
-  role?: "customer" | "supplier" | "admin";
+  role?: "customer" | "supplier" | "admin" | "transporter";
   supplierId?: string;
 }
 
 interface CustomToken extends JWT {
   _id?: string;
   isAdmin?: boolean;
-  role?: "customer" | "supplier" | "admin";
+  role?: "customer" | "supplier" | "admin" | "transporter";
   supplierId?: string;
 }
 

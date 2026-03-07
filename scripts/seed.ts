@@ -25,6 +25,7 @@ dotenv.config({ path: ".env" }); // fallback
 // ─── Models ──────────────────────────────────────────────────────────────────
 import User from "../models/User";
 import Supplier from "../models/Supplier";
+import TransporterCompany from "../models/TransporterCompany";
 import Product from "../models/Product";
 import Category from "../models/Category";
 import SubCategory from "../models/SubCategory";
@@ -562,6 +563,10 @@ async function seed() {
         "admin@casadimoda.com",
         "supplier@casadimoda.com",
         "client@casadimoda.com",
+        "transporter@casadimoda.com",
+        "rapidpost@casadimoda.com",
+        "aramex@casadimoda.com",
+        "dhl@casadimoda.com",
       ],
     },
   });
@@ -592,6 +597,33 @@ async function seed() {
     role: "customer",
   });
   console.log("   Customer:", customerUser.email);
+
+  const rapidPostUser = await User.create({
+    name: "Postes Tunisiennes – Rapid Post",
+    email: "rapidpost@casadimoda.com",
+    password: hash("transporter123"),
+    isAdmin: false,
+    role: "transporter",
+  });
+  console.log("   Transporter (Rapid Post):", rapidPostUser.email);
+
+  const aramexUser = await User.create({
+    name: "Aramex Tunisia",
+    email: "aramex@casadimoda.com",
+    password: hash("transporter123"),
+    isAdmin: false,
+    role: "transporter",
+  });
+  console.log("   Transporter (Aramex):", aramexUser.email);
+
+  const dhlUser = await User.create({
+    name: "DHL Express Tunisia",
+    email: "dhl@casadimoda.com",
+    password: hash("transporter123"),
+    isAdmin: false,
+    role: "transporter",
+  });
+  console.log("   Transporter (DHL):", dhlUser.email);
 
   // ── 2. Supplier Profile ───────────────────────────────────────────────────
   console.log("\n🏪 Creating supplier profile...");
@@ -630,6 +662,82 @@ async function seed() {
     supplierId: supplierProfile._id,
   });
   console.log("   Supplier profile:", supplierProfile.businessName);
+
+  // ── 2b. Transporter Companies ─────────────────────────────────────────────
+  console.log("\n🚚 Creating transporter companies...");
+
+  await TransporterCompany.deleteMany({
+    companySlug: { $in: ["postes-tunisiennes", "aramex-tunisia", "dhl-express-tunisia"] },
+  });
+
+  const rapidPostCompany = await TransporterCompany.create({
+    user: rapidPostUser._id,
+    companyName: "Postes Tunisiennes – Rapid Post",
+    companySlug: "postes-tunisiennes",
+    description:
+      "Service de livraison express national géré par les Postes Tunisiennes. Couvre l'ensemble du territoire tunisien avec un réseau de plus de 1 000 bureaux de poste.",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Poste_Tunisienne_logo.svg/320px-Poste_Tunisienne_logo.svg.png",
+    phone: "+216 71 847 000",
+    contactEmail: "rapidpost@poste.tn",
+    website: "https://www.poste.tn",
+    trackingUrl: "https://www.poste.tn/suivi",
+    address: {
+      street: "9 Rue Hedi Nouira",
+      city: "Tunis",
+      postalCode: "1001",
+      country: "Tunisie",
+    },
+    coverageAreas: ["Tunis", "Sfax", "Sousse", "Bizerte", "Gabès", "Nabeul", "Kairouan", "Monastir", "Gafsa", "Médenine"],
+    status: "active",
+  });
+  await User.findByIdAndUpdate(rapidPostUser._id, { transporterCompanyId: rapidPostCompany._id });
+  console.log("   Company:", rapidPostCompany.companyName);
+
+  const aramexCompany = await TransporterCompany.create({
+    user: aramexUser._id,
+    companyName: "Aramex Tunisia",
+    companySlug: "aramex-tunisia",
+    description:
+      "Aramex est l'un des leaders mondiaux de la logistique et du transport express. En Tunisie, Aramex propose des services de livraison nationale et internationale rapides et fiables.",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Aramex_logo.svg/320px-Aramex_logo.svg.png",
+    phone: "+216 70 027 272",
+    contactEmail: "tunisinfo@aramex.com",
+    website: "https://www.aramex.com/tn",
+    trackingUrl: "https://www.aramex.com/track",
+    address: {
+      street: "Immeuble Iris, Centre Urbain Nord",
+      city: "Tunis",
+      postalCode: "1082",
+      country: "Tunisie",
+    },
+    coverageAreas: ["Tunis", "Sfax", "Sousse", "Monastir", "Nabeul", "Bizerte", "International"],
+    status: "active",
+  });
+  await User.findByIdAndUpdate(aramexUser._id, { transporterCompanyId: aramexCompany._id });
+  console.log("   Company:", aramexCompany.companyName);
+
+  const dhlCompany = await TransporterCompany.create({
+    user: dhlUser._id,
+    companyName: "DHL Express Tunisia",
+    companySlug: "dhl-express-tunisia",
+    description:
+      "DHL Express est le leader mondial de la livraison express internationale. La filiale tunisienne assure des livraisons porte-à-porte rapides vers plus de 220 pays et territoires.",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/DHL_Logo.svg/320px-DHL_Logo.svg.png",
+    phone: "+216 71 168 168",
+    contactEmail: "customer.service.tn@dhl.com",
+    website: "https://www.dhl.com/tn-fr/home.html",
+    trackingUrl: "https://www.dhl.com/tn-fr/home/tracking.html",
+    address: {
+      street: "Zone Fret, Aéroport Tunis-Carthage",
+      city: "Tunis",
+      postalCode: "1080",
+      country: "Tunisie",
+    },
+    coverageAreas: ["Tunis", "Sfax", "Sousse", "Monastir", "International", "Europe", "Amériques", "Asie"],
+    status: "active",
+  });
+  await User.findByIdAndUpdate(dhlUser._id, { transporterCompanyId: dhlCompany._id });
+  console.log("   Company:", dhlCompany.companyName);
 
   // ── 3. Categories, SubCategories & Brands ────────────────────────────────
   console.log("\n📂 Creating categories, subcategories & brands...");
@@ -744,9 +852,12 @@ async function seed() {
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("✅ Seed complete!\n");
   console.log("  Accounts:");
-  console.log("    Admin    → admin@casadimoda.com     / admin123");
-  console.log("    Supplier → supplier@casadimoda.com  / supplier123");
-  console.log("    Customer → client@casadimoda.com    / client123");
+  console.log("    Admin         → admin@casadimoda.com     / admin123");
+  console.log("    Supplier      → supplier@casadimoda.com  / supplier123");
+  console.log("    Customer      → client@casadimoda.com    / client123");
+  console.log("    Rapid Post    → rapidpost@casadimoda.com / transporter123");
+  console.log("    Aramex        → aramex@casadimoda.com    / transporter123");
+  console.log("    DHL           → dhl@casadimoda.com       / transporter123");
   console.log("\n  Products created: 8 total (4 admin + 4 supplier)");
   console.log("    Detail: 4 products  |  Gros: 4 products");
   console.log(

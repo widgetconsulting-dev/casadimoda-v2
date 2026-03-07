@@ -32,6 +32,9 @@ const orderSchema = new mongoose.Schema(
     cancelledAt: { type: Date },
     cancellationReason: { type: String },
     cancelledBy: { type: String }, // "client" | "admin"
+    isConfirmedByClient: { type: Boolean, default: false },
+    confirmedAt: { type: Date },
+    transporter: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,

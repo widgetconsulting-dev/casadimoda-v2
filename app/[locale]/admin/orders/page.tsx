@@ -50,7 +50,12 @@ interface TransporterCompany {
   companyName?: string;
   phone?: string;
   contactEmail?: string;
-  address?: { street: string; city: string; postalCode: string; country: string };
+  address?: {
+    street: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  };
   coverageAreas?: string[];
   logo?: string;
   website?: string;
@@ -85,9 +90,13 @@ export default function AdminOrdersPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [cancelForms, setCancelForms] = useState<Record<string, boolean>>({});
-  const [cancelReasons, setCancelReasons] = useState<Record<string, string>>({});
+  const [cancelReasons, setCancelReasons] = useState<Record<string, string>>(
+    {},
+  );
   const [transporters, setTransporters] = useState<Transporter[]>([]);
-  const [assignSelects, setAssignSelects] = useState<Record<string, string>>({});
+  const [assignSelects, setAssignSelects] = useState<Record<string, string>>(
+    {},
+  );
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -290,10 +299,16 @@ export default function AdminOrdersPage() {
                         )}
                         {order.isDelivered ? t("delivered") : t("pending")}
                       </span>
-                      {order.transporter && !order.isDelivered && (
-                        <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit bg-accent/10 text-accent">
-                          <Truck size={9} /> {t("assignedBadge")}
-                        </span>
+                      {!order.isDelivered && (
+                        order.transporter ? (
+                          <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit bg-accent/10 text-accent">
+                            <Truck size={9} /> {t("assignedBadge")}
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit bg-red-500/10 text-red-400">
+                            <Truck size={9} /> {t("unassignedBadge")}
+                          </span>
+                        )
                       )}
                     </>
                   )}
@@ -372,12 +387,20 @@ export default function AdminOrdersPage() {
                       {order.transporter ? (
                         <div className="flex items-center justify-between p-3 bg-accent/5 border border-accent/20">
                           <div>
-                            <p className="text-xs text-accent font-black">✓ {order.transporter.name || order.transporter.email}</p>
-                            <p className="text-[10px] text-white/40 mt-0.5">{order.transporter.email}</p>
+                            <p className="text-xs text-accent font-black">
+                              ✓{" "}
+                              {order.transporter.name ||
+                                order.transporter.email}
+                            </p>
+                            <p className="text-[10px] text-white/40 mt-0.5">
+                              {order.transporter.email}
+                            </p>
                           </div>
                           <button
                             disabled={updatingId === order._id}
-                            onClick={() => updateOrder(order._id, { transporterId: "" })}
+                            onClick={() =>
+                              updateOrder(order._id, { transporterId: "" })
+                            }
                             className="text-[9px] font-black uppercase tracking-widest text-white/20 hover:text-red-400 transition-colors cursor-pointer disabled:opacity-40"
                           >
                             {t("unassign")}
@@ -387,21 +410,37 @@ export default function AdminOrdersPage() {
                         <div className="flex gap-2">
                           <select
                             value={assignSelects[order._id] ?? ""}
-                            onChange={(e) => setAssignSelects((p) => ({ ...p, [order._id]: e.target.value }))}
+                            onChange={(e) =>
+                              setAssignSelects((p) => ({
+                                ...p,
+                                [order._id]: e.target.value,
+                              }))
+                            }
                             className="flex-1 bg-[#1a1a1a] border border-white/10 focus:border-accent py-2 px-3 text-xs text-white outline-none transition-all [&>option]:bg-[#1a1a1a] [&>option]:text-white"
                           >
                             <option value="">{t("noTransporter")}</option>
                             {transporters.map((tr) => (
                               <option key={tr._id} value={tr._id}>
                                 {tr.company?.companyName || tr.name}
-                                {tr.company?.phone ? ` — ${tr.company.phone}` : ` — ${tr.email}`}
-                                {tr.company?.address?.city ? ` (${tr.company.address.city})` : ""}
+                                {tr.company?.phone
+                                  ? ` — ${tr.company.phone}`
+                                  : ` — ${tr.email}`}
+                                {tr.company?.address?.city
+                                  ? ` (${tr.company.address.city})`
+                                  : ""}
                               </option>
                             ))}
                           </select>
                           <button
-                            disabled={updatingId === order._id || !assignSelects[order._id]}
-                            onClick={() => updateOrder(order._id, { transporterId: assignSelects[order._id] ?? "" })}
+                            disabled={
+                              updatingId === order._id ||
+                              !assignSelects[order._id]
+                            }
+                            onClick={() =>
+                              updateOrder(order._id, {
+                                transporterId: assignSelects[order._id] ?? "",
+                              })
+                            }
                             className="bg-accent/10 border border-accent/30 hover:bg-accent/20 text-accent text-[9px] font-black uppercase tracking-widest px-4 py-2 transition-all cursor-pointer disabled:opacity-40"
                           >
                             {t("assign")}

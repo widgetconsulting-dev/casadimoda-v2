@@ -524,6 +524,7 @@
     "tabCancelled": "Annulées",
     "cancelledBadge": "Annulée",
     "assignedBadge": "Assignée",
+    "unassignedBadge": "Non assignée",
     "cancelReason": "Motif",
     "cancelReasonPlaceholder": "Motif d'annulation...",
     "confirmCancel": "Confirmer l'annulation",

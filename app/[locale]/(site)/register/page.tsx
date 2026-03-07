@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
@@ -12,7 +12,6 @@ type RegisterInput = {
   name: string;
   email: string;
   password: string;
-  confirmPassword: string;
 };
 
 export default function RegisterPage() {
@@ -24,12 +23,10 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+    defaultValues: { name: "", email: "", password: "" },
   });
-  const password = watch("password");
 
   const onSubmit = async (data: RegisterInput) => {
     setError("");
@@ -54,7 +51,15 @@ export default function RegisterPage() {
         password: data.password,
       });
       if (signInResult?.error) setError(signInResult.error);
-      else router.push("/");
+      else {
+        const session = await getSession();
+        const role = (session?.user as { role?: string })?.role;
+        const isAdmin = (session?.user as { isAdmin?: boolean })?.isAdmin;
+        if (isAdmin || role === "admin") router.push("/admin");
+        else if (role === "supplier") router.push("/fournisseur");
+        else if (role === "transporter") router.push("/transporter");
+        else router.push("/");
+      }
     } catch (err: unknown) {
       setError((err as Error).message || "An error occurred");
     }
@@ -148,15 +153,6 @@ export default function RegisterPage() {
                   </p>
                 )}
               </div>
-
-              {/* Hidden confirm password (kept for validation) */}
-              <input
-                type="hidden"
-                {...register("confirmPassword", {
-                  validate: (v) => v === password || t("noMatch"),
-                })}
-                value={password}
-              />
 
               <button
                 type="submit"

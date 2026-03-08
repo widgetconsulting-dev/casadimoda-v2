@@ -4,7 +4,14 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
-import { User, Lock, Save, CheckCircle, AlertCircle, Heart } from "lucide-react";
+import {
+  User,
+  Lock,
+  Save,
+  CheckCircle,
+  AlertCircle,
+  Heart,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
 
@@ -148,7 +155,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <div className="bg-black/40 border border-white/10 p-8">
               {message && (
                 <div

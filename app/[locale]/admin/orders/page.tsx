@@ -160,7 +160,7 @@ export default function AdminOrdersPage() {
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
             {t("ordersTitle")}
           </h1>
           <p className="text-white/30 font-bold uppercase tracking-widest text-[10px] mt-1">
@@ -177,12 +177,13 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Tabs */}
+
       <div className="flex gap-1 border-b border-white/10">
         {STATUS_TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-5 py-3 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer border-b-2 -mb-px ${
+            className={`px-2 md:px-5 py-1 md:py-3 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer border-b-2 -mb-px ${
               tab === t.key
                 ? `border-accent ${t.color}`
                 : "border-transparent text-white/30 hover:text-white/60"
@@ -219,7 +220,7 @@ export default function AdminOrdersPage() {
             >
               {/* Row Summary */}
               <div
-                className="grid grid-cols-12 gap-4 px-5 py-4 cursor-pointer items-center"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 px-5 py-4 cursor-pointer items-start lg:items-center"
                 onClick={() =>
                   setExpandedId(expandedId === order._id ? null : order._id)
                 }
@@ -299,8 +300,8 @@ export default function AdminOrdersPage() {
                         )}
                         {order.isDelivered ? t("delivered") : t("pending")}
                       </span>
-                      {!order.isDelivered && (
-                        order.transporter ? (
+                      {!order.isDelivered &&
+                        (order.transporter ? (
                           <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit bg-accent/10 text-accent">
                             <Truck size={9} /> {t("assignedBadge")}
                           </span>
@@ -308,8 +309,7 @@ export default function AdminOrdersPage() {
                           <span className="flex items-center gap-1 text-[8px] font-black uppercase tracking-wider px-2 py-1 w-fit bg-red-500/10 text-red-400">
                             <Truck size={9} /> {t("unassignedBadge")}
                           </span>
-                        )
-                      )}
+                        ))}
                     </>
                   )}
                 </div>

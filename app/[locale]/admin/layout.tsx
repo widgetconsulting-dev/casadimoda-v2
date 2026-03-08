@@ -95,7 +95,8 @@ export default function AdminLayout({
               </span>
             </div>
             <span className="text-xl font-black tracking-tighter uppercase font-playfair">
-              {t("casaAdmin")}<span className="text-accent ml-0.5">.</span>
+              {t("casaAdmin")}
+              <span className="text-accent ml-0.5">.</span>
             </span>
           </Link>
         </div>
@@ -163,7 +164,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow p-6 lg:p-10 overflow-y-auto w-full">
+      <main className="flex-grow p-2 md:p-6 lg:p-10 overflow-y-auto w-full">
         {children}
       </main>
     </div>

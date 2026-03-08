@@ -54,7 +54,7 @@ export default function Sidebar({
         </div>
 
         {/* Content */}
-        <div className="flex-grow overflow-y-auto no-scrollbar p-6 space-y-8">
+        <div className="flex-grow overflow-y-auto no-scrollbar p-6 space-y-4 md:space-y-8">
           {/* Shop By Category */}
           <section>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-accent mb-6 border-b border-gray-100 pb-2">
@@ -123,7 +123,9 @@ export default function Sidebar({
               <li className="hover:text-primary cursor-pointer">
                 {t("customerService")}
               </li>
-              <li className="hover:text-primary cursor-pointer">{t("signIn")}</li>
+              <li className="hover:text-primary cursor-pointer">
+                {t("signIn")}
+              </li>
             </ul>
           </section>
         </div>

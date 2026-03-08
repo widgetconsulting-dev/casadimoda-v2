@@ -208,7 +208,7 @@ export default function AdminApprovalsPage() {
       </div>
 
       {/* Content */}
-      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white border border-gray-100 shadow-sm overflow-hidden p-4 sm:p-6 lg:p-8">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />

@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  Plus,
-  Search,
-  Filter,
-  Edit,
-  Trash2,
-  Package,
-  X,
-} from "lucide-react";
+import { Plus, Search, Filter, Edit, Trash2, Package, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -181,7 +173,13 @@ export default function ProductsTable({
           colors,
           colorImages: colorImagesArray,
         }
-      : { ...data, image: primaryImage, sizes, colors, colorImages: colorImagesArray };
+      : {
+          ...data,
+          image: primaryImage,
+          sizes,
+          colors,
+          colorImages: colorImagesArray,
+        };
 
     // Auto-generate slug if empty
     if (!data.slug) {
@@ -234,7 +232,7 @@ export default function ProductsTable({
         </button>
       </div>
 
-      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white border border-gray-100 shadow-sm overflow-hidden p-4 sm:p-6 lg:p-8">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">
@@ -416,7 +414,7 @@ export default function ProductsTable({
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col flex-grow overflow-hidden"
             >
-              <div className="flex-grow overflow-y-auto p-10 pt-4 space-y-8">
+              <div className="flex-grow overflow-y-auto p-10 pt-4 space-y-4 md:space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Left Side: General Info */}
                   <div className="space-y-6">

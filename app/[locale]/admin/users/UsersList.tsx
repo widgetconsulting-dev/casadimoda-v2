@@ -19,7 +19,8 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-secondary tracking-tighter lowercase">
-            {t("usersTitle")}<span className="text-accent text-5xl">.</span>
+            {t("usersTitle")}
+            <span className="text-accent text-5xl">.</span>
           </h1>
           <p className="text-text-dark/40 font-bold uppercase tracking-widest text-[10px] mt-2">
             {t("usersSubtitle")}
@@ -27,7 +28,7 @@ export default function UsersList({ initialUsers }: { initialUsers: User[] }) {
         </div>
       </div>
 
-      <div className="bg-white  border border-gray-100 shadow-sm overflow-hidden p-8">
+      <div className="bg-white border border-gray-100 shadow-sm overflow-hidden p-4 sm:p-6 lg:p-8">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-grow">

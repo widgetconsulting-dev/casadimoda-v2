@@ -91,7 +91,7 @@ export default function SupplierOrdersPage() {
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
             {t("title").split(" ")[0]}{" "}
             <span className="text-accent">
               {t("title").split(" ").slice(1).join(" ")}
@@ -112,12 +112,13 @@ export default function SupplierOrdersPage() {
       </div>
 
       {/* Tabs */}
+
       <div className="flex gap-1 border-b border-white/10">
         {STATUS_TABS.map((tabItem) => (
           <button
             key={tabItem.key}
             onClick={() => setTab(tabItem.key)}
-            className={`px-5 py-3 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer border-b-2 -mb-px ${
+            className={`px-2 md:px-5 py-1 md:py-3 text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer border-b-2 -mb-px ${
               tab === tabItem.key
                 ? `border-accent ${tabItem.color}`
                 : "border-transparent text-white/30 hover:text-white/60"
@@ -154,7 +155,7 @@ export default function SupplierOrdersPage() {
             >
               {/* Row */}
               <div
-                className="grid grid-cols-12 gap-4 px-5 py-4 cursor-pointer items-center"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 px-5 py-4 cursor-pointer items-start lg:items-center"
                 onClick={() =>
                   setExpandedId(expandedId === order._id ? null : order._id)
                 }

@@ -231,7 +231,7 @@ export default function SupplierLayout({
 
       {/* Main Content */}
       <main
-        className={`flex-grow p-6 lg:p-10 overflow-y-auto w-full ${
+        className={`flex-grow p-2 md:p-6 lg:p-10 overflow-y-auto w-full ${
           supplierStatus && supplierStatus !== "approved"
             ? "pt-14 lg:pt-10"
             : ""

@@ -122,11 +122,11 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-8">
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
             {t("dashboardTitle")}
           </h1>
           <p className="text-white/30 font-bold uppercase tracking-widest text-[10px] mt-1">

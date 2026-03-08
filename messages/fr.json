@@ -89,6 +89,7 @@
   "products": {
     "newBadge": "Nouveauté",
     "addToCart": "Ajouter au Panier",
+    "configureOrder": "Configurer la commande",
     "discountedPrice": "Prix remisé",
     "pricePerUnit": "Prix unitaire",
     "fullCollection": "Collection Complète",
@@ -724,6 +725,7 @@
     "quantityLabel": "Quantité",
     "chooseSize": "Veuillez choisir une taille",
     "chooseColor": "Veuillez choisir une couleur",
+    "fillVariations": "Veuillez remplir toutes les variantes (couleur, taille, quantité)",
     "outOfStockAlert": "Désolé. Produit en rupture de stock",
     "addedToCart": "Ajouté au Panier ✓",
     "addToWishlist": "Ajouter à la Wishlist",

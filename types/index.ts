@@ -26,6 +26,9 @@ export interface Coupon {
   discount: number;
   type: "percentage" | "fixed";
   isActive: boolean;
+  expiryDate?: string;
+  maxUsage?: number | null;
+  usageCount?: number;
 }
 
 export interface GiftCard {
@@ -34,6 +37,12 @@ export interface GiftCard {
   amount: number;
   balance: number;
   isActive: boolean;
+}
+
+export interface CartVariation {
+  color: string;
+  size: string;
+  quantity: number;
 }
 
 export interface CartItem {
@@ -46,6 +55,10 @@ export interface CartItem {
   countInStock: number;
   selectedSize?: string;
   selectedColor?: string;
+  sizes?: string[];
+  colors?: string[];
+  parentCategory?: "detail" | "gros";
+  variations?: CartVariation[];
 }
 
 export interface Product {

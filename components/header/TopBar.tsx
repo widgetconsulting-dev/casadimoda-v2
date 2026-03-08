@@ -309,7 +309,7 @@ export default function TopBar() {
                   href="/cart"
                   className="flex items-center gap-1.5 text-secondary/70 hover:text-accent transition-colors group"
                 >
-                  <div className="relative">
+                  <div className="relative" data-cart-icon>
                     <ShoppingCart className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                     {cartQuantity > 0 && (
                       <span

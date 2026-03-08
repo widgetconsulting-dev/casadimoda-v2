@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
-import { User, Lock, Save, CheckCircle, AlertCircle } from "lucide-react";
+import { User, Lock, Save, CheckCircle, AlertCircle, Heart } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
 
@@ -132,9 +132,16 @@ export default function ProfilePage() {
               <div className="mt-6 pt-6 border-t border-white/10 space-y-2">
                 <Link
                   href="/orders"
-                  className="block px-4 py-2.5 text-xs font-medium text-white/60 hover:text-accent hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 text-xs font-medium text-white/60 hover:text-accent hover:bg-white/5 transition-colors"
                 >
                   {t("myOrders")}
+                </Link>
+                <Link
+                  href="/wishlist"
+                  className="flex items-center gap-2 px-4 py-2.5 text-xs font-medium text-white/60 hover:text-accent hover:bg-white/5 transition-colors"
+                >
+                  <Heart className="w-3.5 h-3.5" />
+                  {tn("favorites")}
                 </Link>
               </div>
             </div>

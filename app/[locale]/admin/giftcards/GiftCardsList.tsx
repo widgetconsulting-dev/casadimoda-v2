@@ -108,10 +108,10 @@ export default function GiftCardsList({
                   {card.code}
                 </td>
                 <td className="px-8 py-6 font-black text-primary">
-                  ${card.amount}
+                  {card.amount.toLocaleString()} TND
                 </td>
                 <td className="px-8 py-6 font-black text-accent">
-                  ${card.balance}
+                  {card.balance.toLocaleString()} TND
                 </td>
                 <td className="px-8 py-6">
                   <span

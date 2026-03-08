@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",
+    "framer-motion": "^12.35.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.562.0",
     "mongoose": "^9.1.1",

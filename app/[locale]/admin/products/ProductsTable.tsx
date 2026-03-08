@@ -10,7 +10,6 @@ import {
   Trash2,
   Package,
   X,
-  Upload,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -50,7 +49,6 @@ export default function ProductsTable({
   >([]);
   const [selectedDbColor, setSelectedDbColor] = useState("");
   const { register, handleSubmit, reset, setValue, watch } = useForm<Product>();
-  const productImage = watch("image");
   const selectedCategory = watch("category");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -118,6 +116,7 @@ export default function ProductsTable({
         weight: "",
         cbm: 0,
         hsCode: "",
+        image: "",
         isFeatured: false,
         parentCategory: "detail",
       });
@@ -159,18 +158,30 @@ export default function ProductsTable({
   const onSubmit = async (data: Product) => {
     const url = "/api/admin/products";
     const method = editingProduct ? "PUT" : "POST";
-    const colorImagesArray = Object.entries(colorImages)
-      .filter(([, img]) => img)
-      .map(([color, image]) => ({ color, image }));
+    const colorImagesArray = colors
+      .filter((color) => colorImages[color])
+      .map((color) => ({
+        color,
+        image: colorImages[color],
+        hex: dbColors.find((c) => c.name === color)?.hex || "",
+      }));
+
+    // First color image is the primary product image
+    const primaryImage =
+      colors.length > 0 && colorImages[colors[0]]
+        ? colorImages[colors[0]]
+        : data.image || "";
+
     const body = editingProduct
       ? {
           ...data,
           id: editingProduct._id,
+          image: primaryImage,
           sizes,
           colors,
           colorImages: colorImagesArray,
         }
-      : { ...data, sizes, colors, colorImages: colorImagesArray };
+      : { ...data, image: primaryImage, sizes, colors, colorImages: colorImagesArray };
 
     // Auto-generate slug if empty
     if (!data.slug) {
@@ -698,69 +709,6 @@ export default function ProductsTable({
 
                   {/* Right Side: Media & Details */}
                   <div className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
-                        {t("primaryAsset")}
-                      </label>
-                      <div className="flex flex-col gap-4">
-                        {productImage && (
-                          <div className="relative w-full aspect-video  overflow-hidden bg-secondary border border-gray-100 mb-2">
-                            <Image
-                              src={productImage}
-                              alt="Preview"
-                              fill
-                              className="object-contain"
-                              unoptimized={true}
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src =
-                                  "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1020&auto=format&fit=crop";
-                              }}
-                            />
-                          </div>
-                        )}
-                        <div className="relative">
-                          <input
-                            {...register("image", { required: true })}
-                            className="w-full bg-secondary border-none  p-4 pl-12 outline-none font-bold text-primary"
-                            placeholder={t("imageUrlPlaceholder")}
-                          />
-                          <Upload
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-text-dark/30"
-                            size={18}
-                          />
-                        </div>
-                        <CldUploadWidget
-                          uploadPreset="iqsmn6rq"
-                          onSuccess={(
-                            result: CloudinaryUploadWidgetResults,
-                          ) => {
-                            if (result.event !== "success") return;
-
-                            const info = result.info;
-
-                            if (
-                              info &&
-                              typeof info === "object" &&
-                              "secure_url" in info
-                            ) {
-                              setValue("image", info.secure_url);
-                            }
-                          }}
-                        >
-                          {({ open }) => (
-                            <button
-                              type="button"
-                              onClick={() => open()}
-                              className="w-full bg-accent/10 border-2 border-dashed border-accent/30 text-accent font-black uppercase text-[10px] tracking-widest py-4  hover:bg-accent/20 transition-all cursor-pointer flex items-center justify-center gap-2"
-                            >
-                              <Upload size={14} /> {t("uploadCloudinary")}
-                            </button>
-                          )}
-                        </CldUploadWidget>
-                      </div>
-                    </div>
-
                     <div className="space-y-2">
                       <label className="text-[11px] font-black uppercase tracking-widest text-primary ml-2">
                         {t("narrativeDescription")}

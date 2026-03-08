@@ -1,6 +1,9 @@
 import db from "@/utils/db";
 import Order from "@/models/Order";
 import User from "@/models/User";
+import Product from "@/models/Product";
+import Coupon from "@/models/Coupon";
+import GiftCard from "@/models/GiftCard";
 import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
@@ -12,7 +15,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, totalPrice } = body;
+    const { orderItems, shippingAddress, paymentMethod, couponCode, giftCardCode } = body;
 
     if (!orderItems?.length || !shippingAddress || !paymentMethod) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -21,14 +24,107 @@ export async function POST(req: Request) {
     await db.connect();
     const user = await User.findOne({ email: session.user.email });
     if (!user) {
+      await db.disconnect();
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
+    // Verify each item against the DB: price, stock, existence
+    const verifiedItems = [];
+    for (const item of orderItems) {
+      const dbProduct = await Product.findOne({ name: item.name }).select(
+        "name slug image price discountPrice countInStock"
+      );
+
+      if (!dbProduct) {
+        await db.disconnect();
+        return NextResponse.json(
+          { message: `Product not found: ${item.name}` },
+          { status: 400 }
+        );
+      }
+
+      if (dbProduct.countInStock < item.quantity) {
+        await db.disconnect();
+        return NextResponse.json(
+          { message: `Insufficient stock for: ${dbProduct.name} (available: ${dbProduct.countInStock})` },
+          { status: 400 }
+        );
+      }
+
+      const unitPrice =
+        dbProduct.discountPrice > 0 && dbProduct.discountPrice < dbProduct.price
+          ? dbProduct.discountPrice
+          : dbProduct.price;
+
+      verifiedItems.push({
+        name: dbProduct.name,
+        slug: dbProduct.slug,
+        image: item.image || dbProduct.image,
+        price: unitPrice,
+        quantity: item.quantity,
+        color: item.color || undefined,
+        size: item.size || undefined,
+      });
+    }
+
+    const itemsPrice = verifiedItems.reduce(
+      (sum, i) => sum + i.price * i.quantity,
+      0
+    );
+
+    // Validate coupon server-side if provided
+    let couponDiscount = 0;
+    let appliedCoupon = null;
+    if (couponCode) {
+      appliedCoupon = await Coupon.findOne({
+        code: couponCode.trim().toUpperCase(),
+        isActive: true,
+      });
+      if (appliedCoupon) {
+        const expired = appliedCoupon.expiryDate && new Date(appliedCoupon.expiryDate) < new Date();
+        const limitReached = appliedCoupon.maxUsage !== null && appliedCoupon.usageCount >= appliedCoupon.maxUsage;
+        if (!expired && !limitReached) {
+          couponDiscount =
+            appliedCoupon.type === "percentage"
+              ? Math.round((itemsPrice * appliedCoupon.discount) / 100)
+              : appliedCoupon.discount;
+          couponDiscount = Math.min(couponDiscount, itemsPrice);
+        } else {
+          appliedCoupon = null;
+        }
+      }
+    }
+
+    // Validate gift card server-side if provided
+    let giftCardDiscount = 0;
+    let appliedGiftCard = null;
+    if (giftCardCode) {
+      appliedGiftCard = await GiftCard.findOne({
+        code: giftCardCode.trim().toUpperCase(),
+        isActive: true,
+      });
+      if (appliedGiftCard) {
+        const expired = appliedGiftCard.expiryDate && new Date(appliedGiftCard.expiryDate) < new Date();
+        if (!expired && appliedGiftCard.balance > 0) {
+          const afterCoupon = itemsPrice - couponDiscount;
+          giftCardDiscount = Math.min(appliedGiftCard.balance, afterCoupon);
+        } else {
+          appliedGiftCard = null;
+        }
+      }
+    }
+
+    const totalPrice = itemsPrice - couponDiscount - giftCardDiscount;
+
     const order = new Order({
       user: user._id,
-      orderItems,
+      orderItems: verifiedItems,
       shippingAddress,
       paymentMethod,
+      couponCode: appliedCoupon?.code,
+      couponDiscount,
+      giftCardCode: appliedGiftCard?.code,
+      giftCardDiscount,
       itemsPrice,
       shippingPrice: 0,
       taxPrice: 0,
@@ -38,6 +134,27 @@ export async function POST(req: Request) {
     });
 
     const createdOrder = await order.save();
+
+    // Update coupon usage after order is confirmed
+    if (appliedCoupon) {
+      appliedCoupon.usageCount += 1;
+      if (appliedCoupon.maxUsage !== null && appliedCoupon.usageCount >= appliedCoupon.maxUsage) {
+        appliedCoupon.isActive = false;
+      }
+      await appliedCoupon.save();
+    }
+
+    // Deduct from gift card balance
+    if (appliedGiftCard) {
+      appliedGiftCard.balance -= giftCardDiscount;
+      if (appliedGiftCard.balance <= 0) {
+        appliedGiftCard.isActive = false;
+        appliedGiftCard.balance = 0;
+      }
+      await appliedGiftCard.save();
+    }
+
+    await db.disconnect();
     return NextResponse.json({ _id: createdOrder._id.toString() }, { status: 201 });
   } catch (error) {
     console.error("Error creating order:", error);

@@ -89,6 +89,7 @@
   "products": {
     "newBadge": "New",
     "addToCart": "Add to Cart",
+    "configureOrder": "Configure Order",
     "discountedPrice": "Discounted Price",
     "pricePerUnit": "Price per unit",
     "fullCollection": "Full Collection",
@@ -723,6 +724,7 @@
     "quantityLabel": "Quantity",
     "chooseSize": "Please choose a size",
     "chooseColor": "Please choose a color",
+    "fillVariations": "Please fill all variation fields (color, size, quantity)",
     "outOfStockAlert": "Sorry. Product is out of stock",
     "addedToCart": "Added to Cart ✓",
     "addToWishlist": "Add to Wishlist",

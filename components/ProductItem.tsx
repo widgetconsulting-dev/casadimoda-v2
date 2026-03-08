@@ -4,9 +4,20 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useStore } from "@/utils/context/Store";
+import { useSession } from "next-auth/react";
 import { Product } from "@/types";
-import { Heart, Star } from "lucide-react";
-import { useState } from "react";
+import { Heart, Star, ShoppingBag } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { apiFetch } from "@/utils/api";
+
+// Module-level cache so colors are fetched only once per page load
+let _dbColorsCache: { name: string; hex: string }[] = [];
+let _dbColorsFetched = false;
+
+// Module-level wishlist cache — fetched once per session
+let _wishlistCache: Set<string> = new Set();
+let _wishlistFetched = false;
+const _wishlistListeners: Set<() => void> = new Set();
 
 const COLOR_MAP: Record<string, string> = {
   Noir: "#111111",
@@ -58,6 +69,20 @@ export default function ProductItem({ product }: ProductItemProps) {
   const t = useTranslations("products");
   const tc = useTranslations("common");
   const { state, dispatch } = useStore();
+  const { data: session, status } = useSession();
+  const userRole = (session?.user as { role?: string })?.role;
+  const isCustomer = status === "unauthenticated" || userRole === "customer";
+  const [isWishlisted, setIsWishlisted] = useState(() =>
+    _wishlistCache.has(product._id),
+  );
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [heartPop, setHeartPop] = useState(false);
+  const [avgRating, setAvgRating] = useState(product.rating || 0);
+  const [numReviews, setNumReviews] = useState(product.numReviews || 0);
+  const [showRating, setShowRating] = useState(false);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const firstColor = product.colors?.[0] ?? null;
   const firstImage = firstColor
@@ -67,6 +92,102 @@ export default function ProductItem({ product }: ProductItemProps) {
 
   const [activeImage, setActiveImage] = useState(firstImage);
   const [activeColor, setActiveColor] = useState<string | null>(firstColor);
+  const [dbColors, setDbColors] = useState<{ name: string; hex: string }[]>(
+    _dbColorsCache,
+  );
+
+  // Sync wishlist state if cache updates after mount
+  useEffect(() => {
+    const sync = () => setIsWishlisted(_wishlistCache.has(product._id));
+    _wishlistListeners.add(sync);
+    return () => { _wishlistListeners.delete(sync); };
+  }, [product._id]);
+
+  // Reset cache on logout
+  useEffect(() => {
+    if (!session && _wishlistFetched) {
+      _wishlistFetched = false;
+      _wishlistCache = new Set();
+      _wishlistListeners.forEach((fn) => fn());
+    }
+  }, [session]);
+
+  // Fetch all wishlisted IDs once per session
+  useEffect(() => {
+    if (!session || _wishlistFetched) return;
+    _wishlistFetched = true;
+    apiFetch("/api/wishlist")
+      .then((r) => r.json())
+      .then((data) => {
+        _wishlistCache = new Set(
+          (data.items || []).map(
+            (i: { product: { _id: string } }) => i.product._id,
+          ),
+        );
+        _wishlistListeners.forEach((fn) => fn());
+      })
+      .catch(() => {});
+  }, [session]);
+
+  useEffect(() => {
+    if (_dbColorsFetched) return;
+    _dbColorsFetched = true;
+    fetch("/api/colors")
+      .then((r) => r.json())
+      .then((data) => {
+        _dbColorsCache = data;
+        setDbColors(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const toggleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!session) {
+      window.location.href = "/login";
+      return;
+    }
+    setWishlistLoading(true);
+    try {
+      const method = isWishlisted ? "DELETE" : "POST";
+      await apiFetch("/api/wishlist", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product._id }),
+      });
+      if (isWishlisted) {
+        _wishlistCache.delete(product._id);
+      } else {
+        _wishlistCache.add(product._id);
+        setHeartPop(true);
+        setTimeout(() => setHeartPop(false), 400);
+      }
+      _wishlistListeners.forEach((fn) => fn());
+    } catch {
+      // ignore
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  const submitRating = async (e: React.MouseEvent, stars: number) => {
+    e.preventDefault();
+    if (!session) {
+      window.location.href = "/login";
+      return;
+    }
+    const res = await apiFetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId: product._id, rating: stars }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setAvgRating(data.rating);
+      setNumReviews(data.numReviews);
+    }
+    setShowRating(false);
+  };
 
   const handleColorClick = (color: string) => {
     setActiveColor(color);
@@ -94,8 +215,62 @@ export default function ProductItem({ product }: ProductItemProps) {
         countInStock: product.countInStock,
         quantity,
         selectedColor: activeColor ?? undefined,
+        sizes: product.sizes ?? [],
+        colors: product.colors ?? [],
+        parentCategory: product.parentCategory,
       },
     });
+
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 1500);
+
+    // Fly-to-cart: pure DOM, no React state
+    const originEl = imageRef.current;
+    const cartEl = document.querySelector<HTMLElement>("[data-cart-icon]");
+    if (!originEl || !cartEl) return;
+
+    const originRect = originEl.getBoundingClientRect();
+    const cartRect = cartEl.getBoundingClientRect();
+
+    const flyEl = document.createElement("div");
+    const size = 64;
+    flyEl.style.cssText = `
+      position: fixed;
+      left: ${originRect.left + originRect.width / 2 - size / 2}px;
+      top: ${originRect.top + originRect.height / 2 - size / 2}px;
+      width: ${size}px;
+      height: ${size}px;
+      border-radius: 50%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 9999;
+      border: 2px solid #c9a96e;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.4);
+      transition: left 0.65s cubic-bezier(0.4,0,0.2,1),
+                  top 0.65s cubic-bezier(0.4,0,0.6,1),
+                  width 0.65s ease-in,
+                  height 0.65s ease-in,
+                  opacity 0.25s ease-in 0.4s;
+    `;
+    const img = document.createElement("img");
+    img.src = activeImage || "/images/placeholder.jpg";
+    img.style.cssText = "width:100%;height:100%;object-fit:cover;";
+    flyEl.appendChild(img);
+    document.body.appendChild(flyEl);
+
+    // Trigger animation on next frame
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const endSize = 24;
+        flyEl.style.left = `${cartRect.left + cartRect.width / 2 - endSize / 2}px`;
+        flyEl.style.top = `${cartRect.top + cartRect.height / 2 - endSize / 2}px`;
+        flyEl.style.width = `${endSize}px`;
+        flyEl.style.height = `${endSize}px`;
+        flyEl.style.opacity = "0";
+      });
+    });
+
+    setTimeout(() => flyEl.remove(), 800);
   };
 
   const hasDiscount =
@@ -115,14 +290,66 @@ export default function ProductItem({ product }: ProductItemProps) {
       "
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3">
-        <Star className="w-4 h-4 text-white/25 hover:text-accent cursor-pointer transition" />
+      <div className="flex items-center justify-between px-4 py-3 relative">
+        {/* Star / Rating */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              if (isCustomer) setShowRating((v) => !v);
+            }}
+            className={`flex items-center gap-1 ${isCustomer ? "cursor-pointer group/star" : "cursor-default"}`}
+          >
+            <Star
+              className={`w-4 h-4 transition ${avgRating > 0 ? "text-accent fill-accent" : `text-white/25 ${isCustomer ? "group-hover/star:text-accent" : ""}`}`}
+            />
+            {avgRating > 0 && (
+              <span className="text-[10px] text-accent/80 font-bold">
+                {avgRating.toFixed(1)}
+              </span>
+            )}
+          </button>
+
+          {/* Rating popup — customers only */}
+          {isCustomer && showRating && (
+            <div className="absolute top-7 left-0 z-20 bg-[#1c1c1c] border border-white/10 px-3 py-2 flex gap-1 shadow-xl">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={(e) => submitRating(e, star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  className="cursor-pointer"
+                >
+                  <Star
+                    className={`w-5 h-5 transition ${star <= (hoverRating || avgRating) ? "text-accent fill-accent" : "text-white/20"}`}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <span className="font-serif text-[10px] tracking-[0.25em] text-accent/70 uppercase">
           {tc("brand")}
         </span>
 
-        <Heart className="w-4 h-4 text-white/25 hover:text-accent cursor-pointer transition" />
+        {isCustomer && (
+          <button
+            type="button"
+            onClick={toggleWishlist}
+            disabled={wishlistLoading}
+            className="cursor-pointer disabled:opacity-50"
+          >
+            <Heart
+              className={`w-4 h-4 transition-all duration-200 ${
+                isWishlisted ? "text-accent fill-accent" : "text-white/25 hover:text-accent"
+              } ${heartPop ? "scale-150" : "scale-100"}`}
+            />
+          </button>
+        )}
       </div>
 
       {/* Gold line */}
@@ -139,13 +366,15 @@ export default function ProductItem({ product }: ProductItemProps) {
           </span>
         )}
 
-        <Image
-          src={activeImage || "/images/placeholder.jpg"}
-          alt={activeColor ? `${product.name} — ${activeColor}` : product.name}
-          fill
-          unoptimized
-          className="object-contain p-8 transition-all duration-500 group-hover:scale-110 group-hover:opacity-95"
-        />
+        <div ref={imageRef} className="absolute inset-0">
+          <Image
+            src={activeImage || "/images/placeholder.jpg"}
+            alt={activeColor ? `${product.name} — ${activeColor}` : product.name}
+            fill
+            unoptimized
+            className="object-contain p-8 transition-all duration-500 group-hover:scale-110 group-hover:opacity-95"
+          />
+        </div>
       </Link>
 
       {/* Content */}
@@ -189,6 +418,7 @@ export default function ProductItem({ product }: ProductItemProps) {
             {product.colors.slice(0, 5).map((color) => {
               const hex =
                 product.colorImages?.find((ci) => ci.color === color)?.hex ||
+                dbColors.find((c) => c.name === color)?.hex ||
                 COLOR_MAP[color] ||
                 "#888";
               const isActive = activeColor === color;
@@ -235,12 +465,29 @@ export default function ProductItem({ product }: ProductItemProps) {
         )}
 
         {/* CTA */}
-        <button
-          onClick={addToCartHandler}
-          className="cursor-pointer w-full bg-accent text-white py-2 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 hover:bg-accent/90 hover:scale-[1.02]"
-        >
-          {t("addToCart")}
-        </button>
+        {isCustomer && (
+          product.parentCategory === "gros" ? (
+            <Link
+              href={`/product/${product.slug}`}
+              className="cursor-pointer w-full py-2 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 bg-accent text-white hover:bg-accent/90 hover:scale-[1.02]"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              {t("configureOrder")}
+            </Link>
+          ) : (
+            <button
+              onClick={addToCartHandler}
+              className={`cursor-pointer w-full py-2 text-xs font-bold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 ${
+                addedToCart
+                  ? "bg-green-600 text-white scale-[1.02]"
+                  : "bg-accent text-white hover:bg-accent/90 hover:scale-[1.02]"
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              {t("addToCart")}
+            </button>
+          )
+        )}
       </div>
     </div>
   );

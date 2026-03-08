@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -13,6 +13,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
   const t = useTranslations("products");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +40,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
     params.delete("page");
 
     const queryString = params.toString();
-    router.push(`/search${queryString ? `?${queryString}` : ""}`);
+    router.push(`${pathname}${queryString ? `?${queryString}` : ""}`);
 
     setIsOpen(false);
   };

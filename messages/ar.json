@@ -89,6 +89,7 @@
   "products": {
     "newBadge": "جديد",
     "addToCart": "أضف إلى السلة",
+    "configureOrder": "تكوين الطلب",
     "discountedPrice": "السعر المخفّض",
     "pricePerUnit": "سعر الوحدة",
     "fullCollection": "المجموعة الكاملة",
